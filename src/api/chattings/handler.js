@@ -11,11 +11,19 @@ class ChattingsHandler {
     const user_id = user[0].id
     const userProfile = await this._service.addUserProfile({ user_id, nama, nik, email, password, umur, tgl_lahir });
 
+    const newUser = userProfile[0];
+
+    const token = require('@hapi/jwt').token.generate(
+      { id: newUser.id, email: newUser.email },
+      { key: process.env.JWT_SECRET, algorithm: 'HS256' }
+    );
+
     const response = h.response({
       status: 'success',
       message: 'Pengguna berhasil ditambahkan',
       data: {
-        user,
+        userProfile,
+        token
       },
     });
     response.code(201);

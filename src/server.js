@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const chattings = require('./api/chattings');
+const auth = require('./auth/auth');
 const ChattingsService = require('./services/supabase/ChattingsService');
 const ClientError = require('./exceptions/ClientError');
 
@@ -22,12 +23,14 @@ const init = async () => {
       },
     });
 
-    await server.register({
+    await server.register([
+      auth,
+      {
       plugin: chattings,
       options: {
         service: chattingsService,
       },
-    });
+    }]);
 
     server.ext('onPreResponse', (request, h) => {
       const { response } = request;
