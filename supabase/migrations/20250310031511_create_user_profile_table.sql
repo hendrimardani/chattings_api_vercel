@@ -13,3 +13,6 @@ CREATE TABLE user_profile (
   -- Menetapkan user_id sebagai Foreign Key yang terhubung ke users(id)
   CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- Atur auto increment
+ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq');

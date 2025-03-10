@@ -11,3 +11,6 @@ CREATE TABLE messages(
   CONSTRAINT fk_notifications FOREIGN KEY (notification_id) REFERENCES notifications(id) ON DELETE CASCADE,
   CONSTRAINT fk_groups FOREIGN KEY (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );
+
+-- Atur auto increment
+ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq');

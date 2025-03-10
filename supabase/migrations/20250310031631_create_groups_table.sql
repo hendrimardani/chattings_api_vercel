@@ -4,3 +4,6 @@ CREATE TABLE groups(
   created_at DATE NOT NULL,
   updated_at DATE NOT NULL
 );
+
+-- Atur auto increment
+ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq');
