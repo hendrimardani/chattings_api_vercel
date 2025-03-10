@@ -26,11 +26,11 @@ const init = async () => {
     await server.register([
       auth,
       {
-      plugin: chattings,
-      options: {
-        service: chattingsService,
-      },
-    }]);
+        plugin: chattings,
+        options: {
+          service: chattingsService,
+        },
+      }]);
 
     server.ext('onPreResponse', (request, h) => {
       const { response } = request;

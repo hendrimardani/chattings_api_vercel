@@ -10,7 +10,15 @@ const routes = (handler) => [
     path: '/login',
     options: { auth: false },
     handler: handler.postLoginHandler,
-  }
+  },
+  {
+    method: 'PUT',
+    path: '/user_profile/{id}',
+    handler: handler.putUserProfileByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
+  },
 ];
 
 module.exports = routes;
