@@ -37,14 +37,14 @@ class ChattingsService {
     return data;
   }
 
-  async addUserProfile({ user_id, nama, email, hashedPassword }) {
+  async addUserProfile({ id, nama, email, hashedPassword }) {
     // 2025-03-10 02:25:09
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
     await this._supabase
       .from('user_profile')
-      .insert([{ user_id, nama, email, password: hashedPassword, created_at, updated_at }])
+      .insert([{ id, nama, email, password: hashedPassword, created_at, updated_at }])
       .select();
   }
 
@@ -106,7 +106,9 @@ class ChattingsService {
         .insert({ nama_group, created_at, updated_at })
         .select()
         .maybeSingle();
-    
+
+    // console.log('addGroup ID: ', data, error);
+
     return data;
   }
 
@@ -115,12 +117,21 @@ class ChattingsService {
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
-    console.log('postUserGroupHandler ID: ', user_profile_id, group_id, total_group);
+    const { data, error } = await this._supabase
+        .from('user_profile')
+        .select('*')
+        .eq('id', user_profile_id)
+        .maybeSingle();
 
+    console.log('addUserGroup: ', typeof data, error);
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ada');
+    }
+    
     await this._supabase
         .from('user_group')
         .insert({ user_profile_id, group_id, total_group, created_at, updated_at })
-        .select()
+        .select('*')
         .maybeSingle();
   }
 

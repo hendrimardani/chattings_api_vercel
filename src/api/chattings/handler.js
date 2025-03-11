@@ -14,9 +14,9 @@ class ChattingsHandler {
     const { nama, email, password, repeat_password } = request.payload;
     const user = await this._service.addUser({ email, password, repeat_password });
 
-    const user_id = user.id;
+    const id = user.id;
     const hashedPassword = user.password;
-    await this._service.addUserProfile({ user_id, nama, email, hashedPassword });
+    await this._service.addUserProfile({ id, nama, email, hashedPassword });
 
     const response = h.response({
       status: 'success',
