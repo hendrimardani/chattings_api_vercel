@@ -5,6 +5,7 @@ class ChattingsHandler {
     this.postRegisterHandler = this.postRegisterHandler.bind(this);
     this.postLoginHandler = this.postLoginHandler.bind(this);
     this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
+    this.getUsersHandler = this.getUsersHandler.bind(this);
   }
 
   async postRegisterHandler(request, h) {
@@ -29,7 +30,9 @@ class ChattingsHandler {
 
     const token = require('@hapi/jwt').token.generate(
       { id: user.id, email: user.email },
-      { key: process.env.JWT_SECRET, algorithm: 'HS256' }
+      { key: process.env.JWT_SECRET, algorithm: 'HS256' },
+      { ttlSec: 604800 }// Token kedaluwarsa dalam 7 hari setelah login
+
     );
 
     return {
@@ -54,6 +57,17 @@ class ChattingsHandler {
       status: 'success',
       message: 'Profile berhasil diperbarui',
     };
+  }
+
+  async getUsersHandler() {
+    const users = await this._service.getUsers();
+
+    return {
+      status: 'success',
+      data: {
+        users,
+      },
+    }
   }
 }
 

@@ -11,7 +11,7 @@ module.exports = {
         aud: false,
         iss: false,
         sub: false,
-        maxAgeSec: 3600 // Token berlaku selama 1 jam
+        maxAgeSec: 3600 // Token hanya diterima jika usianya kurang dari 1 jam
       },
       validate: (artifacts, request, h) => {
         return { isValid: true, credentials: { user: artifacts.decoded.payload } };

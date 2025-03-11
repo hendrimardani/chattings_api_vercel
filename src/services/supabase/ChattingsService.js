@@ -86,6 +86,14 @@ class ChattingsService {
       throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
     }
   }
+
+  async getUsers() {
+    const { data, error } = await this._supabase
+      .from('user_profile')
+      .select('*');
+      
+    return data;
+  }
 }
 
 module.exports = ChattingsService;

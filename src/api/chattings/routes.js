@@ -19,6 +19,14 @@ const routes = (handler) => [
       auth: 'jwt' // Tambahkan auth di sini
     }
   },
+  {
+    method: 'GET',
+    path: '/users',
+    handler: handler.getUsersHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
+  }
 ];
 
 module.exports = routes;
