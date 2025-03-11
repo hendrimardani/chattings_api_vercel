@@ -26,6 +26,14 @@ const routes = (handler) => [
     options: {
       auth: 'jwt' // Tambahkan auth di sini
     }
+  },
+  {
+    method: 'POST',
+    path: '/user/{user_profile_id}/group',
+    handler: handler.postUserGroupHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
   }
 ];
 

@@ -25,7 +25,8 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('users')
       .insert([{ email, password, created_at, updated_at }])
-      .select();
+      .select()
+      .maybeSingle();
 
     // console.log('addUser: ', data, error);
     if (error && error.code === '23505') {
@@ -91,7 +92,43 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('user_profile')
       .select('*');
-      
+
+    return data;
+  }
+
+  async addGroup({ nama_group }) {
+    // 2025-03-10 02:25:09
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const updated_at = created_at;
+
+    const { data, error } = await this._supabase
+        .from('groups')
+        .insert({ nama_group, created_at, updated_at })
+        .select()
+        .maybeSingle();
+    
+    return data;
+  }
+
+  async addUserGroup({ user_profile_id, group_id, total_group }) {
+    // 2025-03-10 02:25:09
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const updated_at = created_at;
+
+    console.log('postUserGroupHandler ID: ', user_profile_id, group_id, total_group);
+
+    await this._supabase
+        .from('user_group')
+        .insert({ user_profile_id, group_id, total_group, created_at, updated_at })
+        .select()
+        .maybeSingle();
+  }
+
+  async getGroups() {
+    const { data, error } = await this._supabase
+        .from('groups')
+        .select('*');
+
     return data;
   }
 }

@@ -1,6 +1,5 @@
 CREATE TABLE user_profile (
-  id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  id INTEGER PRIMARY KEY,
   nama VARCHAR(50) NOT NULL,
   nik VARCHAR(16) UNIQUE NULL,
   email VARCHAR(50) UNIQUE NOT NULL,
@@ -11,7 +10,7 @@ CREATE TABLE user_profile (
   updated_at DATE NULL,
 
   -- Menetapkan user_id sebagai Foreign Key yang terhubung ke users(id)
-  CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+  CONSTRAINT fk_users FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Atur auto increment
