@@ -8,7 +8,7 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/login',
-    options: { auth: false },
+    options: { auth: false }, // Atur supaya tidak di unautorized
     handler: handler.postLoginHandler,
   },
   {
