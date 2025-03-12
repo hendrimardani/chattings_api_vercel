@@ -8,7 +8,7 @@
   ],
   "routes": [
     {
-      "src": "./chattings(.*)",
+      "src": "/user(.*)",
       "dest": "src/server.js"
     }
   ]
