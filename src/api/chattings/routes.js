@@ -67,6 +67,14 @@ const routes = (handler) => [
       auth: 'jwt'  // Tambahkan auth di sini
     },
   },
+  {
+    method: 'DELETE',
+    path: '/message/{id}/user/{user_profile_id}',
+    handler: handler.deleteMessageByIdHandler,
+    options: {
+      auth: 'jwt'  // Tambahkan auth di sini
+    },
+  },
 ];
 
 module.exports = routes;

@@ -13,6 +13,7 @@ class ChattingsHandler {
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
     this.postMessageHandler = this.postMessageHandler.bind(this);
     this.putMessageHandler = this.putMessageHandler.bind(this);
+    this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
   }
 
   async postRegisterHandler(request, h) {
@@ -186,6 +187,20 @@ class ChattingsHandler {
     return {
       status: 'success',
       message: 'Pesan berhasil diperbarui',
+    };
+  }
+
+  async deleteMessageByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+
+    const { id, user_profile_id } = request.params;
+    await this._service.deleteMessageById({ id, user_profile_id });
+
+    return {
+      status: 'success',
+      message: 'Pesan berhasil dihapus',
     };
   }
 }

@@ -245,9 +245,23 @@ class ChattingsService {
       .eq('group_id', group_id)
       .select();
     
-    console.log(data, error);
+    console.log('editMessage: ', data, error);
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
+    }
+  }
+
+  async deleteMessageById({ id, user_profile_id }) {
+    const { data, error } = await this._supabase
+      .from('messages')
+      .delete()
+      .eq('id', id)
+      .eq('user_profile_id', user_profile_id)
+      .select();
+
+    console.log('deleteMessageById: ', data, error);
+    if (data.length === 0) {
+      throw new NotFoundError('Gaga; memghapus pesan. Id tidak ditemukan');
     }
   }
 }
