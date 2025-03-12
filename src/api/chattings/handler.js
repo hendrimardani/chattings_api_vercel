@@ -89,7 +89,7 @@ class ChattingsHandler {
     const { id } = request.params;
     const user_profile_id = id;
     const dataUserProfileByid = await this._service.getUserProfileById({ user_profile_id });
-    
+
     return {
       status: 'success',
       data: {

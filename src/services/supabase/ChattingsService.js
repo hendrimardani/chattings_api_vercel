@@ -172,7 +172,7 @@ class ChattingsService {
       .insert([{ is_status, created_at, updated_at }])
       .select('*')
       .maybeSingle();
-    
+
     return data;
   }
 
@@ -236,15 +236,15 @@ class ChattingsService {
     const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const { data, error } = await this._supabase
       .from('messages')
-      .update({ 
-        isi_pesan: isi_pesan, 
-        updated_at: updated_at 
+      .update({
+        isi_pesan: isi_pesan,
+        updated_at: updated_at
       })
       .eq('id', id)
       .eq('user_profile_id', user_profile_id)
       .eq('group_id', group_id)
       .select();
-    
+
     console.log('editMessage: ', data, error);
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
