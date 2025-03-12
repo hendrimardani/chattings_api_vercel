@@ -231,6 +231,25 @@ class ChattingsService {
       .select('*')
       .maybeSingle();
   }
+
+  async editMessage({ id, user_profile_id, group_id, isi_pesan }) {
+    const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const { data, error } = await this._supabase
+      .from('messages')
+      .update({ 
+        isi_pesan: isi_pesan, 
+        updated_at: updated_at 
+      })
+      .eq('id', id)
+      .eq('user_profile_id', user_profile_id)
+      .eq('group_id', group_id)
+      .select();
+    
+    console.log(data, error);
+    if (data.length === 0) {
+      throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
+    }
+  }
 }
 
 module.exports = ChattingsService;

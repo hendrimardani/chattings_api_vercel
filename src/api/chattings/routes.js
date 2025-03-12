@@ -17,7 +17,7 @@ const routes = (handler) => [
     handler: handler.putUserProfileByIdHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
-    }
+    },
   },
   {
     method: 'GET',
@@ -25,7 +25,7 @@ const routes = (handler) => [
     handler: handler.getUsersHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
-    }
+    },
   },
   {
     method: 'GET',
@@ -33,7 +33,7 @@ const routes = (handler) => [
     handler: handler.getUserProfileByIdHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
-    }
+    },
   },
   {
     method: 'GET',
@@ -41,7 +41,7 @@ const routes = (handler) => [
     handler: handler.getGroupByIdHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
-    }
+    },
   },
   {
     method: 'POST',
@@ -49,7 +49,7 @@ const routes = (handler) => [
     handler: handler.postUserGroupHandler, // Nama entias relasinya
     options: {
       auth: 'jwt' // Tambahkan auth di sini
-    }
+    },
   },
   {
     method: 'POST',
@@ -57,7 +57,15 @@ const routes = (handler) => [
     handler: handler.postMessageHandler, // Nama entitas relasinya
     options: {
       auth: 'jwt' // Tambahkan auth di sini
-    }
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/message/{id}/user/{user_profile_id}/group/{group_id}',
+    handler: handler.putMessageHandler,
+    options: {
+      auth: 'jwt'  // Tambahkan auth di sini
+    },
   },
 ];
 
