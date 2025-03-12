@@ -48,20 +48,28 @@ class ChattingsService {
       .select();
   }
 
-  async login({ email, password }) {
+  async getUserByEmail({ email }) {
     const { data, error } = await this._supabase
       .from('users')
       .select('*')
       .eq('email', email)
       .maybeSingle();
 
-    // console.log('login: ', data, error);
-    const isValidPassword = await bcrypt.compare(password, data.password);
+    const dataLoginByEmail = data;
+
+    return dataLoginByEmail;
+  }
+
+  async login({ email, password }) {
+    const dataLoginByEmail = await this.getUserByEmail({ email });
+
+    // console.log('login: ', dataLoginByEmail);
+    const isValidPassword = await bcrypt.compare(password, dataLoginByEmail.password);
 
     if (!isValidPassword) {
       throw new InvariantError('Email atau password salah');
     }
-    return data;
+    return dataLoginByEmail;
   }
 
   async editUserProfileById({ id, nama, nik, umur, tgl_lahir }) {
@@ -102,14 +110,29 @@ class ChattingsService {
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
-        .from('groups')
-        .insert({ nama_group, created_at, updated_at })
-        .select()
-        .maybeSingle();
+      .from('groups')
+      .insert([{ nama_group, created_at, updated_at }])
+      .select()
+      .maybeSingle();
 
     // console.log('addGroup ID: ', data, error);
 
     return data;
+  }
+
+  async getUserProfileById({ user_profile_id }) {
+    const { data, error } = await this._supabase
+      .from('user_profile')
+      .select('*')
+      .eq('id', user_profile_id)
+      .maybeSingle();
+
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ada');
+    }
+
+    const dataUserProfileByid = data;
+    return dataUserProfileByid;
   }
 
   async addUserGroup({ user_profile_id, group_id, total_group }) {
@@ -117,30 +140,96 @@ class ChattingsService {
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
-    const { data, error } = await this._supabase
-        .from('user_profile')
-        .select('*')
-        .eq('id', user_profile_id)
-        .maybeSingle();
+    const dataUserProfileByid = await this.getUserProfileById({ user_profile_id });
 
-    console.log('addUserGroup: ', typeof data, error);
-    if (data === null) {
+    // console.log('addUserGroup: ', dataUserProfileByid);
+    if (dataUserProfileByid === null) {
       throw new NotFoundError('Pengguna tidak ada');
     }
-    
+
     await this._supabase
-        .from('user_group')
-        .insert({ user_profile_id, group_id, total_group, created_at, updated_at })
-        .select('*')
-        .maybeSingle();
+      .from('user_group')
+      .insert([{ user_profile_id, group_id, total_group, created_at, updated_at }])
+      .select('*')
+      .maybeSingle();
   }
 
   async getGroups() {
     const { data, error } = await this._supabase
-        .from('groups')
-        .select('*');
+      .from('groups')
+      .select('*');
 
     return data;
+  }
+
+  async addNotification({ is_status }) {
+    // 2025-03-10 02:25:09
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const updated_at = created_at;
+
+    const { data, error } = await this._supabase
+      .from('notifications')
+      .insert([{ is_status, created_at, updated_at }])
+      .select('*')
+      .maybeSingle();
+    
+    return data;
+  }
+
+  async getGroupById({ group_id }) {
+    const { data, error } = await this._supabase
+      .from('groups')
+      .select('*')
+      .eq('id', group_id)
+      .maybeSingle();
+
+    if (data === null) {
+      throw new NotFoundError('Group tidak ada');
+    }
+
+    const dataGroupByid = data;
+    return dataGroupByid;
+  }
+
+  async getNotificationById({ notification_id }) {
+    const { data, error } = await this._supabase
+      .from('notifications')
+      .select('*')
+      .eq('id', notification_id)
+      .maybeSingle();
+
+    const dataNotificationById = data;
+    return dataNotificationById;
+  }
+
+  async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
+    // 2025-03-10 02:25:09
+    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const updated_at = created_at;
+
+    const dataUserProfileByid = await this.getUserProfileById({ user_profile_id });
+    const dataGroupByid = await this.getGroupById({ group_id });
+    const dataNotificationById = await this.getNotificationById({ notification_id });
+
+    // console.log('addMessage: ', dataUserProfileByid);
+    // console.log('addMessage: ', dataGroupByid);
+    // console.log('addMessage: ', dataNotificationById);
+
+    if (dataUserProfileByid === null) {
+      throw new NotFoundError('Pengguna tidak ada');
+    }
+    if (dataGroupByid === null) {
+      throw new NotFoundError('Group tidak ada');
+    }
+    if (dataNotificationById === null) {
+      throw new NotFoundError('Notifikasi tidak ada');
+    }
+
+    await this._supabase
+      .from('messages')
+      .insert([{ user_profile_id, group_id, notification_id, isi_pesan, created_at, updated_at }])
+      .select('*')
+      .maybeSingle();
   }
 }
 

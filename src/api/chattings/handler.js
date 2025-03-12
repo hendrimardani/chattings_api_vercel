@@ -6,8 +6,12 @@ class ChattingsHandler {
     this.postLoginHandler = this.postLoginHandler.bind(this);
     this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
     this.getUsersHandler = this.getUsersHandler.bind(this);
+    this.getUserProfileByIdHandler = this.getUserProfileByIdHandler.bind(this);
+
+    this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
+    this.postMessageHandler = this.postMessageHandler.bind(this);
   }
 
   async postRegisterHandler(request, h) {
@@ -75,11 +79,45 @@ class ChattingsHandler {
     };
   }
 
+  async getUserProfileByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+
+    const { id } = request.params;
+    const user_profile_id = id;
+    const dataUserProfileByid = await this._service.getUserProfileById({ user_profile_id });
+    
+    return {
+      status: 'success',
+      data: {
+        dataUserProfileByid,
+      },
+    };
+  }
+
+  async getGroupByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+
+    const { id } = request.params;
+    const group_id = id;
+    const dataGroupByid = await this._service.getGroupById({ group_id });
+
+    return {
+      status: 'success',
+      data: {
+        dataGroupByid,
+      },
+    };
+  }
+
   async postUserGroupHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
-    } 
-    
+    }
+
     const { user_profile_id } = request.params;
     const { nama_group } = request.payload;
 
@@ -111,6 +149,27 @@ class ChattingsHandler {
         groups,
       },
     };
+  }
+
+  async postMessageHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+
+    const { user_profile_id, group_id } = request.params;
+    const { isi_pesan, is_status=false } = request.payload;
+
+    const notification = await this._service.addNotification({ is_status });
+    const notification_id = notification.id;
+
+    await this._service.addMessage({ user_profile_id, group_id, notification_id, isi_pesan });
+
+    const response = h.response({
+      status: 'success',
+      message: 'Pesan berhasil ditambahkan',
+    });
+    response.code(201);
+    return response;
   }
 }
 

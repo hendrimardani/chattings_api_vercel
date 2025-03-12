@@ -28,13 +28,37 @@ const routes = (handler) => [
     }
   },
   {
-    method: 'POST',
-    path: '/user/{user_profile_id}/group',
-    handler: handler.postUserGroupHandler,
+    method: 'GET',
+    path: '/user_profile/{id}',
+    handler: handler.getUserProfileByIdHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
     }
-  }
+  },
+  {
+    method: 'GET',
+    path: '/group/{id}',
+    handler: handler.getGroupByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
+  },
+  {
+    method: 'POST',
+    path: '/user/{user_profile_id}/group',
+    handler: handler.postUserGroupHandler, // Nama entias relasinya
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
+  },
+  {
+    method: 'POST',
+    path: '/user/{user_profile_id}/group/{group_id}/notification',
+    handler: handler.postMessageHandler, // Nama entitas relasinya
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
+  },
 ];
 
 module.exports = routes;
