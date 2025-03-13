@@ -15,31 +15,16 @@ const loginSchema = Joi.object({
 const userProfileSchema = Joi.object({
   nama: Joi.string().min(3).required(),
   nik: Joi.string().length(16),
-  email: Joi.string().email().min(3).max(30).required(),
-  password: Joi.string().min(6).required(),
-  umur: Joi.number().integer().max(2),
+  umur: Joi.number().integer(),
   tgl_lahir: Joi.date().required(),
 });
 
-const notificationsSchema = Joi.object({
-  is_status: Joi.boolean(),
+const messagesSchema = Joi.object({
+  isi_pesan: Joi.string().required(),
 });
 
-const groupsSchema = Joi.object({
+const groupSchema = Joi.object({
   nama_group: Joi.string().min(3).required(),
 });
 
-const messagesSchema = Joi.object({
-  user_profile_id: Joi.number().integer().required(),
-  notification_id: Joi.number().integer().required(),
-  group_id: Joi.number().integer().required(),
-  isi_pesan: Joi.string().min(1).required(),
-});
-
-const userGroupSchema = Joi.object({
-  user_profile_id: Joi.number().integer().required(),
-  group_id: Joi.number().integer().required(),
-  total_group: Joi.number().integer().required(),
-});
-
-module.exports = { registerSchema, loginSchema, userProfileSchema, notificationsSchema, groupsSchema, messagesSchema, userGroupSchema };
+module.exports = { registerSchema, loginSchema, userProfileSchema, messagesSchema, groupSchema };

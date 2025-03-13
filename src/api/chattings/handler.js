@@ -7,9 +7,10 @@ class ChattingsHandler {
     this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
     this.getUsersHandler = this.getUsersHandler.bind(this);
     this.getUserProfileByIdHandler = this.getUserProfileByIdHandler.bind(this);
-
     this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
+
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
+    this.putGroupByIdHandler = this.putGroupByIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
     this.postMessageHandler = this.postMessageHandler.bind(this);
     this.putMessageHandler = this.putMessageHandler.bind(this);
@@ -150,6 +151,22 @@ class ChattingsHandler {
       data: {
         groups,
       },
+    };
+  }
+
+  async putGroupByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+
+    const { group_id } = request.params;
+    const { nama_group } = request.payload;
+
+    await this._service.editGroupById({ group_id, nama_group });
+
+    return {
+      status: 'success',
+      message: 'Group berhasil diperbarui',
     };
   }
 

@@ -84,7 +84,7 @@ class ChattingsService {
         tgl_lahir: tgl_lahir,
         updated_at: updateAt
       })
-      .eq('user_id', id)
+      .eq('id', id)
       .select();
 
     // console.log('editUserProfileByid: ', data, error);
@@ -152,6 +152,23 @@ class ChattingsService {
       .insert([{ user_profile_id, group_id, total_group, created_at, updated_at }])
       .select('*')
       .maybeSingle();
+  }
+
+  async editGroupById({ group_id, nama_group }) {
+    const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const { data, error } = await this._supabase  
+      .from('groups')
+      .update({
+        nama_group: nama_group,
+        updated_at: updated_at,
+      })
+      .eq('id', group_id)
+      .select();
+
+    console.log('editUserGroup: ', data, error);
+    if (data.length === 0) {
+      throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
+    }
   }
 
   async getGroups() {
@@ -245,7 +262,7 @@ class ChattingsService {
       .eq('group_id', group_id)
       .select();
 
-    console.log('editMessage: ', data, error);
+    // console.log('editMessage: ', data, error);
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
     }

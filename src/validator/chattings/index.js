@@ -1,5 +1,5 @@
 const InvariantError = require('../../exceptions/InvariantError');
-const { registerSchema, loginSchema, userProfileSchema, notificationsSchema, groupsSchema, messagesSchema, userGroupSchema } = require('./schema');
+const { registerSchema, loginSchema, userProfileSchema, messagesSchema, groupSchema } = require('./schema');
 
 
 const ChaatingValidator = {
@@ -25,20 +25,6 @@ const ChaatingValidator = {
       throw new InvariantError(validationResult.error.message);
     }
   },
-  validateNotifications: (payload) => {
-    const validationResult = notificationsSchema.validate(payload);
-
-    if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
-    }
-  },
-  validateGroups: (payload) => {
-    const validationResult = groupsSchema.validate(payload);
-
-    if (validationResult.error) {
-      throw new InvariantError(validationResult.error.message);
-    }
-  },
   validateMessages: (payload) => {
     const validationResult = messagesSchema.validate(payload);
 
@@ -46,8 +32,8 @@ const ChaatingValidator = {
       throw new InvariantError(validationResult.error.message);
     }
   },
-  validateUserGroup: (payload) => {
-    const validationResult = userGroupSchema.validate(payload);
+  validateGroup: (payload) => {
+    const validationResult = groupSchema.validate(payload);
 
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
