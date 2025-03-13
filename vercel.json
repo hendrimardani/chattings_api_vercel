@@ -7,33 +7,14 @@
     }
   ],
   "routes": [
-    {
-      "src": "/register",
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/login",
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/register",
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/user_profile(.*)",
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/users",
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/group(.*)",
-      "dest": "src/server.js"
-    },
-    {
-      "src": "/register",
-      "dest": "src/server.js"
-    }
+    { "src": "/register", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/login", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/user_profile/(.*)", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/users", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/group/(.*)", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/user/(.*)/group", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/user/(.*)/group/(.*)/notification", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/message/(.*)/user/(.*)/group/(.*)", "dest": "/src/api/chattings/routes.js" },
+    { "src": "/message/(.*)/user/(.*)", "dest": "/src/api/chattings/routes.js" }
   ]
 }
