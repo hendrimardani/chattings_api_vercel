@@ -1,0 +1,1 @@
+settings > environtment variables > Tambahkan key dan valuenya environment variable seperti SUPABASE_URL dan SUPABASE_API

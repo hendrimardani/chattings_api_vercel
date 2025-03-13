@@ -1,14 +1,32 @@
+const ChaatingValidator = require('../../validator/chattings');
+
 const routes = (handler) => [
   {
     method: 'POST',
     path: '/register',
-    options: { auth: false }, // Atur supaya tidak di unautorized
+    options: {
+      auth: false,
+      validate: {
+        payload: (value, options) => {
+          return ChaatingValidator.validateRegister(value); 
+        },
+        failAction: (request, h, error) => {
+          return h.response({ 
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
+    },   
     handler: handler.postRegisterHandler,
   },
   {
     method: 'POST',
     path: '/login',
-    options: { auth: false }, // Atur supaya tidak di unautorized
+    options: { 
+      auth: false // Atur supaya tidak di unautorized
+      
+    }, 
     handler: handler.postLoginHandler,
   },
   {

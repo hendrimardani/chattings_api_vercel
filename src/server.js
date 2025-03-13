@@ -6,6 +6,7 @@ const chattings = require('./api/chattings');
 const auth = require('./auth/auth');
 const ChattingsService = require('./services/supabase/ChattingsService');
 const ClientError = require('./exceptions/ClientError');
+const ChaatingValidator = require('./validator/chattings');
 
 let server;
 
@@ -29,6 +30,7 @@ const init = async () => {
         plugin: chattings,
         options: {
           service: chattingsService,
+          validator: ChaatingValidator,
         },
       }]);
 
@@ -46,28 +48,28 @@ const init = async () => {
     });
 
     // Jika dijalankan di vercel
-    await server.initialize();
+    // await server.initialize();
 
     // Jika dijalankan di localhost
-    // await server.start();
-    // console.log(`Server berjalan pada ${server.info.uri}`);
+    await server.start();
+    console.log(`Server berjalan pada ${server.info.uri}`);
   }
   return server;
 };
 
 // Jika dijalankan di localhost
-// init();
+init();
 
 // Jika dijalankan di vercel
-module.exports = async (req, res) => {
-  const server = await init();
+// module.exports = async (req, res) => {
+//   const server = await init();
 
-  const response = await server.inject({
-    method: req.method,
-    url: req.url,
-    payload: req.body,
-    headers: req.headers
-  });
+//   const response = await server.inject({
+//     method: req.method,
+//     url: req.url,
+//     payload: req.body,
+//     headers: req.headers
+//   });
 
-  res.status(response.statusCode).json(response.result);
-};
+//   res.status(response.statusCode).json(response.result);
+// };
