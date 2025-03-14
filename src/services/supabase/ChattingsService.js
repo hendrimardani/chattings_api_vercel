@@ -10,7 +10,7 @@ class ChattingsService {
   }
 
   async addUser({ email, password, repeat_password }) {
-    // 2025-03-10 02:25:09
+    // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
@@ -38,14 +38,17 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama, email, hashedPassword }) {
-    // 2025-03-10 02:25:09
+    // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
-    await this._supabase
+    const { data } =  await this._supabase
       .from('user_profile')
       .insert([{ id, nama, email, password: hashedPassword, created_at, updated_at }])
-      .select();
+      .select()
+      .maybeSingle();
+
+    return data;
   }
 
   async getUserByEmail({ email }) {
@@ -98,14 +101,14 @@ class ChattingsService {
 
   async getUsers() {
     const { data, error } = await this._supabase
-      .from('user_profile')
+      .from('users')
       .select('*');
 
     return data;
   }
 
   async addGroup({ nama_group }) {
-    // 2025-03-10 02:25:09
+    // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
@@ -131,19 +134,19 @@ class ChattingsService {
       throw new NotFoundError('Pengguna tidak ada');
     }
 
-    const dataUserProfileByid = data;
-    return dataUserProfileByid;
+    const dataUserProfileById = data;
+    return dataUserProfileById;
   }
 
   async addUserGroup({ user_profile_id, group_id, total_group }) {
-    // 2025-03-10 02:25:09
+    // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
-    const dataUserProfileByid = await this.getUserProfileById({ user_profile_id });
+    const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
 
-    // console.log('addUserGroup: ', dataUserProfileByid);
-    if (dataUserProfileByid === null) {
+    // console.log('addUserGroup: ', dataUserProfileById);
+    if (dataUserProfileById === null) {
       throw new NotFoundError('Pengguna tidak ada');
     }
 
@@ -180,7 +183,7 @@ class ChattingsService {
   }
 
   async addNotification({ is_status }) {
-    // 2025-03-10 02:25:09
+    // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
@@ -190,6 +193,15 @@ class ChattingsService {
       .select('*')
       .maybeSingle();
 
+    return data;
+  }
+
+  async getUserGroups() {
+    const { data, error } = await this._supabase
+      .from('user_group')
+      .select('groups(*), user_profile(*)');  // Memanggil 2 parent entitas
+    
+    // console.log(data);
     return data;
   }
 
@@ -204,8 +216,8 @@ class ChattingsService {
       throw new NotFoundError('Group tidak ada');
     }
 
-    const dataGroupByid = data;
-    return dataGroupByid;
+    const dataGroupById = data;
+    return dataGroupById;
   }
 
   async getNotificationById({ notification_id }) {
@@ -220,19 +232,19 @@ class ChattingsService {
   }
 
   async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
-    // 2025-03-10 02:25:09
+    // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
 
-    const dataUserProfileByid = await this.getUserProfileById({ user_profile_id });
+    const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
     const dataGroupByid = await this.getGroupById({ group_id });
     const dataNotificationById = await this.getNotificationById({ notification_id });
 
-    // console.log('addMessage: ', dataUserProfileByid);
+    // console.log('addMessage: ', dataUserProfileById);
     // console.log('addMessage: ', dataGroupByid);
     // console.log('addMessage: ', dataNotificationById);
 
-    if (dataUserProfileByid === null) {
+    if (dataUserProfileById === null) {
       throw new NotFoundError('Pengguna tidak ada');
     }
     if (dataGroupByid === null) {

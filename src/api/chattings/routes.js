@@ -1,3 +1,4 @@
+const { optional } = require('joi');
 const ChaatingValidator = require('../../validator/chattings');
 
 const routes = (handler) => [
@@ -70,6 +71,14 @@ const routes = (handler) => [
     method: 'GET',
     path: '/user_profile/{id}',
     handler: handler.getUserProfileByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
+    path: '/user/group',
+    handler: handler.getUserGroupsHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
     },

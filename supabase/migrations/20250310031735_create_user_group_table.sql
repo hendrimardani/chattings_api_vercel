@@ -1,7 +1,6 @@
 CREATE TABLE user_group(
   user_profile_id INTEGER NOT NULL,
   group_id INTEGER NOT NULL,
-  total_group INTEGER NOT NULL,
   created_at DATE NOT NULL,
   updated_at DATE NOT NULL,
 

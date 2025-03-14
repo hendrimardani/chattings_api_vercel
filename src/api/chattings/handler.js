@@ -4,14 +4,17 @@ class ChattingsHandler {
 
     this.postRegisterHandler = this.postRegisterHandler.bind(this);
     this.postLoginHandler = this.postLoginHandler.bind(this);
+
     this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
     this.getUsersHandler = this.getUsersHandler.bind(this);
     this.getUserProfileByIdHandler = this.getUserProfileByIdHandler.bind(this);
-    this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
 
+    this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
+    this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
     this.putGroupByIdHandler = this.putGroupByIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
+
     this.postMessageHandler = this.postMessageHandler.bind(this);
     this.putMessageHandler = this.putMessageHandler.bind(this);
     this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
@@ -23,12 +26,14 @@ class ChattingsHandler {
 
     const id = user.id;
     const hashedPassword = user.password;
-    await this._service.addUserProfile({ id, nama, email, hashedPassword });
+    const data = await this._service.addUserProfile({ id, nama, email, hashedPassword });
 
     const response = h.response({
       status: 'success',
       message: 'Pengguna berhasil ditambahkan',
+      data,
     });
+    
     response.code(201);
     return response;
   }
@@ -95,6 +100,20 @@ class ChattingsHandler {
       status: 'success',
       data: {
         dataUserProfileByid,
+      },
+    };
+  }
+
+  async getUserGroupsHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const userGroups = await this._service.getUserGroups();
+
+    return {
+      status: 'success',
+      data: {
+        userGroups,
       },
     };
   }
