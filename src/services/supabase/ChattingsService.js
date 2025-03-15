@@ -76,6 +76,7 @@ class ChattingsService {
   }
 
   async editUserProfileById({ id, nama, nik, umur, tgl_lahir }) {
+    console.log(id, nama, nik, umur, tgl_lahir)
     const updateAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const { data, error } = await this._supabase
@@ -97,6 +98,19 @@ class ChattingsService {
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
     }
+  }
+
+  async deleteUserById({ id }) {
+    const { data, error } = await this._supabase
+      .from('users')
+      .delete()
+      .select()
+      .eq('id', id);
+
+      // console.log('deleteUserById: ', data, error);
+      if (data.length === 0) {
+        throw new NotFoundError('Gagal memghapus pengguna. Id tidak ditemukan');
+      }
   }
 
   async getUsers() {
@@ -138,7 +152,7 @@ class ChattingsService {
     return dataUserProfileById;
   }
 
-  async addUserGroup({ user_profile_id, group_id, total_group }) {
+  async addUserGroup({ user_profile_id, group_id }) {
     // 2025-03-10
     const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const updated_at = created_at;
@@ -150,11 +164,13 @@ class ChattingsService {
       throw new NotFoundError('Pengguna tidak ada');
     }
 
-    await this._supabase
+    const { data, error } = await this._supabase
       .from('user_group')
-      .insert([{ user_profile_id, group_id, total_group, created_at, updated_at }])
+      .insert([{ user_profile_id, group_id, created_at, updated_at }])
       .select('*')
       .maybeSingle();
+    
+    return data;
   }
 
   async editGroupById({ group_id, nama_group }) {
@@ -168,18 +184,10 @@ class ChattingsService {
       .eq('id', group_id)
       .select();
 
-    console.log('editUserGroup: ', data, error);
+    // console.log('editUserGroup: ', data, error);
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
     }
-  }
-
-  async getGroups() {
-    const { data, error } = await this._supabase
-      .from('groups')
-      .select('*');
-
-    return data;
   }
 
   async addNotification({ is_status }) {
@@ -205,11 +213,11 @@ class ChattingsService {
     return data;
   }
 
-  async getGroupById({ group_id }) {
+  async getGroupById({ id }) {
     const { data, error } = await this._supabase
       .from('groups')
       .select('*')
-      .eq('id', group_id)
+      .eq('id', id)
       .maybeSingle();
 
     if (data === null) {
@@ -237,17 +245,17 @@ class ChattingsService {
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
-    const dataGroupByid = await this.getGroupById({ group_id });
+    const dataGroupById = await this.getGroupById({ group_id });
     const dataNotificationById = await this.getNotificationById({ notification_id });
 
     // console.log('addMessage: ', dataUserProfileById);
-    // console.log('addMessage: ', dataGroupByid);
+    // console.log('addMessage: ', dataGroupById);
     // console.log('addMessage: ', dataNotificationById);
 
     if (dataUserProfileById === null) {
       throw new NotFoundError('Pengguna tidak ada');
     }
-    if (dataGroupByid === null) {
+    if (dataGroupById === null) {
       throw new NotFoundError('Group tidak ada');
     }
     if (dataNotificationById === null) {
@@ -259,6 +267,14 @@ class ChattingsService {
       .insert([{ user_profile_id, group_id, notification_id, isi_pesan, created_at, updated_at }])
       .select('*')
       .maybeSingle();
+  }
+
+  async getMessages() {
+    const { data, error } = await this._supabase
+      .from('messages')
+      .select('*');
+    
+    return data;
   }
 
   async editMessage({ id, user_profile_id, group_id, isi_pesan }) {
@@ -288,9 +304,9 @@ class ChattingsService {
       .eq('user_profile_id', user_profile_id)
       .select();
 
-    console.log('deleteMessageById: ', data, error);
+    // console.log('deleteMessageById: ', data, error);
     if (data.length === 0) {
-      throw new NotFoundError('Gaga; memghapus pesan. Id tidak ditemukan');
+      throw new NotFoundError('Gagal memghapus pesan. Id tidak ditemukan');
     }
   }
 }

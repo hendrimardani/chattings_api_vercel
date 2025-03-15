@@ -4,18 +4,19 @@ class ChattingsHandler {
 
     this.postRegisterHandler = this.postRegisterHandler.bind(this);
     this.postLoginHandler = this.postLoginHandler.bind(this);
-
-    this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
     this.getUsersHandler = this.getUsersHandler.bind(this);
     this.getUserProfileByIdHandler = this.getUserProfileByIdHandler.bind(this);
+    this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
+    this.deleteUserByIdHandler = this.deleteUserByIdHandler.bind(this);
 
-    this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
-    this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
-    this.putGroupByIdHandler = this.putGroupByIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
+    this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
+    this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
+    this.putGroupByIdHandler = this.putGroupByIdHandler.bind(this);
 
     this.postMessageHandler = this.postMessageHandler.bind(this);
+    this.getMessagesHandler = this.getMessagesHandler.bind(this);
     this.putMessageHandler = this.putMessageHandler.bind(this);
     this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
   }
@@ -56,23 +57,6 @@ class ChattingsHandler {
     };
   }
 
-  async putUserProfileByIdHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
-    // id ini digunakan ketika mengakses user sedang login lewat authentikasi
-    // const id = request.auth.credentials.user.id;
-
-    const { id } = request.params;
-    const { nama, nik, umur, tgl_lahir } = request.payload;
-    await this._service.editUserProfileById({ id, nama, nik, umur, tgl_lahir });
-
-    return {
-      status: 'success',
-      message: 'Profile berhasil diperbarui',
-    };
-  }
-
   async getUsersHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
@@ -94,44 +78,43 @@ class ChattingsHandler {
 
     const { id } = request.params;
     const user_profile_id = id;
-    const dataUserProfileByid = await this._service.getUserProfileById({ user_profile_id });
+    const dataUserProfileById = await this._service.getUserProfileById({ user_profile_id });
 
     return {
       status: 'success',
       data: {
-        dataUserProfileByid,
+        dataUserProfileById,
       },
     };
   }
 
-  async getUserGroupsHandler(request, h) {
+  async putUserProfileByIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const userGroups = await this._service.getUserGroups();
-
-    return {
-      status: 'success',
-      data: {
-        userGroups,
-      },
-    };
-  }
-
-  async getGroupByIdHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
+    // id ini digunakan ketika mengakses user sedang login lewat authentikasi
+    // const id = request.auth.credentials.user.id;
 
     const { id } = request.params;
-    const group_id = id;
-    const dataGroupByid = await this._service.getGroupById({ group_id });
+    const { nama, nik, umur, tgl_lahir } = request.payload;
+    await this._service.editUserProfileById({ id, nama, nik, umur, tgl_lahir });
 
     return {
       status: 'success',
-      data: {
-        dataGroupByid,
-      },
+      message: 'Profile berhasil diperbarui',
+    };
+  }
+
+  async deleteUserByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { id } = request.params;
+    await this._service.deleteUserById({ id });
+
+    return {
+      status: 'success',
+      message: 'Pengguna berhasil dihapus',
     };
   }
 
@@ -146,14 +129,12 @@ class ChattingsHandler {
     const group = await this._service.addGroup({ nama_group });
     const group_id = group.id;
 
-    const getGroups = await this._service.getGroups();
-    const total_group = getGroups.length;
-
-    await this._service.addUserGroup({ user_profile_id, group_id, total_group });
+    const data = await this._service.addUserGroup({ user_profile_id, group_id });
 
     const response = h.response({
       status: 'success',
       message: 'Group berhasil ditambahkan',
+      data,
     });
     response.code(201);
     return response;
@@ -173,6 +154,36 @@ class ChattingsHandler {
     };
   }
 
+  async getGroupByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+
+    const { id } = request.params;
+    const dataGroupById = await this._service.getGroupById({ id });
+
+    return {
+      status: 'success',
+      data: {
+        dataGroupById,
+      },
+    };
+  }
+
+  async getUserGroupsHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const userGroups = await this._service.getUserGroups();
+
+    return {
+      status: 'success',
+      data: {
+        userGroups,
+      },
+    };
+  }
+
   async putGroupByIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
@@ -181,11 +192,12 @@ class ChattingsHandler {
     const { group_id } = request.params;
     const { nama_group } = request.payload;
 
-    await this._service.editGroupById({ group_id, nama_group });
+    const data = await this._service.editGroupById({ group_id, nama_group });
 
     return {
       status: 'success',
       message: 'Group berhasil diperbarui',
+      data
     };
   }
 
@@ -209,6 +221,20 @@ class ChattingsHandler {
     response.code(201);
     return response;
   }
+
+  async getMessagesHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const messages = await this._service.getMessages();
+
+    return {
+      status: 'success',
+      data: {
+        messages,
+      },
+    };
+  } 
 
   async putMessageHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {

@@ -19,12 +19,12 @@ const userProfileSchema = Joi.object({
   tgl_lahir: Joi.date().required(),
 });
 
-const messagesSchema = Joi.object({
-  isi_pesan: Joi.string().required(),
-});
-
 const groupSchema = Joi.object({
   nama_group: Joi.string().min(3).required(),
+});
+
+const messagesSchema = Joi.object({
+  isi_pesan: Joi.string().required(),
 });
 
 module.exports = { registerSchema, loginSchema, userProfileSchema, messagesSchema, groupSchema };

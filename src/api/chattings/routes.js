@@ -41,6 +41,22 @@ const routes = (handler) => [
     handler: handler.postLoginHandler,
   },
   {
+    method: 'GET',
+    path: '/users',
+    handler: handler.getUsersHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
+    path: '/user_profile/{id}',
+    handler: handler.getUserProfileByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'PUT',
     path: '/user_profile/{id}',
     handler: handler.putUserProfileByIdHandler,
@@ -60,35 +76,11 @@ const routes = (handler) => [
     },  
   },
   {
-    method: 'GET',
-    path: '/users',
-    handler: handler.getUsersHandler,
+    method: 'DELETE',
+    path: '/user/{id}',
+    handler: handler.deleteUserByIdHandler,
     options: {
-      auth: 'jwt' // Tambahkan auth di sini
-    },
-  },
-  {
-    method: 'GET',
-    path: '/user_profile/{id}',
-    handler: handler.getUserProfileByIdHandler,
-    options: {
-      auth: 'jwt' // Tambahkan auth di sini
-    },
-  },
-  {
-    method: 'GET',
-    path: '/user/group',
-    handler: handler.getUserGroupsHandler,
-    options: {
-      auth: 'jwt' // Tambahkan auth di sini
-    },
-  },
-  {
-    method: 'GET',
-    path: '/group/{id}',
-    handler: handler.getGroupByIdHandler,
-    options: {
-      auth: 'jwt' // Tambahkan auth di sini
+      auth: 'jwt'  // Tambahkan auth di sini
     },
   },
   {
@@ -99,7 +91,7 @@ const routes = (handler) => [
       auth: 'jwt', // Tambahkan auth di sini
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateUserGroup(value); 
+          return ChaatingValidator.validateGroup(value); 
         },
         failAction: (request, h, error) => {
           return h.response({ 
@@ -109,6 +101,22 @@ const routes = (handler) => [
         },
       },
     },  
+  },
+  {
+    method: 'GET',
+    path: '/group/{id}',
+    handler: handler.getGroupByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
+    path: '/users/groups',
+    handler: handler.getUserGroupsHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
   },
   {
     method: 'PUT',
@@ -147,6 +155,14 @@ const routes = (handler) => [
         },
       },
     },  
+  },
+  {
+    method: 'GET',
+    path: '/messages',
+    handler: handler.getMessagesHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
   },
   {
     method: 'PUT',
