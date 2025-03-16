@@ -11,8 +11,8 @@ class ChattingsService {
   }
 
   async addUser({ email, password, repeat_password }) {
-    // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
+    // 2025-03-10 13:30:12
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
     if (password !== repeat_password) {
@@ -39,8 +39,8 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama }) {
-    // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
+    // 2025-03-10 13:30:12
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
     const { data } =  await this._supabase
@@ -128,8 +128,8 @@ class ChattingsService {
   }
 
   async addGroup({ nama_group, deskripsi }) {
-    // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
+    // 2025-03-10 13:30:12
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -161,8 +161,8 @@ class ChattingsService {
   }
 
   async addUserGroup({ user_profile_id, group_id, role, created_by }) {
-    // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
+    // 2025-03-10 13:30:12
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
@@ -212,8 +212,8 @@ class ChattingsService {
   }
 
   async addNotification({ is_status }) {
-    // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
+    // 2025-03-10 13:30:12
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -261,8 +261,8 @@ class ChattingsService {
   }
 
   async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
-    // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
+    // 2025-03-10 13:30:12
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
