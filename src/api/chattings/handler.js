@@ -10,6 +10,7 @@ class ChattingsHandler {
     this.deleteUserByIdHandler = this.deleteUserByIdHandler.bind(this);
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
+    this.postUserGroupByGroupIdHandler = this.postUserGroupByGroupIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
     this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
@@ -26,6 +27,10 @@ class ChattingsHandler {
   async postRegisterHandler(request, h) {
     const { nama, email, password, repeat_password } = request.payload;
     const user = await this._service.addUser({ email, password, repeat_password });
+
+    // id ini digunakan ketika mengakses user sedang login lewat authentikasi
+    // const id = request.auth.credentials.user.id;
+    // console.log('ID dari token JWT', id);
 
     const id = user.id;
     const hashedPassword = user.password;
@@ -93,11 +98,9 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    // id ini digunakan ketika mengakses user sedang login lewat authentikasi
-    // const id = request.auth.credentials.user.id;
-
     const { id } = request.params;
     const { nama, nik, umur, tgl_lahir } = request.payload;
+
     await this._service.editUserProfileById({ id, nama, nik, umur, tgl_lahir });
 
     return {
@@ -135,6 +138,24 @@ class ChattingsHandler {
     const response = h.response({
       status: 'success',
       message: 'Group berhasil ditambahkan',
+      data,
+    });
+    response.code(201);
+    return response;
+  }
+  async postUserGroupByGroupIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { user_profile_id, group_id } = request.params;
+    const user = await this._service.getUserProfileById({ user_profile_id });
+
+    const dataUserProfileById = user.id;
+    const data = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id });
+
+    const response = h.response({
+      status: 'success',
+      message: 'Pengguna berhasil ditambahkan di group',
       data,
     });
     response.code(201);

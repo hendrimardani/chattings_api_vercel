@@ -3,6 +3,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const ClientError = require('../../exceptions/ClientError');
 const bcrypt = require('bcrypt');
+const { format } = require("date-fns");
 
 class ChattingsService {
   constructor() {
@@ -10,8 +11,8 @@ class ChattingsService {
   }
 
   async addUser({ email, password, repeat_password }) {
-    // 2025-03-10
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Output: 2025-03-10 13:30
+    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
     const updated_at = created_at;
 
     if (password !== repeat_password) {
@@ -38,8 +39,8 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama }) {
-    // 2025-03-10
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Output: 2025-03-10 13:30
+    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
     const updated_at = created_at;
 
     const { data } =  await this._supabase
@@ -94,7 +95,7 @@ class ChattingsService {
         updated_at: updateAt
       })
       .eq('id', id)
-      .select();
+      .select('');
 
     // console.log('editUserProfileByid: ', data, error);
     if (error && error.code === '23505') {
@@ -127,8 +128,8 @@ class ChattingsService {
   }
 
   async addGroup({ nama_group }) {
-    // 2025-03-10
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Output: 2025-03-10 13:30
+    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -145,7 +146,7 @@ class ChattingsService {
   async getUserProfileById({ user_profile_id }) {
     const { data, error } = await this._supabase
       .from('user_profile')
-      .select('*')
+      .select('id, nama, nik, umur, tgl_lahir')
       .eq('id', user_profile_id)
       .maybeSingle();
 
@@ -160,8 +161,8 @@ class ChattingsService {
   }
 
   async addUserGroup({ user_profile_id, group_id }) {
-    // 2025-03-10
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Output: 2025-03-10 13:30
+    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
@@ -189,7 +190,7 @@ class ChattingsService {
         updated_at: updated_at,
       })
       .eq('id', group_id)
-      .select();
+      .select('id, nama_group');
 
     // console.log('editUserGroup: ', data, error);
     if (data.length === 0) {
@@ -211,8 +212,8 @@ class ChattingsService {
   }
 
   async addNotification({ is_status }) {
-    // 2025-03-10
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Output: 2025-03-10 13:30
+    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -260,8 +261,8 @@ class ChattingsService {
   }
 
   async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
-    // 2025-03-10
-    const created_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    // Output: 2025-03-10 13:30
+    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
@@ -302,7 +303,7 @@ class ChattingsService {
   async getMessageById({ id }) {
     const { data, error } = await this._supabase
       .from('messages')
-      .select('*')
+      .select('id, user_profile_id, group_id, isi_pesan')
       .eq('id', id)
       .maybeSingle();
     
@@ -326,7 +327,7 @@ class ChattingsService {
       .eq('id', id)
       .eq('user_profile_id', user_profile_id)
       .eq('group_id', group_id)
-      .select()
+      .select('id, user_profile_id, group_id, notification_id, isi_pesan')
       .maybeSingle();
 
     // console.log('editMessage: ', data, error);

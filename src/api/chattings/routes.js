@@ -103,6 +103,14 @@ const routes = (handler) => [
     },  
   },
   {
+    method: 'POST',
+    path: '/user_profile/{user_profile_id}/group/{group_id}',
+    handler: handler.postUserGroupByGroupIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    }
+  },
+  {
     method: 'GET',
     path: '/group/{id}',
     handler: handler.getGroupByIdHandler,
