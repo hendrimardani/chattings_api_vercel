@@ -14,10 +14,12 @@ class ChattingsHandler {
     this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
     this.putGroupByIdHandler = this.putGroupByIdHandler.bind(this);
+    this.deleteGroupByIdHandler = this.deleteGroupByIdHandler.bind(this);
 
     this.postMessageHandler = this.postMessageHandler.bind(this);
     this.getMessagesHandler = this.getMessagesHandler.bind(this);
-    this.putMessageHandler = this.putMessageHandler.bind(this);
+    this.getMessageByIdHandler = this.getMessageByIdHandler.bind(this);
+    this.putMessageByIdHandler = this.putMessageByIdHandler.bind(this);
     this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
   }
 
@@ -27,7 +29,7 @@ class ChattingsHandler {
 
     const id = user.id;
     const hashedPassword = user.password;
-    const data = await this._service.addUserProfile({ id, nama, email, hashedPassword });
+    const data = await this._service.addUserProfile({ id, nama, hashedPassword });
 
     const response = h.response({
       status: 'success',
@@ -47,7 +49,6 @@ class ChattingsHandler {
       { id: user.id, email: user.email },
       { key: process.env.JWT_SECRET, algorithm: 'HS256' },
       { ttlSec: 604800 }// Token kedaluwarsa dalam 7 hari setelah login
-
     );
 
     return {
@@ -160,7 +161,8 @@ class ChattingsHandler {
     }
 
     const { id } = request.params;
-    const dataGroupById = await this._service.getGroupById({ id });
+    const group_id = id;
+    const dataGroupById = await this._service.getGroupById({ group_id });
 
     return {
       status: 'success',
@@ -192,12 +194,24 @@ class ChattingsHandler {
     const { group_id } = request.params;
     const { nama_group } = request.payload;
 
-    const data = await this._service.editGroupById({ group_id, nama_group });
+    await this._service.editGroupById({ group_id, nama_group });
 
     return {
       status: 'success',
       message: 'Group berhasil diperbarui',
-      data
+    };
+  }
+
+  async deleteGroupByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { id } = request.params;
+    await this._service.deleteGroupById({ id });
+
+    return {
+      status: 'success',
+      message: 'Group berhasil dihapus',
     };
   }
 
@@ -212,11 +226,12 @@ class ChattingsHandler {
     const notification = await this._service.addNotification({ is_status });
     const notification_id = notification.id;
 
-    await this._service.addMessage({ user_profile_id, group_id, notification_id, isi_pesan });
+    const data = await this._service.addMessage({ user_profile_id, group_id, notification_id, isi_pesan });
 
     const response = h.response({
       status: 'success',
       message: 'Pesan berhasil ditambahkan',
+      data,
     });
     response.code(201);
     return response;
@@ -236,7 +251,23 @@ class ChattingsHandler {
     };
   } 
 
-  async putMessageHandler(request, h) {
+  async getMessageByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { id } = request.params;
+    const dataMessageById = await this._service.getMessageById({ id });
+
+    console.log(dataMessageById);
+    return {
+      status: 'success',
+      data: {
+        dataMessageById,
+      },
+    };
+  } 
+
+  async putMessageByIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
@@ -244,7 +275,7 @@ class ChattingsHandler {
     const { id, user_profile_id, group_id } = request.params;
     const { isi_pesan } = request.payload;
 
-    await this._service.editMessage({ id, user_profile_id, group_id, isi_pesan });
+    await this._service.editMessageById({ id, user_profile_id, group_id, isi_pesan });
 
     return {
       status: 'success',

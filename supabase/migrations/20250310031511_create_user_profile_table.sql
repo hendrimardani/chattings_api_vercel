@@ -2,8 +2,6 @@ CREATE TABLE user_profile (
   id INTEGER PRIMARY KEY,
   nama VARCHAR(50) NOT NULL,
   nik VARCHAR(16) UNIQUE NULL,
-  email VARCHAR(50) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL, 
   umur INTEGER NULL,
   tgl_lahir DATE NULL,
   created_at DATE NOT NULL,

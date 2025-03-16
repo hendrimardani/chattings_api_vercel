@@ -85,7 +85,7 @@ const routes = (handler) => [
   },
   {
     method: 'POST',
-    path: '/user/{user_profile_id}/group',
+    path: '/user_profile/{user_profile_id}/group',
     handler: handler.postUserGroupHandler, // Nama entias relasinya
     options: {
       auth: 'jwt', // Tambahkan auth di sini
@@ -112,7 +112,7 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/users/groups',
+    path: '/user_profiles/groups',
     handler: handler.getUserGroupsHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
@@ -138,8 +138,16 @@ const routes = (handler) => [
     }
   },
   {
+    method: 'DELETE',
+    path: '/group/{id}',  
+    handler: handler.deleteGroupByIdHandler,
+    options: {
+      auth: 'jwt'  // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'POST',
-    path: '/user/{user_profile_id}/group/{group_id}/notification',
+    path: '/user_profile/{user_profile_id}/group/{group_id}/notification',
     handler: handler.postMessageHandler, // Nama entitas relasinya
     options: {
       auth: 'jwt', // Tambahkan auth di sini
@@ -165,9 +173,17 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/message/{id}',
+    handler: handler.getMessageByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'PUT',
-    path: '/message/{id}/user/{user_profile_id}/group/{group_id}',
-    handler: handler.putMessageHandler,
+    path: '/message/{id}/user_profile/{user_profile_id}/group/{group_id}',
+    handler: handler.putMessageByIdHandler,
     options: {
       auth: 'jwt', // Tambahkan auth di sini
       validate: {
@@ -185,7 +201,7 @@ const routes = (handler) => [
   },
   {
     method: 'DELETE',
-    path: '/message/{id}/user/{user_profile_id}',
+    path: '/message/{id}/user_profile/{user_profile_id}',  
     handler: handler.deleteMessageByIdHandler,
     options: {
       auth: 'jwt'  // Tambahkan auth di sini
