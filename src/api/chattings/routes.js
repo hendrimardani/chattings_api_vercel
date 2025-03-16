@@ -103,8 +103,8 @@ const routes = (handler) => [
   },
   {
     method: 'POST',
-    path: '/user_profile/{user_profile_id}/group/{group_id}',
-    handler: handler.postUserGroupByGroupIdHandler,
+    path: '/group/{group_id}',
+    handler: handler.postUserByGroupIdHandler,
     options: {
       auth: 'jwt', // Tambahkan auth di sini
       validate: {

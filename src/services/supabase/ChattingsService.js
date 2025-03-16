@@ -127,14 +127,14 @@ class ChattingsService {
     return data;
   }
 
-  async addGroup({ nama_group }) {
+  async addGroup({ nama_group, deskripsi }) {
     // Output: 2025-03-10 13:30
     const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
       .from('groups')
-      .insert([{ nama_group, created_at, updated_at }])
+      .insert([{ nama_group, deskripsi, created_at, updated_at }])
       .select()
       .maybeSingle();
 
@@ -160,7 +160,7 @@ class ChattingsService {
     return dataUserProfileById;
   }
 
-  async addUserGroup({ user_profile_id, group_id }) {
+  async addUserGroup({ user_profile_id, group_id, role, created_by }) {
     // Output: 2025-03-10 13:30
     const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
@@ -174,7 +174,7 @@ class ChattingsService {
 
     const { data, error } = await this._supabase
       .from('user_group')
-      .insert([{ user_profile_id, group_id, created_at, updated_at }])
+      .insert([{ user_profile_id, group_id, role, created_by, created_at, updated_at }])
       .select('*')
       .maybeSingle();
 

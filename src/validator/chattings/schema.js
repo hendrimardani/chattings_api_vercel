@@ -21,12 +21,12 @@ const userProfileSchema = Joi.object({
 
 const groupSchema = Joi.object({
   nama_group: Joi.string().min(3).required(),
-  deksripsi: Joi.string().min(3).required(),
+  deskripsi: Joi.string().min(3).required(),
 });
 
 const userGroupSchema = Joi.object({
+  user_profile_id: Joi.number().integer().required(),
   role: Joi.string().min(3).required(),
-  created_by: Joi.string().min(3).required(),
 });
 
 

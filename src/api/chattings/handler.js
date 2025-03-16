@@ -10,7 +10,7 @@ class ChattingsHandler {
     this.deleteUserByIdHandler = this.deleteUserByIdHandler.bind(this);
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
-    this.postUserGroupByGroupIdHandler = this.postUserGroupByGroupIdHandler.bind(this);
+    this.postUserByGroupIdHandler = this.postUserByGroupIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
     this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
@@ -128,12 +128,12 @@ class ChattingsHandler {
     }
 
     const { user_profile_id } = request.params;
-    const { nama_group, deskripsi } = request.payload;
+    const { nama_group, deskripsi, role='admin' } = request.payload;
 
     const group = await this._service.addGroup({ nama_group, deskripsi });
     const group_id = group.id;
 
-    const data = await this._service.addUserGroup({ user_profile_id, group_id });
+    const data = await this._service.addUserGroup({ user_profile_id, group_id, role });
 
     const response = h.response({
       status: 'success',
@@ -143,15 +143,22 @@ class ChattingsHandler {
     response.code(201);
     return response;
   }
-  async postUserGroupByGroupIdHandler(request, h) {
+  async postUserByGroupIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const { user_profile_id, group_id } = request.params;
-    const user = await this._service.getUserProfileById({ user_profile_id });
+    // id ini digunakan ketika mengakses user sedang login lewat authentikasi
+    const id = request.auth.credentials.user.id;
+    // console.log('ID dari token JWT', id);
 
+    const { group_id } = request.params;
+    const { user_profile_id, role } = request.payload;
+
+    const user = await this._service.getUserProfileById({ user_profile_id });
     const dataUserProfileById = user.id;
-    const data = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id });
+    const created_by = id;
+
+    const data = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
 
     const response = h.response({
       status: 'success',
