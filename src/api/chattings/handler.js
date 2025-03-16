@@ -128,9 +128,9 @@ class ChattingsHandler {
     }
 
     const { user_profile_id } = request.params;
-    const { nama_group } = request.payload;
+    const { nama_group, deskripsi } = request.payload;
 
-    const group = await this._service.addGroup({ nama_group });
+    const group = await this._service.addGroup({ nama_group, deskripsi });
     const group_id = group.id;
 
     const data = await this._service.addUserGroup({ user_profile_id, group_id });
