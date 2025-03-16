@@ -41,7 +41,7 @@ class ChattingsHandler {
       message: 'Pengguna berhasil ditambahkan',
       data,
     });
-    
+
     response.code(201);
     return response;
   }
@@ -270,7 +270,7 @@ class ChattingsHandler {
         messages,
       },
     };
-  } 
+  }
 
   async getMessageByIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
@@ -286,7 +286,7 @@ class ChattingsHandler {
         dataMessageById,
       },
     };
-  } 
+  }
 
   async putMessageByIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {

@@ -1,4 +1,3 @@
-const { optional } = require('joi');
 const ChaatingValidator = require('../../validator/chattings');
 
 const routes = (handler) => [
@@ -9,16 +8,16 @@ const routes = (handler) => [
       auth: false,
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateRegister(value); 
+          return ChaatingValidator.validateRegister(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
         },
       },
-    },   
+    },
     handler: handler.postRegisterHandler,
   },
   {
@@ -28,16 +27,16 @@ const routes = (handler) => [
       auth: false,
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateLogin(value); 
+          return ChaatingValidator.validateLogin(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
         },
       },
-    },  
+    },
     handler: handler.postLoginHandler,
   },
   {
@@ -64,16 +63,16 @@ const routes = (handler) => [
       auth: 'jwt', // Tambahkan auth di sini
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateUserProfile(value); 
+          return ChaatingValidator.validateUserProfile(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
         },
       },
-    },  
+    },
   },
   {
     method: 'DELETE',
@@ -91,24 +90,35 @@ const routes = (handler) => [
       auth: 'jwt', // Tambahkan auth di sini
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateGroup(value); 
+          return ChaatingValidator.validateGroup(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
         },
       },
-    },  
+    },
   },
   {
     method: 'POST',
     path: '/user_profile/{user_profile_id}/group/{group_id}',
     handler: handler.postUserGroupByGroupIdHandler,
     options: {
-      auth: 'jwt' // Tambahkan auth di sini
-    }
+      auth: 'jwt', // Tambahkan auth di sini
+      validate: {
+        payload: (value, options) => {
+          return ChaatingValidator.validateUserGroup(value);
+        },
+        failAction: (request, h, error) => {
+          return h.response({
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
+    },
   },
   {
     method: 'GET',
@@ -137,7 +147,7 @@ const routes = (handler) => [
           return ChaatingValidator.validateGroup(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
@@ -147,7 +157,7 @@ const routes = (handler) => [
   },
   {
     method: 'DELETE',
-    path: '/group/{id}',  
+    path: '/group/{id}',
     handler: handler.deleteGroupByIdHandler,
     options: {
       auth: 'jwt'  // Tambahkan auth di sini
@@ -161,16 +171,16 @@ const routes = (handler) => [
       auth: 'jwt', // Tambahkan auth di sini
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateMessages(value); 
+          return ChaatingValidator.validateMessages(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
         },
       },
-    },  
+    },
   },
   {
     method: 'GET',
@@ -196,20 +206,20 @@ const routes = (handler) => [
       auth: 'jwt', // Tambahkan auth di sini
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateMessages(value); 
+          return ChaatingValidator.validateMessages(value);
         },
         failAction: (request, h, error) => {
-          return h.response({ 
+          return h.response({
             status: 'fail',
             message: error.details ? error.details.map((err) => err.message) : error.message,
           }).code(400).takeover();
         },
       },
-    },  
+    },
   },
   {
     method: 'DELETE',
-    path: '/message/{id}/user_profile/{user_profile_id}',  
+    path: '/message/{id}/user_profile/{user_profile_id}',
     handler: handler.deleteMessageByIdHandler,
     options: {
       auth: 'jwt'  // Tambahkan auth di sini

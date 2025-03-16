@@ -3,7 +3,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 const ClientError = require('../../exceptions/ClientError');
 const bcrypt = require('bcrypt');
-const { format } = require("date-fns");
+const { format } = require('date-fns');
 
 class ChattingsService {
   constructor() {
@@ -12,7 +12,7 @@ class ChattingsService {
 
   async addUser({ email, password, repeat_password }) {
     // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     if (password !== repeat_password) {
@@ -40,7 +40,7 @@ class ChattingsService {
 
   async addUserProfile({ id, nama }) {
     // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     const { data } =  await this._supabase
@@ -82,7 +82,7 @@ class ChattingsService {
   }
 
   async editUserProfileById({ id, nama, nik, umur, tgl_lahir }) {
-    console.log(id, nama, nik, umur, tgl_lahir)
+    console.log(id, nama, nik, umur, tgl_lahir);
     const updateAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const { data, error } = await this._supabase
@@ -113,10 +113,10 @@ class ChattingsService {
       .select()
       .eq('id', id);
 
-      // console.log('deleteUserById: ', data, error);
-      if (data.length === 0) {
-        throw new NotFoundError('Gagal memghapus pengguna. Id tidak ditemukan');
-      }
+    // console.log('deleteUserById: ', data, error);
+    if (data.length === 0) {
+      throw new NotFoundError('Gagal memghapus pengguna. Id tidak ditemukan');
+    }
   }
 
   async getUsers() {
@@ -129,7 +129,7 @@ class ChattingsService {
 
   async addGroup({ nama_group }) {
     // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -162,7 +162,7 @@ class ChattingsService {
 
   async addUserGroup({ user_profile_id, group_id }) {
     // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
@@ -177,13 +177,13 @@ class ChattingsService {
       .insert([{ user_profile_id, group_id, created_at, updated_at }])
       .select('*')
       .maybeSingle();
-    
+
     return data;
   }
 
   async editGroupById({ group_id, nama_group }) {
     const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
-    const { data, error } = await this._supabase  
+    const { data, error } = await this._supabase
       .from('groups')
       .update({
         nama_group: nama_group,
@@ -213,7 +213,7 @@ class ChattingsService {
 
   async addNotification({ is_status }) {
     // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -229,7 +229,7 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('user_group')
       .select('groups(*), user_profile(*)');  // Memanggil 2 parent entitas
-    
+
     console.log('getUserGroups', data, error);
     return data;
   }
@@ -262,7 +262,7 @@ class ChattingsService {
 
   async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
     // Output: 2025-03-10 13:30
-    const created_at = format(new Date(), "yyyy-MM-dd HH:mm");
+    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm');
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
@@ -296,7 +296,7 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('messages')
       .select('*');
-    
+
     return data;
   }
 
@@ -306,7 +306,7 @@ class ChattingsService {
       .select('id, user_profile_id, group_id, isi_pesan')
       .eq('id', id)
       .maybeSingle();
-    
+
     // console.log('getMessageById', data);
     if (data === null) {
       throw new NotFoundError('Pesan tidak ditemukan');
@@ -314,7 +314,7 @@ class ChattingsService {
 
     const dataMessageById = data;
     return dataMessageById;
-  } 
+  }
 
   async editMessageById({ id, user_profile_id, group_id, isi_pesan }) {
     const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
