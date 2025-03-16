@@ -4,8 +4,8 @@ CREATE TABLE user_profile (
   nik VARCHAR(16) UNIQUE NULL,
   umur INTEGER NULL,
   tgl_lahir DATE NULL,
-  created_at DATE NOT NULL,
-  updated_at DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
 
   -- Menetapkan user_id sebagai Foreign Key yang terhubung ke users(id)
   CONSTRAINT fk_users FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
