@@ -1,0 +1,2324 @@
+{
+	"info": {
+		"_postman_id": "ebf2510e-2f6f-4c84-9ecd-61137ff0a702",
+		"name": "Stunting Chatting API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37029425"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Pengguna berhasil ditambahkan');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body data should have id property and not equal to empty', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.ownProperty('id');\r",
+							"    pm.expect(data.id).to.not.equals('');\r",
+							"\r",
+							"    pm.environment.set('userProfileId', data.id);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nama\": \"Isdiyono\",\r\n    \"email\": \"isdiyono@gmail.com\",     // Harus uniq\r\n    \"password\": \"123123\",\r\n    \"repeat_password\": \"123123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User with Bad User Payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Register User With Bad User Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { email: \"erik@gmail.com\", password: \"123123\", repeat_password: \"123123\" },\r",
+							"        { nama: \"er\", email: \"er@gmail.com\", password: \"123123\", repeat_password: \"123123\" },\r",
+							"        { nama: \"erik\", email: 123, password: \"123123\", repeat_password: \"123123\" },\r",
+							"        { nama: \"erik\",email: \"erik@gmail.com\", password: 123123, repeat_password: 123123 },\r",
+							"        { nama: \"erik\",email: \"erik\", password: \"123123\", repeat_password: \"123123\" },\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadRegisterUserPayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadRegisterUserPayload', JSON.stringify(currentBadRegisterUserPayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadRegisterUserPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/register",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Berhasil masuk');\r",
+							"    pm.expect(responseJson).to.ownProperty('token');\r",
+							"    pm.expect(responseJson.token).to.be.a('string').and.to.have.length.above(0);\r",
+							"\r",
+							"    pm.environment.set('authToken', responseJson.token);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"isdiyono@gmail.com\",\r\n    \"password\": \"123123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User with Bad User Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { password: \"123123\"},\r",
+							"        { email: \"erik\", password: \"123123\"},\r",
+							"        { email: \"erik@gmail.com\", password: 123123},\r",
+							"        { email: \"erik@gmail.com\", password: \"123\"},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadLoginUserPayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadLoginUserPayload', JSON.stringify(currentBadLoginUserPayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Login User With Bad User Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadLoginUserPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/login",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body data should have a users array and contain at least 1 item', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka console Crtl + Alt + C\r",
+							"//    console.log(\"Test Getting All Users: \", data)\r",
+							" \r",
+							"   pm.expect(data).to.have.ownProperty('users');\r",
+							"   pm.expect(data.users).to.be.an('array');\r",
+							"   pm.expect(data.users).lengthOf.at.least(1);\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/users",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting Specified User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"}); \r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body data should contain user object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka console Ctrl + Alt + C\r",
+							"   console.log('Test: ', data)\r",
+							" \r",
+							"   pm.expect(data).to.have.ownProperty('dataUserProfileById');\r",
+							"   pm.expect(data.dataUserProfileById).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('note object should contain correct value for id, email, password, created_at and updated_at', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data: { dataUserProfileById } } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka Console Ctrl + Alt + C\r",
+							"//    console.log(dataUserProfileById);\r",
+							"\r",
+							"   const expectedId = pm.environment.get('userProfileId');\r",
+							"   const expectedNama = 'Nikola Tesla';\r",
+							"   const expectedNik = null;\r",
+							"   const expectedUmur = null;\r",
+							"   const expectedTglLahir = null;\r",
+							"   \r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('id');\r",
+							"   pm.expect(dataUserProfileById.id).to.equals(expectedId);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('nama');\r",
+							"   pm.expect(dataUserProfileById.nama).to.equals(expectedNama);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('nik');\r",
+							"   pm.expect(dataUserProfileById.nik).to.equals(expectedNik);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('umur');\r",
+							"   pm.expect(dataUserProfileById.umur).to.equals(expectedUmur);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('tgl_lahir');\r",
+							"   pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedTglLahir);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Profile",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"   pm.expect(responseJson.message).to.equals('Profile berhasil diperbarui');\r",
+							"});\r",
+							"\r",
+							"pm.test('when request the updated user profile', () => {\r",
+							"    const userProfileId = pm.environment.get('userProfileId');\r",
+							"    const token = pm.environment.get('authToken'); \r",
+							"    \r",
+							"    pm.sendRequest({\r",
+							"        url: `http://localhost:3000/user_profile/${userProfileId}`,\r",
+							"        method: 'GET',\r",
+							"        header: {\r",
+							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
+							"            'Content-Type': 'application/json; charset=utf-8'\r",
+							"        }\r",
+							"    }, (error, response) => {\r",
+							"        if (!error) {\r",
+							"            pm.test('then the updated user profile should contain the latest data', () => {\r",
+							"                const { data: { dataUserProfileById } } = response.json();\r",
+							"\r",
+							"                // Debugging\r",
+							"                // Buka console Ctrl + Alt + C\r",
+							"                // console.log('Update User Profile: ', data); \r",
+							"\r",
+							"                const expectedNama = 'Updated isdiyono';\r",
+							"                const expectedNik = '1200259903931231';\r",
+							"                const expectedUmur = 20;\r",
+							"                const expectedTglLahir = '2025-03-10';\r",
+							"\r",
+							"                pm.expect(dataUserProfileById.nama).to.equals(expectedNama);\r",
+							"                pm.expect(dataUserProfileById.nik).to.equals(expectedNik);\r",
+							"                pm.expect(dataUserProfileById.umur).to.equals(expectedUmur);\r",
+							"                pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedTglLahir);\r",
+							"            });\r",
+							"        } else {\r",
+							"            console.log('Request Error:', error);\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nama\": \"Updated isdiyono\",\r\n    \"nik\": \"1200259903931231\", // Harus uniq\r\n    \"umur\": 20,\r\n    \"tgl_lahir\": \"2025-03-10\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Profile with Bad User Profile Payload",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Update User Profile With Bad User Profile Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { nik: \"12345678901234567\", umur: 20, tgl_lahir: '2001-03-03'},\r",
+							"        { nama: \"Erik\", nik: \"123\", umur: 20, tgl_lahir: '2001-03-03'},\r",
+							"        { nama: 123, nik: \"12345678901234567\", umur: 20, tgl_lahir: '2001-03-03'},\r",
+							"        { nama: 123, nik: \"12345678901234567\", umur: \"20\", tgl_lahir: '2001-03-03'},\r",
+							"        { nama: 123, nik: \"12345678901234567\", umur: \"20\", tgl_lahir: true},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadUserProfilePayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadUserProfilePayload', JSON.stringify(currentBadUserProfilePayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadUserProfilePayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8')\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"   pm.expect(responseJson.message).to.equals('Pengguna berhasil dihapus');\r",
+							"}); \r",
+							"\r",
+							"pm.test('when request the deleted user', () => {\r",
+							"    const userProfileId = pm.environment.get('userProfileId');\r",
+							"    const token = pm.environment.get('authToken'); \r",
+							"    pm.sendRequest({\r",
+							"        url: `http://localhost:3000/user_profile/${userProfileId}`, // Ubah id nya jika ingin manual\r",
+							"        method: 'GET',\r",
+							"        header: {\r",
+							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
+							"            'Content-Type': 'application/json; charset=utf-8'\r",
+							"        }\r",
+							"    }, (error, response) =>  {\r",
+							"        if(!error) {\r",
+							"            pm.test('the deleted user should be not found', () => {\r",
+							"                pm.expect(response.code).to.equals(404);\r",
+							"                const responseJson = response.json();\r",
+							"                pm.expect(responseJson.status).to.equals('fail');\r",
+							"                pm.expect(responseJson.message).to.equals('Pengguna tidak ditemukan');\r",
+							"            });\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/user/{{userProfileId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user",
+						"{{userProfileId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adding User Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Group berhasil ditambahkan');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body data should have user_profile_id property and not equal to empty', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.ownProperty('user_profile_id');\r",
+							"    pm.expect(data.user_profile_id).to.not.equals('');\r",
+							"\r",
+							"    pm.environment.set('groupId', data.group_id);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nama_group\": \"Add Group\",\r\n    \"deskripsi\": \"Ini deksripsi group\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}/group",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}",
+						"group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adding User Group with Bad Group Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { deskripsi: \"Group A\"},\r",
+							"        { nama_group: \"er\", deskripsi: \"Berbagi Pengalaman\"},\r",
+							"        { nama_group: 123, deskripsi: true},\r",
+							"        { nama_group: \"Group A\", deskripsi: true},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadGroupPayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadGroupPayload', JSON.stringify(currentBadGroupPayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Adding User  Group With Bad Group Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadGroupPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}/group",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}",
+						"group"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adding User By Group Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Pengguna berhasil ditambahkan di group');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body data should have user_profile_id property and not equal to empty', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.ownProperty('user_profile_id');\r",
+							"    pm.expect(data.user_profile_id).to.not.equals('');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_profile_id\": {{userProfileId}},     // Id user lain\r\n    \"role\": \"member\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adding User By Group Id with Bad User Group Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { role: 'admin'},\r",
+							"        { user_profile_id: \"1\", role: \"member\"},\r",
+							"        { user_profile_id: 1, role: \"tidak ada\"},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadUserGroupPayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadUserGroupPayload', JSON.stringify(currentBadUserGroupPayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Adding User  Group With Bad User Group Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadUserGroupPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All User Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body data should have a user group array and contain at least 1 item', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka console Crtl + Alt + C\r",
+							"//    console.log(\"Test Getting All User Group: \", data)\r",
+							" \r",
+							"   pm.expect(data).to.have.ownProperty('userGroups');\r",
+							"   pm.expect(data.userGroups).to.be.an('array');\r",
+							"   pm.expect(data.userGroups).lengthOf.at.least(1);\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/user_profiles/groups",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profiles",
+						"groups"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting Specified Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"}); \r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body data should contain dataGroupById object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data } = responseJson;\r",
+							" \r",
+							"   pm.expect(data).to.have.ownProperty('dataGroupById');\r",
+							"   pm.expect(data.dataGroupById).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('dataGroupById object should contain correct value for id, nama_group, created_at, and updated_at property', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data: { dataGroupById } } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka Console Crtl + Alt + C\r",
+							"//    console.log('Test Getting Specified Group: ', dataGroupById)\r",
+							"\r",
+							"   const expectedId = pm.environment.get('groupId');\r",
+							"   const expectedNamaGroup = 'Add Group';\r",
+							"\r",
+							"   pm.expect(dataGroupById).to.have.ownProperty('id');\r",
+							"   pm.expect(dataGroupById.id).to.equals(expectedId);\r",
+							"\r",
+							"   pm.expect(dataGroupById).to.have.ownProperty('nama_group');\r",
+							"   pm.expect(dataGroupById.nama_group).to.equals(expectedNamaGroup);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"   pm.expect(responseJson.message).to.equals('Group berhasil diperbarui');\r",
+							"});\r",
+							"\r",
+							"pm.test('when request the updated group', () => {\r",
+							"    const groupId = pm.environment.get('groupId');\r",
+							"    const token = pm.environment.get('authToken'); \r",
+							"    \r",
+							"    pm.sendRequest({\r",
+							"        url: `http://localhost:3000/group/${groupId}`,\r",
+							"        method: 'GET',\r",
+							"        header: {\r",
+							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
+							"            'Content-Type': 'application/json; charset=utf-8'\r",
+							"        }\r",
+							"    }, (error, response) => {\r",
+							"        if (!error) {\r",
+							"            pm.test('then the updated group should contain the latest data', () => {\r",
+							"                const { data: { dataGroupById } } = response.json();\r",
+							"\r",
+							"                // Debugging\r",
+							"                // Buka console Ctrl + Alt + C\r",
+							"                // console.log('Update Group: ', dataGroupById); \r",
+							"\r",
+							"                const expectedNamaGroup = 'Updated nama group';\r",
+							"                const expectedDeskripsi = 'Updated deskripsi';\r",
+							"\r",
+							"                pm.expect(dataGroupById.nama_group).to.equals(expectedNamaGroup);\r",
+							"                pm.expect(dataGroupById.deskripsi).to.equals(expectedDeskripsi);\r",
+							"            });\r",
+							"        } else {\r",
+							"            console.log('Request Error:', error);\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"nama_group\": \"Updated nama group\",\r\n    \"deskripsi\": \"Updated deskripsi\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Group with Bad Group Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { role: 'admin'},\r",
+							"        { user_profile_id: \"1\", role: \"member\"},\r",
+							"        { user_profile_id: 1, role: \"tidak ada\"},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadGroupPayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadGroupPayload', JSON.stringify(currentBadGroupPayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Update Group With Bad Group Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadGroupPayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Group",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8')\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"   pm.expect(responseJson.message).to.equals('Group berhasil dihapus');\r",
+							"}); \r",
+							"\r",
+							"pm.test('when request the deleted group', () => {\r",
+							"    const groupId = pm.environment.get('groupId');\r",
+							"    const token = pm.environment.get('authToken'); \r",
+							"    pm.sendRequest({\r",
+							"        url: `http://localhost:3000/group/${groupId}`, // Ubah id nya jika ingin manual\r",
+							"        method: 'GET',\r",
+							"        header: {\r",
+							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
+							"            'Content-Type': 'application/json; charset=utf-8'\r",
+							"        }\r",
+							"    }, (error, response) =>  {\r",
+							"        if(!error) {\r",
+							"            pm.test('the deleted user should be not found', () => {\r",
+							"                pm.expect(response.code).to.equals(404);\r",
+							"                const responseJson = response.json();\r",
+							"                pm.expect(responseJson.status).to.equals('fail');\r",
+							"                pm.expect(responseJson.message).to.equals('Group tidak ditemukan');\r",
+							"            });\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adding Message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 201 value', () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.ownProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('success');\r",
+							"    pm.expect(responseJson).to.ownProperty('message');\r",
+							"    pm.expect(responseJson.message).to.equals('Pesan berhasil ditambahkan');\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body data should have id property and not equal to empty', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    const { data } = responseJson;\r",
+							" \r",
+							"    pm.expect(data).to.ownProperty('id');\r",
+							"    pm.expect(data.user_profile_id).to.not.equals('');\r",
+							"\r",
+							"    pm.environment.set('messageId', data.id);\r",
+							"    pm.environment.set('notificationId', data.notification_id);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isi_pesan\": \"Add Message\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}/group/{{groupId}}/notification",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}",
+						"group",
+						"{{groupId}}",
+						"notification"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adding Message with Bad Message Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { isi_pesan: \"\"},\r",
+							"        { isi_pesan: 123},\r",
+							"        { isi_pesan: true},\r",
+							"        { isi_pesan: null},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadMessagePayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadMessagePayload', JSON.stringify(currentBadMessagePayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Adding Message With Bad Message Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadMessagePayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/user_profile/{{userProfileId}}/group/{{groupId}}/notification",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user_profile",
+						"{{userProfileId}}",
+						"group",
+						"{{groupId}}",
+						"notification"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting All Messages",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"  const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body data should have a user group array and contain at least 1 item', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka console Crtl + Alt + C\r",
+							"//    console.log(\"Test Getting All Messages: \", data)\r",
+							" \r",
+							"   pm.expect(data).to.have.ownProperty('messages');\r",
+							"   pm.expect(data.messages).to.be.an('array');\r",
+							"   pm.expect(data.messages).lengthOf.at.least(1);\r",
+							"}); "
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/messages",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Getting Specified Message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"  pm.response.to.have.status(200);\r",
+							"}); \r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have the correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
+							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body data should contain dataMessageById object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data } = responseJson;\r",
+							"\r",
+							"   pm.expect(data).to.have.ownProperty('dataMessageById');\r",
+							"   pm.expect(data.dataMessageById).to.be.an('object');\r",
+							"}); \r",
+							"\r",
+							"pm.test('dataMessageById object should contain correct value for id, user_profile_id, notification_id, group_id, isi_pesan, created_at, and updated_at property', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   const { data: { dataMessageById } } = responseJson;\r",
+							"\r",
+							"   // Debugging\r",
+							"   // Buka Console Crtl + Alt + C\r",
+							"//    console.log('Test Getting Specified Message: ', dataMessageById)\r",
+							"\r",
+							"   const expectedId = pm.environment.get('messageId');\r",
+							"   const expectedUserProfileId = pm.environment.get('userProfileId');\r",
+							"   const expectedGroupId = pm.environment.get('groupId');\r",
+							"   const expectedIsiPesan = 'Add Message';\r",
+							"\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('id');\r",
+							"   pm.expect(dataMessageById.id).to.equals(expectedId);\r",
+							"\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('user_profile_id');\r",
+							"   pm.expect(dataMessageById.user_profile_id).to.equals(expectedUserProfileId);\r",
+							"\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('group_id');\r",
+							"   pm.expect(dataMessageById.group_id).to.equals(expectedGroupId);\r",
+							"\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('isi_pesan');\r",
+							"   pm.expect(dataMessageById.isi_pesan).to.equals(expectedIsiPesan);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/message/{{messageId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"message",
+						"{{messageId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"   pm.expect(responseJson.message).to.equals('Pesan berhasil diperbarui');\r",
+							"});\r",
+							"\r",
+							"pm.test('when request the updated message', () => {\r",
+							"    const messageId = pm.environment.get('messageId');\r",
+							"    const token = pm.environment.get('authToken'); \r",
+							"    \r",
+							"    pm.sendRequest({\r",
+							"        url: `http://localhost:3000/message/${messageId}`,\r",
+							"        method: 'GET',\r",
+							"        header: {\r",
+							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
+							"            'Content-Type': 'application/json; charset=utf-8'\r",
+							"        }\r",
+							"    }, (error, response) => {\r",
+							"        if (!error) {\r",
+							"            pm.test('then the updated message should contain the latest data', () => {\r",
+							"                const { data: { dataMessageById } } = response.json();\r",
+							"\r",
+							"                // Debugging\r",
+							"                // Buka console Ctrl + Alt + C\r",
+							"                // console.log('Update Message: ', dataMessageById); \r",
+							"\r",
+							"                const expectedId = pm.environment.get('messageId');\r",
+							"                const expectedUserProfileId = pm.environment.get('userProfileId');\r",
+							"                const expectedGroupId = pm.environment.get('groupId');\r",
+							"                const expectedNotificationId = pm.environment.get('notificationId');\r",
+							"                const expectedIsiPesan = 'Updated Message';\r",
+							"\r",
+							"                pm.expect(dataMessageById.id).to.equals(expectedId);\r",
+							"                pm.expect(dataMessageById.user_profile_id).to.equals(expectedUserProfileId);\r",
+							"                pm.expect(dataMessageById.group_id).to.equals(expectedGroupId);\r",
+							"                pm.expect(dataMessageById.notification_id).to.equals(expectedNotificationId);\r",
+							"                pm.expect(dataMessageById.isi_pesan).to.equals(expectedIsiPesan);\r",
+							"            });\r",
+							"        } else {\r",
+							"            console.log('Request Error:', error);\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"isi_pesan\": \"Updated Message\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userProfileId}}/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"message",
+						"{{messageId}}",
+						"user_profile",
+						"{{userProfileId}}",
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Message with Bad Message Payload",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Untuk validasi API dari Joi\r",
+							"let badUserPayloads = pm.environment.get('badUserPayloads');  // ini akan bertipe Array\r",
+							" \r",
+							"if (!badUserPayloads || badUserPayloads.length === 0) {\r",
+							"    // inisialisasi dengan sejumlah note yang tidak sesuai\r",
+							"    badUserPayloads = [\r",
+							"        { isi_pesan: \"\"},\r",
+							"        { isi_pesan: 123},\r",
+							"        { isi_pesan: true},\r",
+							"        { isi_pesan: null},\r",
+							"    ]\r",
+							"}\r",
+							" \r",
+							"const currentBadMessagePayload = badUserPayloads.shift();  // hapus index 0, geser sisanya\r",
+							"pm.environment.set('currentBadMessagePayload', JSON.stringify(currentBadMessagePayload));\r",
+							"pm.environment.set('badUserPayloads', badUserPayloads);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 400 value', () => {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							" \r",
+							"pm.test('response Content-Type header should have application/json; charset=utf-8 value', () => {\r",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+							"}); \r",
+							" \r",
+							"pm.test('response body should be an object', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							" \r",
+							"pm.test('response body object should have correct property and value', () => {\r",
+							"    const responseJson = pm.response.json();\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('status');\r",
+							"    pm.expect(responseJson.status).to.equals('fail');\r",
+							"    pm.expect(responseJson).to.haveOwnProperty('message');\r",
+							"    pm.expect(responseJson.message).to.be.ok;\r",
+							"});\r",
+							"\r",
+							"const repeatRequestUntilDatasetEmpty = () => {\r",
+							"    const badNotePayloads = pm.environment.get('badUserPayloads');\r",
+							"\r",
+							"    if(badNotePayloads && badNotePayloads.length > 0) {\r",
+							"        postman.setNextRequest('Update Message With Bad Message Payload');\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"repeatRequestUntilDatasetEmpty();\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{{currentBadMessagePayload}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userProfileId}}/group/{{groupId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"message",
+						"{{messageId}}",
+						"user_profile",
+						"{{userProfileId}}",
+						"group",
+						"{{groupId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Pesan",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('response status code should have 200 value', () => {\r",
+							"   pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('response Content-Type header should have application/json value', () => {\r",
+							"   pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8')\r",
+							"}); \r",
+							"\r",
+							"pm.test('response body should be an object', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							"   pm.expect(responseJson).to.be.an('object');\r",
+							"});\r",
+							"\r",
+							"pm.test('response body should have correct property and value', () => {\r",
+							"   const responseJson = pm.response.json();\r",
+							" \r",
+							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
+							"   pm.expect(responseJson.status).to.equals('success');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('message');\r",
+							"   pm.expect(responseJson.message).to.equals('Pesan berhasil dihapus');\r",
+							"}); \r",
+							"\r",
+							"pm.test('when request the deleted message', () => {\r",
+							"    const messageId = pm.environment.get('messageId');\r",
+							"    const token = pm.environment.get('authToken'); \r",
+							"    pm.sendRequest({\r",
+							"        url: `http://localhost:3000/message/${messageId}`, // Ubah id nya jika ingin manual\r",
+							"        method: 'GET',\r",
+							"        header: {\r",
+							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
+							"            'Content-Type': 'application/json; charset=utf-8'\r",
+							"        }\r",
+							"    }, (error, response) =>  {\r",
+							"        if(!error) {\r",
+							"            pm.test('the deleted user should be not found', () => {\r",
+							"                pm.expect(response.code).to.equals(404);\r",
+							"                const responseJson = response.json();\r",
+							"                pm.expect(responseJson.status).to.equals('fail');\r",
+							"                pm.expect(responseJson.message).to.equals('Pesan tidak ditemukan');\r",
+							"            });\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{authToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userProfileId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"message",
+						"{{messageId}}",
+						"user_profile",
+						"{{userProfileId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
