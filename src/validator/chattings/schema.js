@@ -9,7 +9,7 @@ const registerSchema = Joi.object({
 
 const loginSchema = Joi.object({
   email: Joi.string().email().min(3).max(30).required(),
-  password: Joi.string().min(3).required(),
+  password: Joi.string().min(6).required(),
 });
 
 const userProfileSchema = Joi.object({
@@ -26,7 +26,7 @@ const groupSchema = Joi.object({
 
 const userGroupSchema = Joi.object({
   user_profile_id: Joi.number().integer().required(),
-  role: Joi.string().min(3).required(),
+  role: Joi.string().valid('member', 'admin').required(),
 });
 
 

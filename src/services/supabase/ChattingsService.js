@@ -175,7 +175,7 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('user_group')
       .insert([{ user_profile_id, group_id, role, created_by, created_at, updated_at }])
-      .select('*')
+      .select('user_profile_id, group_id, role, created_by')
       .maybeSingle();
 
     return data;
