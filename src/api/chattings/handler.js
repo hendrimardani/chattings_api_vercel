@@ -59,7 +59,10 @@ class ChattingsHandler {
     return {
       status: 'success',
       message: 'Berhasil masuk',
-      token,
+      data: {
+        user,
+        token
+      },
     };
   }
 

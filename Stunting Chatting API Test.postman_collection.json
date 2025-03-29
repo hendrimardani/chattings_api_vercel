@@ -115,8 +115,7 @@
 							"repeatRequestUntilDatasetEmpty();\r",
 							""
 						],
-						"type": "text/javascript",
-						"packages": {}
+						"type": "text/javascript"
 					}
 				},
 				{
@@ -141,8 +140,7 @@
 							"pm.environment.set('currentBadRegisterUserPayload', JSON.stringify(currentBadRegisterUserPayload));\r",
 							"pm.environment.set('badUserPayloads', badUserPayloads);"
 						],
-						"type": "text/javascript",
-						"packages": {}
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -207,8 +205,16 @@
 							"    pm.expect(responseJson.status).to.equals('success');\r",
 							"    pm.expect(responseJson).to.ownProperty('message');\r",
 							"    pm.expect(responseJson.message).to.equals('Berhasil masuk');\r",
-							"    pm.expect(responseJson).to.ownProperty('token');\r",
-							"    pm.expect(responseJson.token).to.be.a('string').and.to.have.length.above(0);\r",
+							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    \r",
+							"    pm.expect(responseJson.data).to.be.a('object');\r",
+							"    pm.expect(responseJson.data).to.ownProperty('user');\r",
+							"\r",
+							"    pm.expect(responseJson.data.user).to.be.a('object');\r",
+							"    pm.expect(responseJson.data.user).to.ownProperty('id');\r",
+							"    \r",
+							"    pm.expect(responseJson.data).to.ownProperty('token');\r",
+							"    pm.expect(responseJson.data.token).to.be.a('string').and.to.have.length.above(0);\r",
 							"\r",
 							"    pm.environment.set('authToken', responseJson.token);\r",
 							"});"
@@ -1476,8 +1482,7 @@
 							"pm.environment.set('currentBadGroupPayload', JSON.stringify(currentBadGroupPayload));\r",
 							"pm.environment.set('badUserPayloads', badUserPayloads);"
 						],
-						"type": "text/javascript",
-						"packages": {}
+						"type": "text/javascript"
 					}
 				},
 				{
@@ -1516,8 +1521,7 @@
 							"repeatRequestUntilDatasetEmpty();\r",
 							""
 						],
-						"type": "text/javascript",
-						"packages": {}
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -2319,6 +2323,36 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
