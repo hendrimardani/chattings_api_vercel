@@ -34,12 +34,12 @@ class ChattingsHandler {
 
     const id = user.id;
     const hashedPassword = user.password;
-    const data = await this._service.addUserProfile({ id, nama, hashedPassword });
+    const dataRegister = await this._service.addUserProfile({ id, nama, hashedPassword });
 
     const response = h.response({
       status: 'success',
       message: 'Pengguna berhasil ditambahkan',
-      data,
+      dataRegister,
     });
 
     response.code(201);
@@ -59,7 +59,7 @@ class ChattingsHandler {
     return {
       status: 'success',
       message: 'Berhasil masuk',
-      data: {
+      dataLogin: {
         user,
         token
       },
@@ -70,13 +70,11 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const users = await this._service.getUsers();
+    const dataUsers = await this._service.getUsers();
 
     return {
       status: 'success',
-      data: {
-        users,
-      },
+      dataUsers,
     };
   }
 
@@ -91,9 +89,7 @@ class ChattingsHandler {
 
     return {
       status: 'success',
-      data: {
-        dataUserProfileById,
-      },
+      dataUserProfileById,
     };
   }
 
@@ -136,16 +132,17 @@ class ChattingsHandler {
     const group = await this._service.addGroup({ nama_group, deskripsi });
     const group_id = group.id;
 
-    const data = await this._service.addUserGroup({ user_profile_id, group_id, role });
+    const dataUserGroup = await this._service.addUserGroup({ user_profile_id, group_id, role });
 
     const response = h.response({
       status: 'success',
       message: 'Group berhasil ditambahkan',
-      data,
+      dataUserGroup,
     });
     response.code(201);
     return response;
   }
+
   async postUserByGroupIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
@@ -161,12 +158,12 @@ class ChattingsHandler {
     const dataUserProfileById = user.id;
     const created_by = id;
 
-    const data = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
+    const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
 
     const response = h.response({
       status: 'success',
       message: 'Pengguna berhasil ditambahkan di group',
-      data,
+      dataUserByGroupId,
     });
     response.code(201);
     return response;
@@ -176,13 +173,11 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const groups = await this._service.getGroups();
+    const dataGroups = await this._service.getGroups();
 
     return {
       status: 'success',
-      data: {
-        groups,
-      },
+      dataGroups,
     };
   }
 
@@ -197,9 +192,7 @@ class ChattingsHandler {
 
     return {
       status: 'success',
-      data: {
-        dataGroupById,
-      },
+      dataGroupById,
     };
   }
 
@@ -211,9 +204,7 @@ class ChattingsHandler {
 
     return {
       status: 'success',
-      data: {
-        userGroups,
-      },
+      userGroups,
     };
   }
 
@@ -223,9 +214,9 @@ class ChattingsHandler {
     }
 
     const { group_id } = request.params;
-    const { nama_group } = request.payload;
+    const { nama_group, deskripsi } = request.payload;
 
-    await this._service.editGroupById({ group_id, nama_group });
+    await this._service.editGroupById({ group_id, nama_group, deskripsi });
 
     return {
       status: 'success',
@@ -257,12 +248,12 @@ class ChattingsHandler {
     const notification = await this._service.addNotification({ is_status });
     const notification_id = notification.id;
 
-    const data = await this._service.addMessage({ user_profile_id, group_id, notification_id, isi_pesan });
+    const dataMessage = await this._service.addMessage({ user_profile_id, group_id, notification_id, isi_pesan });
 
     const response = h.response({
       status: 'success',
       message: 'Pesan berhasil ditambahkan',
-      data,
+      dataMessage,
     });
     response.code(201);
     return response;
@@ -272,13 +263,11 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const messages = await this._service.getMessages();
+    const dataMessages = await this._service.getMessages();
 
     return {
       status: 'success',
-      data: {
-        messages,
-      },
+      dataMessages,
     };
   }
 
@@ -292,9 +281,7 @@ class ChattingsHandler {
     console.log(dataMessageById);
     return {
       status: 'success',
-      data: {
-        dataMessageById,
-      },
+      dataMessageById,
     };
   }
 

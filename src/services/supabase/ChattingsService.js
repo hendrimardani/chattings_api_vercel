@@ -181,12 +181,13 @@ class ChattingsService {
     return data;
   }
 
-  async editGroupById({ group_id, nama_group }) {
+  async editGroupById({ group_id, nama_group, deskripsi }) {
     const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const { data, error } = await this._supabase
       .from('groups')
       .update({
         nama_group: nama_group,
+        deskripsi: deskripsi,
         updated_at: updated_at,
       })
       .eq('id', group_id)
