@@ -1,6 +1,9 @@
+CREATE TYPE gender AS ENUM ('laki-laki', 'perempuan');
+
 CREATE TABLE user_profile (
   id INTEGER PRIMARY KEY,
   nama VARCHAR(50) NOT NULL,
+  jenis_kelamin gender NULL
   nik VARCHAR(16) UNIQUE NULL,
   umur INTEGER NULL,
   tgl_lahir DATE NULL,

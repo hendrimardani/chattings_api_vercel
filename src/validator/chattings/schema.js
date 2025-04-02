@@ -14,8 +14,9 @@ const loginSchema = Joi.object({
 
 const userProfileSchema = Joi.object({
   nama: Joi.string().min(3).required(),
-  nik: Joi.string().length(16),
-  umur: Joi.number().integer(),
+  nik: Joi.string().length(16).required(),
+  umur: Joi.number().integer().required(),
+  jenis_kelamin: Joi.string().valid('laki-laki', 'perempuan').required(),
   tgl_lahir: Joi.date().required(),
 });
 

@@ -43,12 +43,13 @@ class ChattingsService {
     const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
     const updated_at = created_at;
 
-    const { data } =  await this._supabase
+    const { data, error } =  await this._supabase
       .from('user_profile')
-      .insert([{ id, nama, created_at, updated_at }])
+      .insert([{ user_id: id, nama, created_at, updated_at }])
       .select()
       .maybeSingle();
-
+      
+      console.log('addUserProfile', data, error);
     return data;
   }
 
@@ -81,8 +82,8 @@ class ChattingsService {
     return dataLoginByEmail;
   }
 
-  async editUserProfileById({ id, nama, nik, umur, tgl_lahir }) {
-    console.log(id, nama, nik, umur, tgl_lahir);
+  async editUserProfileById({ id, nama, nik, umur, jenis_kelamin, tgl_lahir }) {
+    // console.log(id, nama, nik, umur, tgl_lahir);
     const updateAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const { data, error } = await this._supabase
@@ -91,10 +92,11 @@ class ChattingsService {
         nama: nama,
         nik: nik,
         umur: umur,
+        jenis_kelamin: jenis_kelamin,
         tgl_lahir: tgl_lahir,
         updated_at: updateAt
       })
-      .eq('id', id)
+      .eq('user_id', id)
       .select('');
 
     // console.log('editUserProfileByid: ', data, error);
@@ -146,8 +148,8 @@ class ChattingsService {
   async getUserProfileById({ user_profile_id }) {
     const { data, error } = await this._supabase
       .from('user_profile')
-      .select('id, nama, nik, umur, tgl_lahir')
-      .eq('id', user_profile_id)
+      .select('*')
+      .eq('user_id', user_profile_id)
       .maybeSingle();
 
     // console.log('getUserProfileById', data);

@@ -98,9 +98,9 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { id } = request.params;
-    const { nama, nik, umur, tgl_lahir } = request.payload;
+    const { nama, nik, umur, jenis_kelamin, tgl_lahir } = request.payload;
 
-    await this._service.editUserProfileById({ id, nama, nik, umur, tgl_lahir });
+    await this._service.editUserProfileById({ id, nama, nik, umur, jenis_kelamin, tgl_lahir });
 
     return {
       status: 'success',
@@ -155,7 +155,7 @@ class ChattingsHandler {
     const { user_profile_id, role } = request.payload;
 
     const user = await this._service.getUserProfileById({ user_profile_id });
-    const dataUserProfileById = user.id;
+    const dataUserProfileById = user.user_id;
     const created_by = id;
 
     const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
