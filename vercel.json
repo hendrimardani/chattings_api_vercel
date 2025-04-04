@@ -11,7 +11,7 @@
     { "src": "/login", "dest": "src/server.js" },
     { "src": "/users", "dest": "src/server.js" },
     { "src": "/user_profile/(.*)", "dest": "src/server.js" },
-    { "src": "/users/(.*)", "dest": "src/server.js" },
+    { "src": "/user/(.*)", "dest": "src/server.js" },
     { "src": "/user_profile/(.*)/group", "dest": "src/server.js" },
     { "src": "/group/(.*)", "dest": "src/server.js" },
     { "src": "/user_profiles/groups", "dest": "src/server.js" },
