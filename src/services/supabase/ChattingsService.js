@@ -32,7 +32,7 @@ class ChattingsService {
     // console.log('addUser: ', data, error);
     if (error && error.code === '23505') {
       throw new ClientError('Email sudah digunakan');
-    } else if (error && error.code === '23502') {3
+    } else if (error && error.code === '23502') {
       throw new InvariantError('Pengguna gagal ditambahkan. Pastikan tidak ada data yang kosong');
     }
     return data;
@@ -181,6 +181,22 @@ class ChattingsService {
       .maybeSingle();
 
     return data;
+  }
+
+  async getUserGroupByUserId({ user_id }) {
+    const { data, error } = await this._supabase
+      .from('user_group')
+      .select('*')
+      .eq('user_profile_id', user_id);
+
+    // console.log('getUserGroupByUserId', data);
+
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+
+    const dataUserGroupByUserId = data;
+    return dataUserGroupByUserId;
   }
 
   async editGroupById({ group_id, nama_group, deskripsi }) {

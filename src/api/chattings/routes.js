@@ -102,6 +102,14 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/user_profile/{user_id}/group',
+    handler: handler.getUserGroupByUserIdHandler, // Nama entias relasinya
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'POST',
     path: '/group/{group_id}',
     handler: handler.postUserByGroupIdHandler,

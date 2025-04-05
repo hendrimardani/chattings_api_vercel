@@ -11,6 +11,7 @@ class ChattingsHandler {
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
     this.postUserByGroupIdHandler = this.postUserByGroupIdHandler.bind(this);
+    this.getUserGroupByUserIdHandler = this.getUserGroupByUserIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
     this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
@@ -112,6 +113,7 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
+    
     const { id } = request.params;
     await this._service.deleteUserById({ id });
 
@@ -141,6 +143,20 @@ class ChattingsHandler {
     });
     response.code(201);
     return response;
+  }
+
+  async getUserGroupByUserIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { user_id } = request.params;
+
+    const dataUserGroupByUserId = await this._service.getUserGroupByUserId({ user_id });
+
+    return {
+      status: 'success',
+      dataUserGroupByUserId,
+    };
   }
 
   async postUserByGroupIdHandler(request, h) {
