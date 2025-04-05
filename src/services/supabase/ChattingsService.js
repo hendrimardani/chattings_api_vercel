@@ -32,7 +32,7 @@ class ChattingsService {
     // console.log('addUser: ', data, error);
     if (error && error.code === '23505') {
       throw new ClientError('Email sudah digunakan');
-    } else if (error && error.code === '23502') {
+    } else if (error && error.code === '23502') {3
       throw new InvariantError('Pengguna gagal ditambahkan. Pastikan tidak ada data yang kosong');
     }
     return data;

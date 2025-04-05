@@ -2,8 +2,9 @@ CREATE TYPE gender AS ENUM ('laki-laki', 'perempuan');
 
 CREATE TABLE user_profile (
   id INTEGER PRIMARY KEY,
+  user_id INTEGER NOT NULL,
   nama VARCHAR(50) NOT NULL,
-  jenis_kelamin gender NULL
+  jenis_kelamin gender NULL,
   nik VARCHAR(16) UNIQUE NULL,
   umur INTEGER NULL,
   tgl_lahir DATE NULL,
@@ -11,7 +12,7 @@ CREATE TABLE user_profile (
   updated_at TIMESTAMP DEFAULT now()
 
   -- Menetapkan user_id sebagai Foreign Key yang terhubung ke users(id)
-  CONSTRAINT fk_users FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
+  CONSTRAINT fk_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Atur auto increment
