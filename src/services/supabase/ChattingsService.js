@@ -186,7 +186,7 @@ class ChattingsService {
   async getUserGroupByUserId({ user_id }) {
     const { data, error } = await this._supabase
       .from('user_group')
-      .select('*')
+      .select('*, user_profile(*), groups(*)')
       .eq('user_profile_id', user_id);
 
     // console.log('getUserGroupByUserId', data);
