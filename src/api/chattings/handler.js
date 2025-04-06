@@ -129,12 +129,14 @@ class ChattingsHandler {
     }
 
     const { user_profile_id } = request.params;
+    const dataUserProfileById = await this._service.getUserProfileById({ user_profile_id });
+    const created_by = dataUserProfileById.nama;
     const { nama_group, deskripsi, role='admin' } = request.payload;
 
     const group = await this._service.addGroup({ nama_group, deskripsi });
     const group_id = group.id;
 
-    const dataUserGroup = await this._service.addUserGroup({ user_profile_id, group_id, role });
+    const dataUserGroup = await this._service.addUserGroup({ user_profile_id, group_id, role, created_by });
 
     const response = h.response({
       status: 'success',
