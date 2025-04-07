@@ -50,10 +50,10 @@ class ChattingsHandler {
 
   async postLoginHandler(request, h) {
     const { email, password } = request.payload;
-    const user = await this._service.login({ email, password });
+    const dataLoginUserProfile = await this._service.login({ email, password });
 
     const token = require('@hapi/jwt').token.generate(
-      { id: user.id, email: user.email },
+      { id: dataLoginUserProfile.user_id, nama: dataLoginUserProfile.nama },
       { key: process.env.JWT_SECRET, algorithm: 'HS256' },
       { ttlSec: 604800 }// Token kedaluwarsa dalam 7 hari setelah login
     );
@@ -62,7 +62,7 @@ class ChattingsHandler {
       status: 'success',
       message: 'Berhasil masuk',
       dataLogin: {
-        user,
+        dataLoginuser,
         token
       },
     };
@@ -166,16 +166,15 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    // id ini digunakan ketika mengakses user sedang login lewat authentikasi
-    const id = request.auth.credentials.user.id;
-    // console.log('ID dari token JWT', id);
+    const currentUserName = request.auth.credentials.user.nama;
+    // console.log('Nama saat ini dari token JWT', currentUserName);
 
     const { group_id } = request.params;
     const { user_profile_id, role } = request.payload;
 
-    const user = await this._service.getUserProfileById({ user_profile_id });
-    const dataUserProfileById = user.user_id;
-    const created_by = id;
+    const addedOtherUser = await this._service.getUserProfileById({ user_profile_id });
+    const dataUserProfileById = addedOtherUser.user_id;
+    const created_by = currentUserName;
 
     const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
 

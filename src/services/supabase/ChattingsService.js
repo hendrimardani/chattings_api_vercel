@@ -72,6 +72,7 @@ class ChattingsService {
 
   async login({ email, password }) {
     const dataLoginByEmail = await this.getUserByEmail({ email });
+    const user_profile_id = dataLoginByEmail.id;
 
     // console.log('login: ', dataLoginByEmail);
     const isValidPassword = await bcrypt.compare(password, dataLoginByEmail.password);
@@ -79,7 +80,8 @@ class ChattingsService {
     if (!isValidPassword) {
       throw new InvariantError('Email atau password salah');
     }
-    return dataLoginByEmail;
+    const dataLoginUserProfile = await this.getUserProfileById({ user_profile_id });
+    return dataLoginUserProfile;
   }
 
   async editUserProfileById({ id, nama, nik, umur, jenis_kelamin, tgl_lahir }) {
