@@ -24,6 +24,7 @@
     { "src": "/user/(.*)/group/(.*)/notification", "dest": "src/server.js" },
     { "src": "/messages", "dest": "src/server.js" },
     { "src": "/messages/(.*)", "dest": "src/server.js" },
+    { "src": "/group/(.*)/notifications", "dest": "src/server.js"},
     { "src": "/message/(.*)/user_profile/(.*)/group/(.*)", "dest": "src/server.js" },
     { "src": "/message/(.*)/user_profile/(.*)", "dest": "src/server.js" }
   ]

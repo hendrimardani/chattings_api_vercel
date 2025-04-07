@@ -21,6 +21,7 @@ class ChattingsHandler {
     this.postMessageHandler = this.postMessageHandler.bind(this);
     this.getMessagesHandler = this.getMessagesHandler.bind(this);
     this.getMessageByIdHandler = this.getMessageByIdHandler.bind(this);
+    this.getMessageByGroupIdHandler = this.getMessageByGroupIdHandler.bind(this);
     this.putMessageByIdHandler = this.putMessageByIdHandler.bind(this);
     this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
   }
@@ -296,10 +297,24 @@ class ChattingsHandler {
     const { id } = request.params;
     const dataMessageById = await this._service.getMessageById({ id });
 
-    console.log(dataMessageById);
+    // console.log(dataMessageById);
     return {
       status: 'success',
       dataMessageById,
+    };
+  }
+
+  async getMessageByGroupIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { group_id } = request.params;
+    const dataMessagesByGroupId = await this._service.getMessageByGroupId({ group_id });
+
+    // console.log(dataMessagesByGroupId);
+    return {
+      status: 'success',
+      dataMessagesByGroupId,
     };
   }
 

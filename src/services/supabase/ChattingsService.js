@@ -335,6 +335,21 @@ class ChattingsService {
     return dataMessageById;
   }
 
+  async getMessageByGroupId({ group_id }) {
+    const { data, error } = await this._supabase
+      .from('messages')
+      .select('*')
+      .eq('group_id', group_id);
+
+    // console.log('getMessageByGroupId', data);
+    if (data === null) {
+      throw new NotFoundError('Pesan tidak ditemukan');
+    }
+
+    const dataMessagesByGroupId = data;
+    return dataMessagesByGroupId;
+  }
+
   async editMessageById({ id, user_profile_id, group_id, isi_pesan }) {
     const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const { data, error } = await this._supabase

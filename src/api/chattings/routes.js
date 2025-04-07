@@ -207,6 +207,14 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/group/{group_id}/notifications',
+    handler: handler.getMessageByGroupIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'PUT',
     path: '/message/{id}/user_profile/{user_profile_id}/group/{group_id}',
     handler: handler.putMessageByIdHandler,
