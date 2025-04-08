@@ -208,7 +208,7 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/group/{group_id}/notifications',
+    path: '/group/{group_id}/notification',
     handler: handler.getMessageByGroupIdHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
