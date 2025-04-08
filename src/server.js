@@ -58,7 +58,7 @@ const init = async () => {
 };
 
 // Jika dijalankan di localhost
-init();
+// init();
 
 // Jika dijalankan di vercel
 module.exports = async (req, res) => {
