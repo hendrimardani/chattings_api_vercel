@@ -49,7 +49,7 @@ class ChattingsService {
       .select()
       .maybeSingle();
       
-      console.log('addUserProfile', data, error);
+      // console.log('addUserProfile', data, error);
     return data;
   }
 
@@ -182,6 +182,9 @@ class ChattingsService {
       .select('user_profile_id, group_id, role, created_by')
       .maybeSingle();
 
+    if (data === null) {
+        throw new NotFoundError('Group tidak ditemukan');
+    }
     return data;
   }
 
@@ -199,6 +202,22 @@ class ChattingsService {
 
     const dataUserGroupByUserId = data;
     return dataUserGroupByUserId;
+  }
+
+  async getUserGroupByUserIdGroupId({ user_id, group_id }) {
+    const { data, error } = await this._supabase
+      .from('user_group')
+      .select('*')
+      .eq('user_profile_id', user_id)
+      .eq('group_id', group_id);
+
+    // console.log('getUserGroupByUserIdGroupId : ', data, error);
+
+    if (data.length > 0) {
+      throw new ClientError('Pengguna sudah ada di group');
+    }
+    const dataUserGroupByUserIdGroupId = data;
+    return dataUserGroupByUserIdGroupId;
   }
 
   async editGroupById({ group_id, nama_group, deskripsi }) {

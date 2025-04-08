@@ -174,6 +174,9 @@ class ChattingsHandler {
 
     const addedOtherUser = await this._service.getUserProfileById({ user_profile_id });
     const dataUserProfileById = addedOtherUser.user_id;
+
+    const user_id = user_profile_id;
+    await this._service.getUserGroupByUserIdGroupId({ user_id, group_id });
     const created_by = currentUserName;
 
     const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
