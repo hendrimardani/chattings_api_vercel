@@ -62,7 +62,7 @@ class ChattingsHandler {
       status: 'success',
       message: 'Berhasil masuk',
       dataLogin: {
-        dataLoginuser,
+        dataLoginUserProfile,
         token
       },
     };
