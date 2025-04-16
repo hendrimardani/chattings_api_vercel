@@ -270,7 +270,7 @@ class ChattingsService {
       .from('user_group')
       .select('groups(*), user_profile(*)');  // Memanggil 2 parent entitas
 
-    console.log('getUserGroups', data, error);
+    // console.log('getUserGroups', data, error);
     return data;
   }
 
@@ -335,7 +335,8 @@ class ChattingsService {
   async getMessages() {
     const { data, error } = await this._supabase
       .from('messages')
-      .select('*');
+      .select('*, user_profile(*), groups(*), notifications(*)');   // Memanggil 3 parent entitas
+    // console.log('getMessages', data, error);
 
     return data;
   }
