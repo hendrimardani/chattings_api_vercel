@@ -268,7 +268,7 @@ class ChattingsService {
   async getUserGroups() {
     const { data, error } = await this._supabase
       .from('user_group')
-      .select('groups(*), user_profile(*)');  // Memanggil 2 parent entitas
+      .select('*, groups(*), user_profile(*)');  // Memanggil 2 parent entitas
 
     // console.log('getUserGroups', data, error);
     return data;
