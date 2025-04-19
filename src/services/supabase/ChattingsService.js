@@ -4,6 +4,12 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const ClientError = require('../../exceptions/ClientError');
 const bcrypt = require('bcrypt');
 const { format } = require('date-fns');
+const dayjs = require('dayjs');
+const utc = require('dayjs/plugin/utc');
+const timezone = require('dayjs/plugin/timezone');
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 class ChattingsService {
   constructor() {
@@ -38,21 +44,15 @@ class ChattingsService {
     return data;
   }
 
-  async addUserProfile({ id, nama }) {
-    // 2025-04-18 19:29:18.031+00 
-    const dateUTC = new Date().toISOString(); 
-    const localTime = new Date(dateUTC).toLocaleDateString('id-ID', {
-      timeZone: 'Asia/Jakarta',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
+  async addUserProfile({ id, nama }) {    
+    const localTime = dayjs().tz('Asia/Jakarta').format(); 
+    // hasil: "2025-04-19T08:55:31+07:00"
+    
+    const date = {
+      created_at: localTime
+    };
 
-    const created_at = dateUTC;
+    const created_at = date;
     const updated_at = created_at;
 
     const { data, error } =  await this._supabase
