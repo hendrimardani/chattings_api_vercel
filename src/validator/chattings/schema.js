@@ -26,7 +26,7 @@ const groupSchema = Joi.object({
 });
 
 const userGroupSchema = Joi.object({
-  user_profile_id: Joi.number().integer().required(),
+  user_profile_id: Joi.array().items(Joi.number()),
   role: Joi.string().valid('member', 'admin').required(),
 });
 
