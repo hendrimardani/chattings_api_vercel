@@ -39,15 +39,20 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama }) {
-    // Output: "2025-04-18T14:00:00+07:00" (misal jam lokal memang 14:00)    
-    const date = new Date();
-    // Ubah waktu lokal ke offset +07:00
-    const offset = 7 * 60;
-    const tzDate = new Date(date.getTime() + (offset - date.getTimezoneOffset()) * 60 * 100);
-    // Format ke ISO dengan offset
-    const isoOffsetDate = tzDate.toISOString().replace('Z', '+07:00');
+    // 2025-04-18 19:29:18.031+00 
+    const dateUTC = new Date().toISOString(); 
+    const localTime = new Date(dateUTC).toLocaleDateString('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    });
 
-    const created_at = isoOffsetDate;
+    const created_at = dateUTC;
     const updated_at = created_at;
 
     const { data, error } =  await this._supabase
