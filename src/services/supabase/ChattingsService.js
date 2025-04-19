@@ -45,14 +45,8 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama }) {    
-    const localTime = dayjs().tz('Asia/Jakarta').format(); 
-    // hasil: "2025-04-19T08:55:31+07:00"
-    
-    const date = {
-      created_at: localTime
-    };
-
-    const created_at = date;
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    const created_at = localTime;
     const updated_at = created_at;
 
     const { data, error } =  await this._supabase
