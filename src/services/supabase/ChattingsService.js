@@ -222,7 +222,7 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('user_group')
       .select('*')
-      .eq('user_profile_id', user_id)
+      .in('user_profile_id', user_id)
       .eq('group_id', group_id);
 
     // console.log('getUserGroupByUserIdGroupId : ', data, error);
