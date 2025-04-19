@@ -172,14 +172,14 @@ class ChattingsHandler {
     const { group_id } = request.params;
     const { user_profile_id, role } = request.payload;
 
-    const addedOtherUser = await this._service.getUserProfileById({ user_profile_id });
-    const dataUserProfileById = addedOtherUser.user_id;
+    const addedOtherUser = await this._service.getUserProfileByUserIdArray({ user_profile_id });
+    const dataUserProfileByIdArray = addedOtherUser.map((item) => item.user_id);
 
-    const user_id = user_profile_id;
+    const user_id = dataUserProfileByIdArray;
     await this._service.getUserGroupByUserIdGroupId({ user_id, group_id });
     const created_by = currentUserName;
 
-    const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileById, group_id, role, created_by });
+    const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileByIdArray, group_id, role, created_by });
 
     const response = h.response({
       status: 'success',

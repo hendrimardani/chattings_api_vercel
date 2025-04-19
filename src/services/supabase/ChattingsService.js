@@ -183,23 +183,49 @@ class ChattingsService {
     const created_at = localTime;
     const updated_at = created_at;
 
-    const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
+    const dataUserProfileById = await this.getUserProfileByUserIdArray({ user_profile_id });
 
-    // console.log('addUserGroup: ', dataUserProfileById);
+    // console.log('addUserGroup : ', dataUserProfileById);
     if (dataUserProfileById === null) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
 
+    const insertData = user_profile_id.map(user_id => ({
+      user_profile_id: user_id,
+      group_id,
+      role,
+      created_by,
+      created_at: created_at,
+      updated_at: updated_at
+    }));
+    // console.log('addUserGroup insertData : ', insertData);
+    
     const { data, error } = await this._supabase
       .from('user_group')
-      .insert([{ user_profile_id, group_id, role, created_by, created_at, updated_at }])
-      .select('user_profile_id, group_id, role, created_by')
-      .maybeSingle();
+      .insert(insertData)
+      .select();
 
+      // console.log('addUserGroup : ', data, error);
     if (data === null) {
         throw new NotFoundError('Group tidak ditemukan');
     }
     return data;
+  }
+
+  async getUserProfileByUserIdArray({ user_profile_id }) {
+    const { data, error } = await this._supabase
+      .from('user_profile')
+      .select('*')
+      .in('user_id', user_profile_id);
+
+    // console.log('getUserProfileByUserIdArray : ', data, error);
+
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+
+    const dataUserProfileByIdArray = data;
+    return dataUserProfileByIdArray;
   }
 
   async getUserGroupByUserId({ user_id }) {
@@ -224,8 +250,6 @@ class ChattingsService {
       .select('*')
       .in('user_profile_id', user_id)
       .eq('group_id', group_id);
-
-    // console.log('getUserGroupByUserIdGroupId : ', data, error);
 
     if (data.length > 0) {
       throw new ClientError('Pengguna sudah ada di group');
