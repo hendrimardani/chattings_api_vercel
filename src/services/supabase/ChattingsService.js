@@ -17,8 +17,10 @@ class ChattingsService {
   }
 
   async addUser({ email, password, repeat_password }) {
-    // 2025-03-10 13:30:12
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    
+    const created_at = localTime;
     const updated_at = created_at;
 
     if (password !== repeat_password) {
@@ -45,7 +47,9 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama }) {    
+    // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
+    
     const created_at = localTime;
     const updated_at = created_at;
 
@@ -92,7 +96,7 @@ class ChattingsService {
 
   async editUserProfileById({ id, nama, nik, umur, jenis_kelamin, tgl_lahir }) {
     // console.log(id, nama, nik, umur, tgl_lahir);
-    const updateAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
       .from('user_profile')
@@ -138,8 +142,10 @@ class ChattingsService {
   }
 
   async addGroup({ nama_group, deskripsi }) {
-    // 2025-03-10 13:30:12
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+
+    const created_at = localTime;
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -171,8 +177,10 @@ class ChattingsService {
   }
 
   async addUserGroup({ user_profile_id, group_id, role, created_by }) {
-    // 2025-03-10 13:30:12
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+
+    const created_at = localTime;
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
@@ -258,8 +266,10 @@ class ChattingsService {
   }
 
   async addNotification({ is_status }) {
-    // 2025-03-10 13:30:12
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+
+    const created_at = localTime;
     const updated_at = created_at;
 
     const { data, error } = await this._supabase
@@ -307,8 +317,10 @@ class ChattingsService {
   }
 
   async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
-    // 2025-03-10 13:30:12
-    const created_at = format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+
+    const created_at = localTime;
     const updated_at = created_at;
 
     const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
