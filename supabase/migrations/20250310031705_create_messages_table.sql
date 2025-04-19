@@ -4,8 +4,8 @@ CREATE TABLE messages(
   notification_id INTEGER NOT NULL,
   group_id INTEGER NOT NULL,
   isi_pesan TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
 
   CONSTRAINT fk_user_profile FOREIGN KEY (user_profile_id) REFERENCES user_profile(id) ON DELETE CASCADE,
   CONSTRAINT fk_notifications FOREIGN KEY (notification_id) REFERENCES notifications(id) ON DELETE CASCADE,

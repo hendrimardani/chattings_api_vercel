@@ -1,8 +1,8 @@
 CREATE TABLE notifications(
   id SERIAL PRIMARY KEY,
   is_status BOOLEAN DEFAULT FALSE NULL,
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL
 );
 
 -- Atur auto increment
