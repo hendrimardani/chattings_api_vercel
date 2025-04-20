@@ -32,18 +32,19 @@
 							"    pm.expect(responseJson.status).to.equals('success');\r",
 							"    pm.expect(responseJson).to.ownProperty('message');\r",
 							"    pm.expect(responseJson.message).to.equals('Pengguna berhasil ditambahkan');\r",
-							"    pm.expect(responseJson).to.ownProperty('data');\r",
-							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson).to.ownProperty('dataRegister');\r",
+							"    pm.expect(responseJson.dataRegister).to.be.an('object');\r",
 							"});\r",
 							"\r",
-							"pm.test('response body data should have id property and not equal to empty', () => {\r",
+							"pm.test('response dataRegister data should have id property and not equal to empty', () => {\r",
 							"    const responseJson = pm.response.json();\r",
-							"    const { data } = responseJson;\r",
+							"    const { dataRegister } = responseJson;\r",
 							" \r",
-							"    pm.expect(data).to.ownProperty('id');\r",
-							"    pm.expect(data.id).to.not.equals('');\r",
+							"    pm.expect(dataRegister).to.ownProperty('user_id');\r",
+							"    pm.expect(dataRegister.user_id).to.not.equals('');\r",
 							"\r",
-							"    pm.environment.set('userProfileId', data.id);\r",
+							"    pm.environment.set('userId', dataRegister.user_id);\r",
+							"    pm.environment.set('userIdListString', JSON.stringify([dataRegister.user_id]));\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -56,7 +57,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nama\": \"Isdiyono\",\r\n    \"email\": \"isdiyono@gmail.com\",     // Harus uniq\r\n    \"password\": \"123123\",\r\n    \"repeat_password\": \"123123\"\r\n}",
+					"raw": "{\r\n    \"nama\": \"tesla\",\r\n    \"email\": \"tesla@gmail.com\",     // Harus uniq\r\n    \"password\": \"123123\",\r\n    \"repeat_password\": \"123123\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -205,18 +206,21 @@
 							"    pm.expect(responseJson.status).to.equals('success');\r",
 							"    pm.expect(responseJson).to.ownProperty('message');\r",
 							"    pm.expect(responseJson.message).to.equals('Berhasil masuk');\r",
-							"    pm.expect(responseJson).to.ownProperty('data');\r",
+							"    pm.expect(responseJson).to.ownProperty('dataLogin');\r",
 							"    \r",
-							"    pm.expect(responseJson.data).to.be.a('object');\r",
-							"    pm.expect(responseJson.data).to.ownProperty('user');\r",
+							"    pm.expect(responseJson.dataLogin).to.be.a('object');\r",
+							"    pm.expect(responseJson.dataLogin).to.ownProperty('dataLoginUserProfile');\r",
 							"\r",
-							"    pm.expect(responseJson.data.user).to.be.a('object');\r",
-							"    pm.expect(responseJson.data.user).to.ownProperty('id');\r",
+							"    pm.expect(responseJson.dataLogin.dataLoginUserProfile).to.be.a('object');\r",
+							"    pm.expect(responseJson.dataLogin.dataLoginUserProfile).to.ownProperty('id');\r",
 							"    \r",
-							"    pm.expect(responseJson.data).to.ownProperty('token');\r",
-							"    pm.expect(responseJson.data.token).to.be.a('string').and.to.have.length.above(0);\r",
+							"    pm.expect(responseJson.dataLogin).to.ownProperty('token');\r",
+							"    pm.expect(responseJson.dataLogin.token).to.be.a('string').and.to.have.length.above(0);\r",
 							"\r",
-							"    pm.environment.set('authToken', responseJson.token);\r",
+							"    pm.environment.set('userId', responseJson.dataLogin.dataLoginUserProfile.user_id);\r",
+							"    pm.environment.set('userIdListString', JSON.stringify([responseJson.dataLogin.dataLoginUserProfile.user_id]));\r",
+							"    pm.environment.set('authToken', responseJson.dataLogin.token);\r",
+							"    \r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -229,7 +233,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"isdiyono@gmail.com\",\r\n    \"password\": \"123123\"\r\n}",
+					"raw": "{\r\n    \"email\": \"jojon@gmail.com\",\r\n    \"password\": \"123123\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -377,21 +381,21 @@
 							"  const responseJson = pm.response.json();\r",
 							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
 							"   pm.expect(responseJson.status).to.equals('success');\r",
-							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
-							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('dataUsers');\r",
+							"   pm.expect(responseJson.dataUsers).to.be.an('array');\r",
 							"}); \r",
 							"\r",
-							"pm.test('response body data should have a users array and contain at least 1 item', () => {\r",
+							"pm.test('response body dataUsers should contain at least 1 item', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data } = responseJson;\r",
+							"   const { dataUsers } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka console Crtl + Alt + C\r",
-							"//    console.log(\"Test Getting All Users: \", data)\r",
+							"//    console.log(\"Test Getting All Users: \", dataUsers)\r",
 							" \r",
-							"   pm.expect(data).to.have.ownProperty('users');\r",
-							"   pm.expect(data.users).to.be.an('array');\r",
-							"   pm.expect(data.users).lengthOf.at.least(1);\r",
+							"   pm.expect(dataUsers[0]).to.have.ownProperty('user_id');\r",
+							"   pm.expect(dataUsers).to.be.an('array');\r",
+							"   pm.expect(dataUsers).lengthOf.at.least(1);\r",
 							"}); "
 						],
 						"type": "text/javascript",
@@ -450,38 +454,42 @@
 							" \r",
 							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
 							"   pm.expect(responseJson.status).to.equals('success');\r",
-							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
-							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('dataUserProfileById');\r",
+							"   pm.expect(responseJson.dataUserProfileById).to.be.an('object');\r",
 							"}); \r",
 							"\r",
-							"pm.test('response body data should contain user object', () => {\r",
+							"pm.test('response body dataUserProfileById should contain object', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data } = responseJson;\r",
+							"   const { dataUserProfileById } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka console Ctrl + Alt + C\r",
-							"   console.log('Test: ', data)\r",
-							" \r",
-							"   pm.expect(data).to.have.ownProperty('dataUserProfileById');\r",
-							"   pm.expect(data.dataUserProfileById).to.be.an('object');\r",
+							"//    console.log('Test: ', dataUserProfileById)\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.be.an('object');\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('user_id');\r",
 							"}); \r",
 							"\r",
-							"pm.test('note object should contain correct value for id, email, password, created_at and updated_at', () => {\r",
+							"pm.test('dataUserProfileById object should contain correct value for user_id, nama, nik, umur, tgl_lahir, jenis_kelamin', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data: { dataUserProfileById } } = responseJson;\r",
+							"   const { dataUserProfileById } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka Console Ctrl + Alt + C\r",
 							"//    console.log(dataUserProfileById);\r",
 							"\r",
-							"   const expectedId = pm.environment.get('userProfileId');\r",
-							"   const expectedNama = 'Nikola Tesla';\r",
+							"   const expectedId = pm.environment.get('userId');\r",
+							"   const expectedNama = 'jojon';\r",
 							"   const expectedNik = null;\r",
+							"   const expectedAlamat = null;\r",
 							"   const expectedUmur = null;\r",
 							"   const expectedTglLahir = null;\r",
+							"   const expectedJenisKelamin = null;\r",
+							"   const expectedGambarProfile = null;\r",
+							"   const expectedGambarBanner = null;\r",
 							"   \r",
-							"   pm.expect(dataUserProfileById).to.have.ownProperty('id');\r",
-							"   pm.expect(dataUserProfileById.id).to.equals(expectedId);\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('user_id');\r",
+							"   pm.expect(dataUserProfileById.user_id).to.equals(expectedId);\r",
 							"\r",
 							"   pm.expect(dataUserProfileById).to.have.ownProperty('nama');\r",
 							"   pm.expect(dataUserProfileById.nama).to.equals(expectedNama);\r",
@@ -489,11 +497,23 @@
 							"   pm.expect(dataUserProfileById).to.have.ownProperty('nik');\r",
 							"   pm.expect(dataUserProfileById.nik).to.equals(expectedNik);\r",
 							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('alamat');\r",
+							"   pm.expect(dataUserProfileById.nik).to.equals(expectedAlamat);\r",
+							"\r",
 							"   pm.expect(dataUserProfileById).to.have.ownProperty('umur');\r",
 							"   pm.expect(dataUserProfileById.umur).to.equals(expectedUmur);\r",
 							"\r",
 							"   pm.expect(dataUserProfileById).to.have.ownProperty('tgl_lahir');\r",
 							"   pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedTglLahir);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('jenis_kelamin');\r",
+							"   pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedJenisKelamin);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('gambar_profile');\r",
+							"   pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedGambarProfile);\r",
+							"\r",
+							"   pm.expect(dataUserProfileById).to.have.ownProperty('gambar_banner');\r",
+							"   pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedGambarBanner);\r",
 							"});\r",
 							""
 						],
@@ -516,14 +536,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/user_profile/{{userProfileId}}",
+					"raw": "localhost:3000/user_profile/{{userId}}",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user_profile",
-						"{{userProfileId}}"
+						"{{userId}}"
 					]
 				}
 			},
@@ -559,11 +579,11 @@
 							"});\r",
 							"\r",
 							"pm.test('when request the updated user profile', () => {\r",
-							"    const userProfileId = pm.environment.get('userProfileId');\r",
+							"    const userId = pm.environment.get('userId');\r",
 							"    const token = pm.environment.get('authToken'); \r",
 							"    \r",
 							"    pm.sendRequest({\r",
-							"        url: `http://localhost:3000/user_profile/${userProfileId}`,\r",
+							"        url: `http://localhost:3000/user_profile/${userId}`,\r",
 							"        method: 'GET',\r",
 							"        header: {\r",
 							"            'Authorization': `Bearer ${token}`, // Kirim token di header\r",
@@ -572,27 +592,46 @@
 							"    }, (error, response) => {\r",
 							"        if (!error) {\r",
 							"            pm.test('then the updated user profile should contain the latest data', () => {\r",
-							"                const { data: { dataUserProfileById } } = response.json();\r",
+							"                const { dataUserProfileById } = response.json();\r",
 							"\r",
 							"                // Debugging\r",
 							"                // Buka console Ctrl + Alt + C\r",
-							"                // console.log('Update User Profile: ', data); \r",
+							"                console.log('Update User Profile: ', dataUserProfileById); \r",
 							"\r",
-							"                const expectedNama = 'Updated isdiyono';\r",
+							"                const expectedNama = 'Updated jojon';\r",
 							"                const expectedNik = '1200259903931231';\r",
 							"                const expectedUmur = 20;\r",
+							"                const expectedAlamat = 'Jalan cagak';\r",
+							"                const expectedJenisKelamin = 'laki-laki';\r",
 							"                const expectedTglLahir = '2025-03-10';\r",
+							"                const expectedGambarProfile = 'belum ada';\r",
+							"                const expectedGambarBanner = 'belum ada';\r",
 							"\r",
 							"                pm.expect(dataUserProfileById.nama).to.equals(expectedNama);\r",
 							"                pm.expect(dataUserProfileById.nik).to.equals(expectedNik);\r",
 							"                pm.expect(dataUserProfileById.umur).to.equals(expectedUmur);\r",
+							"                pm.expect(dataUserProfileById.alamat).to.equals(expectedAlamat);\r",
+							"                pm.expect(dataUserProfileById.jenis_kelamin).to.equals(expectedJenisKelamin);\r",
 							"                pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedTglLahir);\r",
+							"                pm.expect(dataUserProfileById.gambar_profile).to.equals(expectedGambarProfile);\r",
+							"                pm.expect(dataUserProfileById.gambar_banner).to.equals(expectedGambarBanner);\r",
+							"\r",
 							"            });\r",
 							"        } else {\r",
 							"            console.log('Request Error:', error);\r",
 							"        }\r",
 							"    });\r",
 							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
 							""
 						],
 						"type": "text/javascript",
@@ -615,7 +654,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nama\": \"Updated isdiyono\",\r\n    \"nik\": \"1200259903931231\", // Harus uniq\r\n    \"umur\": 20,\r\n    \"tgl_lahir\": \"2025-03-10\"\r\n}",
+					"raw": "{\r\n    \"nama\": \"Updated jojon\",\r\n    \"nik\": \"1200259903931231\", // Harus uniq\r\n    \"umur\": 20,\r\n    \"alamat\": \"Jalan cagak\",\r\n    \"jenis_kelamin\": \"laki-laki\",\r\n    \"tgl_lahir\": \"2025-03-10\",\r\n    \"gambar_profile\": \"belum ada\",\r\n    \"gambar_banner\": \"belum ada\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -623,14 +662,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/user_profile/{{userProfileId}}",
+					"raw": "localhost:3000/user_profile/{{userId}}",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user_profile",
-						"{{userProfileId}}"
+						"{{userId}}"
 					]
 				}
 			},
@@ -728,14 +767,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/user_profile/{{userProfileId}}",
+					"raw": "localhost:3000/user_profile/{{userId}}",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user_profile",
-						"{{userProfileId}}"
+						"{{userId}}"
 					]
 				}
 			},
@@ -811,14 +850,14 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/user/{{userProfileId}}",
+					"raw": "localhost:3000/user/{{userId}}",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user",
-						"{{userProfileId}}"
+						"{{userId}}"
 					]
 				}
 			},
@@ -850,18 +889,18 @@
 							"    pm.expect(responseJson.status).to.equals('success');\r",
 							"    pm.expect(responseJson).to.ownProperty('message');\r",
 							"    pm.expect(responseJson.message).to.equals('Group berhasil ditambahkan');\r",
-							"    pm.expect(responseJson).to.ownProperty('data');\r",
-							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson).to.ownProperty('dataUserGroup');\r",
+							"    pm.expect(responseJson.dataUserGroup).to.be.an('array');\r",
 							"});\r",
 							"\r",
-							"pm.test('response body data should have user_profile_id property and not equal to empty', () => {\r",
+							"pm.test('response body data should have user_id property and not equal to empty', () => {\r",
 							"    const responseJson = pm.response.json();\r",
-							"    const { data } = responseJson;\r",
+							"    const { dataUserGroup } = responseJson;\r",
 							" \r",
-							"    pm.expect(data).to.ownProperty('user_profile_id');\r",
-							"    pm.expect(data.user_profile_id).to.not.equals('');\r",
+							"    pm.expect(dataUserGroup[0]).to.ownProperty('user_id');\r",
+							"    pm.expect(dataUserGroup[0].user_id).to.not.equals('');\r",
 							"\r",
-							"    pm.environment.set('groupId', data.group_id);\r",
+							"    pm.environment.set('groupId', dataUserGroup[0].group_id);\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -884,7 +923,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nama_group\": \"Add Group\",\r\n    \"deskripsi\": \"Ini deksripsi group\"\r\n}",
+					"raw": "{\r\n    \"nama_group\": \"Add Group\",\r\n    \"deskripsi\": \"Ini deksripsi group\",\r\n    \"gambar_profile\": \"belum ada\",\r\n    \"gambar_banner\": \"belum ada\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -892,14 +931,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/user_profile/{{userProfileId}}/group",
+					"raw": "localhost:3000/user_profile/{{userIdListString}}/group",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user_profile",
-						"{{userProfileId}}",
+						"{{userIdListString}}",
 						"group"
 					]
 				}
@@ -1038,16 +1077,16 @@
 							"    pm.expect(responseJson.status).to.equals('success');\r",
 							"    pm.expect(responseJson).to.ownProperty('message');\r",
 							"    pm.expect(responseJson.message).to.equals('Pengguna berhasil ditambahkan di group');\r",
-							"    pm.expect(responseJson).to.ownProperty('data');\r",
-							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson).to.ownProperty('dataUserByGroupId');\r",
+							"    pm.expect(responseJson.dataUserByGroupId).to.be.an('array');\r",
 							"});\r",
 							"\r",
-							"pm.test('response body data should have user_profile_id property and not equal to empty', () => {\r",
+							"pm.test('response body dataUserByGroupId should have user_id property and not equal to empty', () => {\r",
 							"    const responseJson = pm.response.json();\r",
-							"    const { data } = responseJson;\r",
+							"    const { dataUserByGroupId } = responseJson;\r",
 							" \r",
-							"    pm.expect(data).to.ownProperty('user_profile_id');\r",
-							"    pm.expect(data.user_profile_id).to.not.equals('');\r",
+							"    pm.expect(dataUserByGroupId[0]).to.ownProperty('user_id');\r",
+							"    pm.expect(dataUserByGroupId[0].user_id).to.not.equals('');\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -1070,7 +1109,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"user_profile_id\": {{userProfileId}},     // Id user lain\r\n    \"role\": \"member\"\r\n}",
+					"raw": "{\r\n    \"user_id\": [337],     // Id user lain\r\n    \"role\": \"member\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1219,21 +1258,21 @@
 							"  const responseJson = pm.response.json();\r",
 							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
 							"   pm.expect(responseJson.status).to.equals('success');\r",
-							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
-							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('userGroups');\r",
+							"   pm.expect(responseJson.userGroups).to.be.an('array');\r",
 							"}); \r",
 							"\r",
-							"pm.test('response body data should have a user group array and contain at least 1 item', () => {\r",
+							"pm.test('response body userGroups should have a user group array and contain at least 1 item', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data } = responseJson;\r",
+							"   const { userGroups } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka console Crtl + Alt + C\r",
-							"//    console.log(\"Test Getting All User Group: \", data)\r",
+							"//    console.log(\"Test Getting All User Group: \", userGroups)\r",
 							" \r",
-							"   pm.expect(data).to.have.ownProperty('userGroups');\r",
-							"   pm.expect(data.userGroups).to.be.an('array');\r",
-							"   pm.expect(data.userGroups).lengthOf.at.least(1);\r",
+							"   pm.expect(userGroups[0]).to.have.ownProperty('groups');\r",
+							"   pm.expect(userGroups[0].groups).to.be.an('object');\r",
+							"   pm.expect(userGroups).lengthOf.at.least(1);\r",
 							"}); "
 						],
 						"type": "text/javascript",
@@ -1293,21 +1332,21 @@
 							" \r",
 							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
 							"   pm.expect(responseJson.status).to.equals('success');\r",
-							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
-							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('dataGroupById');\r",
+							"   pm.expect(responseJson.dataGroupById).to.be.an('object');\r",
 							"}); \r",
 							"\r",
-							"pm.test('response body data should contain dataGroupById object', () => {\r",
+							"pm.test('response body dataGroupById should contain object', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data } = responseJson;\r",
+							"   const { dataGroupById } = responseJson;\r",
 							" \r",
-							"   pm.expect(data).to.have.ownProperty('dataGroupById');\r",
-							"   pm.expect(data.dataGroupById).to.be.an('object');\r",
+							"   pm.expect(dataGroupById).to.have.ownProperty('id');\r",
+							"   pm.expect(dataGroupById).to.be.an('object');\r",
 							"}); \r",
 							"\r",
-							"pm.test('dataGroupById object should contain correct value for id, nama_group, created_at, and updated_at property', () => {\r",
+							"pm.test('dataGroupById object should contain correct value for id, nama_group, deskripsi', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data: { dataGroupById } } = responseJson;\r",
+							"   const { dataGroupById } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka Console Crtl + Alt + C\r",
@@ -1399,11 +1438,11 @@
 							"    }, (error, response) => {\r",
 							"        if (!error) {\r",
 							"            pm.test('then the updated group should contain the latest data', () => {\r",
-							"                const { data: { dataGroupById } } = response.json();\r",
+							"                const { dataGroupById } = response.json();\r",
 							"\r",
 							"                // Debugging\r",
 							"                // Buka console Ctrl + Alt + C\r",
-							"                // console.log('Update Group: ', dataGroupById); \r",
+							"                // console.log('Update Group: ', response.json()); \r",
 							"\r",
 							"                const expectedNamaGroup = 'Updated nama group';\r",
 							"                const expectedDeskripsi = 'Updated deskripsi';\r",
@@ -1438,7 +1477,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nama_group\": \"Updated nama group\",\r\n    \"deskripsi\": \"Updated deskripsi\"\r\n}",
+					"raw": "{\r\n    \"nama_group\": \"Updated nama group\",\r\n    \"deskripsi\": \"Updated deskripsi\",\r\n    \"gambar_profile\": \"belum ada\",\r\n    \"gambar_banner\": \"belum ada\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -1670,19 +1709,19 @@
 							"    pm.expect(responseJson.status).to.equals('success');\r",
 							"    pm.expect(responseJson).to.ownProperty('message');\r",
 							"    pm.expect(responseJson.message).to.equals('Pesan berhasil ditambahkan');\r",
-							"    pm.expect(responseJson).to.ownProperty('data');\r",
-							"    pm.expect(responseJson.data).to.be.an('object');\r",
+							"    pm.expect(responseJson).to.ownProperty('dataMessage');\r",
+							"    pm.expect(responseJson.dataMessage).to.be.an('object');\r",
 							"});\r",
 							"\r",
-							"pm.test('response body data should have id property and not equal to empty', () => {\r",
+							"pm.test('response body dataMessage should have id property and not equal to empty', () => {\r",
 							"    const responseJson = pm.response.json();\r",
-							"    const { data } = responseJson;\r",
+							"    const { dataMessage } = responseJson;\r",
 							" \r",
-							"    pm.expect(data).to.ownProperty('id');\r",
-							"    pm.expect(data.user_profile_id).to.not.equals('');\r",
+							"    pm.expect(dataMessage).to.ownProperty('id');\r",
+							"    pm.expect(dataMessage.user_profile_id).to.not.equals('');\r",
 							"\r",
-							"    pm.environment.set('messageId', data.id);\r",
-							"    pm.environment.set('notificationId', data.notification_id);\r",
+							"    pm.environment.set('messageId', dataMessage.id);\r",
+							"    pm.environment.set('notificationId', dataMessage.notification_id);\r",
 							"});"
 						],
 						"type": "text/javascript",
@@ -1713,14 +1752,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/user_profile/{{userProfileId}}/group/{{groupId}}/notification",
+					"raw": "localhost:3000/user_profile/{{userId}}/group/{{groupId}}/notification",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user_profile",
-						"{{userProfileId}}",
+						"{{userId}}",
 						"group",
 						"{{groupId}}",
 						"notification"
@@ -1821,14 +1860,14 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/user_profile/{{userProfileId}}/group/{{groupId}}/notification",
+					"raw": "localhost:3000/user_profile/{{userId}}/group/{{groupId}}/notification",
 					"host": [
 						"localhost"
 					],
 					"port": "3000",
 					"path": [
 						"user_profile",
-						"{{userProfileId}}",
+						"{{userId}}",
 						"group",
 						"{{groupId}}",
 						"notification"
@@ -1861,21 +1900,21 @@
 							"  const responseJson = pm.response.json();\r",
 							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
 							"   pm.expect(responseJson.status).to.equals('success');\r",
-							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
-							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('dataMessages');\r",
+							"   pm.expect(responseJson.dataMessages).to.be.an('array');\r",
 							"}); \r",
 							"\r",
-							"pm.test('response body data should have a user group array and contain at least 1 item', () => {\r",
+							"pm.test('response body dataMessages should contain at least 1 item', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data } = responseJson;\r",
+							"   const { dataMessages } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka console Crtl + Alt + C\r",
-							"//    console.log(\"Test Getting All Messages: \", data)\r",
+							"//    console.log(\"Test Getting All Messages: \", dataMessages)\r",
 							" \r",
-							"   pm.expect(data).to.have.ownProperty('messages');\r",
-							"   pm.expect(data.messages).to.be.an('array');\r",
-							"   pm.expect(data.messages).lengthOf.at.least(1);\r",
+							"   pm.expect(dataMessages[0]).to.have.ownProperty('id');\r",
+							"   pm.expect(dataMessages).to.be.an('array');\r",
+							"   pm.expect(dataMessages).lengthOf.at.least(1);\r",
 							"}); "
 						],
 						"type": "text/javascript",
@@ -1934,21 +1973,21 @@
 							" \r",
 							"   pm.expect(responseJson).to.have.ownProperty('status');\r",
 							"   pm.expect(responseJson.status).to.equals('success');\r",
-							"   pm.expect(responseJson).to.have.ownProperty('data');\r",
-							"   pm.expect(responseJson.data).to.be.an('object');\r",
+							"   pm.expect(responseJson).to.have.ownProperty('dataMessageById');\r",
+							"   pm.expect(responseJson.dataMessageById).to.be.an('object');\r",
 							"}); \r",
 							"\r",
-							"pm.test('response body data should contain dataMessageById object', () => {\r",
+							"pm.test('dataMessageById object should contain correct value for id, user_profile_id, group_id, isi_pesan', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data } = responseJson;\r",
+							"   const { dataMessageById } = responseJson;\r",
 							"\r",
-							"   pm.expect(data).to.have.ownProperty('dataMessageById');\r",
-							"   pm.expect(data.dataMessageById).to.be.an('object');\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('id');\r",
+							"   pm.expect(dataMessageById).to.be.an('object');\r",
 							"}); \r",
 							"\r",
-							"pm.test('dataMessageById object should contain correct value for id, user_profile_id, notification_id, group_id, isi_pesan, created_at, and updated_at property', () => {\r",
+							"pm.test('dataMessageById object should contain correct value for id, user_id, notification_id, group_id, isi_pesan', () => {\r",
 							"   const responseJson = pm.response.json();\r",
-							"   const { data: { dataMessageById } } = responseJson;\r",
+							"   const { dataMessageById } = responseJson;\r",
 							"\r",
 							"   // Debugging\r",
 							"   // Buka Console Crtl + Alt + C\r",
@@ -1957,16 +1996,20 @@
 							"   const expectedId = pm.environment.get('messageId');\r",
 							"   const expectedUserProfileId = pm.environment.get('userProfileId');\r",
 							"   const expectedGroupId = pm.environment.get('groupId');\r",
+							"   const expectedNotificationId = pm.environment.get('notificationId');\r",
 							"   const expectedIsiPesan = 'Add Message';\r",
 							"\r",
 							"   pm.expect(dataMessageById).to.have.ownProperty('id');\r",
 							"   pm.expect(dataMessageById.id).to.equals(expectedId);\r",
 							"\r",
-							"   pm.expect(dataMessageById).to.have.ownProperty('user_profile_id');\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('user_id');\r",
 							"   pm.expect(dataMessageById.user_profile_id).to.equals(expectedUserProfileId);\r",
 							"\r",
 							"   pm.expect(dataMessageById).to.have.ownProperty('group_id');\r",
 							"   pm.expect(dataMessageById.group_id).to.equals(expectedGroupId);\r",
+							"\r",
+							"   pm.expect(dataMessageById).to.have.ownProperty('notification_id');\r",
+							"   pm.expect(dataMessageById.notification_id).to.equals(expectedNotificationId);\r",
 							"\r",
 							"   pm.expect(dataMessageById).to.have.ownProperty('isi_pesan');\r",
 							"   pm.expect(dataMessageById.isi_pesan).to.equals(expectedIsiPesan);\r",
@@ -2060,7 +2103,7 @@
 							"    }, (error, response) => {\r",
 							"        if (!error) {\r",
 							"            pm.test('then the updated message should contain the latest data', () => {\r",
-							"                const { data: { dataMessageById } } = response.json();\r",
+							"                const { dataMessageById } = response.json();\r",
 							"\r",
 							"                // Debugging\r",
 							"                // Buka console Ctrl + Alt + C\r",
@@ -2069,13 +2112,11 @@
 							"                const expectedId = pm.environment.get('messageId');\r",
 							"                const expectedUserProfileId = pm.environment.get('userProfileId');\r",
 							"                const expectedGroupId = pm.environment.get('groupId');\r",
-							"                const expectedNotificationId = pm.environment.get('notificationId');\r",
 							"                const expectedIsiPesan = 'Updated Message';\r",
 							"\r",
 							"                pm.expect(dataMessageById.id).to.equals(expectedId);\r",
 							"                pm.expect(dataMessageById.user_profile_id).to.equals(expectedUserProfileId);\r",
 							"                pm.expect(dataMessageById.group_id).to.equals(expectedGroupId);\r",
-							"                pm.expect(dataMessageById.notification_id).to.equals(expectedNotificationId);\r",
 							"                pm.expect(dataMessageById.isi_pesan).to.equals(expectedIsiPesan);\r",
 							"            });\r",
 							"        } else {\r",
@@ -2113,7 +2154,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userProfileId}}/group/{{groupId}}",
+					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userId}}/group/{{groupId}}",
 					"host": [
 						"localhost"
 					],
@@ -2122,7 +2163,7 @@
 						"message",
 						"{{messageId}}",
 						"user_profile",
-						"{{userProfileId}}",
+						"{{userId}}",
 						"group",
 						"{{groupId}}"
 					]
@@ -2222,7 +2263,7 @@
 					}
 				},
 				"url": {
-					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userProfileId}}/group/{{groupId}}",
+					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userId}}/group/{{groupId}}",
 					"host": [
 						"localhost"
 					],
@@ -2231,7 +2272,7 @@
 						"message",
 						"{{messageId}}",
 						"user_profile",
-						"{{userProfileId}}",
+						"{{userId}}",
 						"group",
 						"{{groupId}}"
 					]
@@ -2309,7 +2350,7 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userProfileId}}",
+					"raw": "localhost:3000/message/{{messageId}}/user_profile/{{userId}}",
 					"host": [
 						"localhost"
 					],
@@ -2318,7 +2359,7 @@
 						"message",
 						"{{messageId}}",
 						"user_profile",
-						"{{userProfileId}}"
+						"{{userId}}"
 					]
 				}
 			},

@@ -47,7 +47,6 @@ class ChattingsService {
   }
 
   async addUserProfile({ id, nama }) {    
-    // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
     const created_at = localTime;
@@ -82,7 +81,7 @@ class ChattingsService {
 
   async login({ email, password }) {
     const dataLoginByEmail = await this.getUserByEmail({ email });
-    const user_profile_id = dataLoginByEmail.id;
+    const user_id = dataLoginByEmail.id;
 
     // console.log('login: ', dataLoginByEmail);
     const isValidPassword = await bcrypt.compare(password, dataLoginByEmail.password);
@@ -90,12 +89,11 @@ class ChattingsService {
     if (!isValidPassword) {
       throw new InvariantError('Email atau password salah');
     }
-    const dataLoginUserProfile = await this.getUserProfileById({ user_profile_id });
+    const dataLoginUserProfile = await this.getUserProfileById({ user_id });
     return dataLoginUserProfile;
   }
 
-  async editUserProfileById({ id, nama, nik, umur, jenis_kelamin, tgl_lahir }) {
-    // console.log(id, nama, nik, umur, tgl_lahir);
+  async editUserProfileById({ user_id, nama, nik, umur, jenis_kelamin, tgl_lahir, alamat, gambar_profile, gambar_banner }) {
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
@@ -106,10 +104,13 @@ class ChattingsService {
         umur: umur,
         jenis_kelamin: jenis_kelamin,
         tgl_lahir: tgl_lahir,
+        alamat: alamat,
+        gambar_profile,
+        gambar_banner,
         updated_at: updateAt
       })
-      .eq('user_id', id)
-      .select('');
+      .eq('user_id', user_id)
+      .select('*');
 
     // console.log('editUserProfileByid: ', data, error);
     if (error && error.code === '23505') {
@@ -141,7 +142,7 @@ class ChattingsService {
     return data;
   }
 
-  async addGroup({ nama_group, deskripsi }) {
+  async addGroup({ nama_group, deskripsi, gambar_profile, gambar_banner }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
 
@@ -150,7 +151,7 @@ class ChattingsService {
 
     const { data, error } = await this._supabase
       .from('groups')
-      .insert([{ nama_group, deskripsi, created_at, updated_at }])
+      .insert([{ nama_group, deskripsi, gambar_profile, gambar_banner, created_at, updated_at }])
       .select()
       .maybeSingle();
 
@@ -159,11 +160,11 @@ class ChattingsService {
     return data;
   }
 
-  async getUserProfileById({ user_profile_id }) {
+  async getUserProfileById({ user_id }) {
     const { data, error } = await this._supabase
       .from('user_profile')
       .select('*')
-      .eq('user_id', user_profile_id)
+      .eq('user_id', user_id)
       .maybeSingle();
 
     // console.log('getUserProfileById', data);
@@ -176,22 +177,21 @@ class ChattingsService {
     return dataUserProfileById;
   }
 
-  async addUserGroup({ user_profile_id, group_id, role, created_by }) {
+  async addUserGroup({ user_id_list, group_id, role, created_by }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
 
     const created_at = localTime;
     const updated_at = created_at;
 
-    const dataUserProfileById = await this.getUserProfileByUserIdArray({ user_profile_id });
+    const dataUserProfileById = await this.getUserProfileByUserIdArray({ user_id_list });
 
-    // console.log('addUserGroup : ', dataUserProfileById);
+    // console.log('addUserGroup : ', user_id_list);
     if (dataUserProfileById === null) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
-
-    const insertData = user_profile_id.map(user_id => ({
-      user_profile_id: user_id,
+    const insertData = user_id_list.map(user_id => ({
+      user_id: user_id,
       group_id,
       role,
       created_by,
@@ -212,43 +212,27 @@ class ChattingsService {
     return data;
   }
 
-  async getUserProfileByUserIdArray({ user_profile_id }) {
+  async getUserProfileByUserIdArray({ user_id_list }) {
     const { data, error } = await this._supabase
       .from('user_profile')
       .select('*')
-      .in('user_id', user_profile_id);
+      .in('user_id', user_id_list);
 
     // console.log('getUserProfileByUserIdArray : ', data, error);
 
-    if (data === null) {
+    if (data === null || (Array.isArray(data) && data.length === 0)) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
-
+    
     const dataUserProfileByIdArray = data;
     return dataUserProfileByIdArray;
   }
 
-  async getUserGroupByUserId({ user_id }) {
-    const { data, error } = await this._supabase
-      .from('user_group')
-      .select('*, user_profile(*), groups(*)')
-      .eq('user_profile_id', user_id);
-
-    // console.log('getUserGroupByUserId', data);
-
-    if (data === null) {
-      throw new NotFoundError('Pengguna tidak ditemukan');
-    }
-
-    const dataUserGroupByUserId = data;
-    return dataUserGroupByUserId;
-  }
-
-  async getUserGroupByUserIdGroupId({ user_id, group_id }) {
+  async getUserGroupByUserIdGroupId({ user_id_list, group_id }) {
     const { data, error } = await this._supabase
       .from('user_group')
       .select('*')
-      .in('user_profile_id', user_id)
+      .in('user_id', user_id_list)
       .eq('group_id', group_id);
 
     if (data.length > 0) {
@@ -258,17 +242,19 @@ class ChattingsService {
     return dataUserGroupByUserIdGroupId;
   }
 
-  async editGroupById({ group_id, nama_group, deskripsi }) {
-    const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
+  async editGroupById({ group_id, nama_group, deskripsi, gambar_profile, gambar_banner }) {
+    const updateAt = dayjs().tz('Asia/Jakarta').format();
     const { data, error } = await this._supabase
       .from('groups')
       .update({
         nama_group: nama_group,
         deskripsi: deskripsi,
-        updated_at: updated_at,
+        gambar_profile: gambar_profile,
+        gambar_banner: gambar_banner,
+        updated_at: updateAt,
       })
       .eq('id', group_id)
-      .select('id, nama_group');
+      .select('*');
 
     // console.log('editUserGroup: ', data, error);
     if (data.length === 0) {
@@ -340,14 +326,14 @@ class ChattingsService {
     return dataNotificationById;
   }
 
-  async addMessage({ user_profile_id, group_id, notification_id, isi_pesan }) {
+  async addMessage({ user_id, group_id, notification_id, isi_pesan }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
 
     const created_at = localTime;
     const updated_at = created_at;
 
-    const dataUserProfileById = await this.getUserProfileById({ user_profile_id });
+    const dataUserProfileById = await this.getUserProfileById({ user_id });
     const dataGroupById = await this.getGroupById({ group_id });
     const dataNotificationById = await this.getNotificationById({ notification_id });
 
@@ -367,7 +353,7 @@ class ChattingsService {
 
     const { data, error } = await this._supabase
       .from('messages')
-      .insert([{ user_profile_id, group_id, notification_id, isi_pesan, created_at, updated_at }])
+      .insert([{ user_id, group_id, notification_id, isi_pesan, created_at, updated_at }])
       .select('*')
       .maybeSingle();
 
@@ -386,7 +372,7 @@ class ChattingsService {
   async getMessageById({ id }) {
     const { data, error } = await this._supabase
       .from('messages')
-      .select('id, user_profile_id, group_id, isi_pesan')
+      .select('*')
       .eq('id', id)
       .maybeSingle();
 
@@ -399,22 +385,7 @@ class ChattingsService {
     return dataMessageById;
   }
 
-  async getMessageByGroupId({ group_id }) {
-    const { data, error } = await this._supabase
-      .from('messages')
-      .select('*')
-      .eq('group_id', group_id);
-
-    // console.log('getMessageByGroupId', data);
-    if (data === null) {
-      throw new NotFoundError('Pesan tidak ditemukan');
-    }
-
-    const dataMessagesByGroupId = data;
-    return dataMessagesByGroupId;
-  }
-
-  async editMessageById({ id, user_profile_id, group_id, isi_pesan }) {
+  async editMessageById({ id, user_id, group_id, isi_pesan }) {
     const updated_at = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const { data, error } = await this._supabase
       .from('messages')
@@ -423,9 +394,9 @@ class ChattingsService {
         updated_at: updated_at
       })
       .eq('id', id)
-      .eq('user_profile_id', user_profile_id)
+      .eq('user_id', user_id)
       .eq('group_id', group_id)
-      .select('id, user_profile_id, group_id, notification_id, isi_pesan')
+      .select('*')
       .maybeSingle();
 
     // console.log('editMessage: ', data, error);
@@ -434,12 +405,12 @@ class ChattingsService {
     }
   }
 
-  async deleteMessageById({ id, user_profile_id }) {
+  async deleteMessageById({ id, user_id }) {
     const { data, error } = await this._supabase
       .from('messages')
       .delete()
       .eq('id', id)
-      .eq('user_profile_id', user_profile_id)
+      .eq('user_id', user_id)
       .select();
 
     // console.log('deleteMessageById: ', data, error);

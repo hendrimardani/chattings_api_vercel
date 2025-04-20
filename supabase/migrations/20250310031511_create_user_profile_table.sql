@@ -5,9 +5,12 @@ CREATE TABLE user_profile (
   user_id INTEGER UNIQUE NOT NULL,
   nama VARCHAR(50) NOT NULL,
   jenis_kelamin gender NULL,
+  alamat TEXT NULL,
   nik VARCHAR(16) UNIQUE NULL,
   umur INTEGER NULL,
   tgl_lahir DATE NULL,
+  gambar_profile TEXT NULL,
+  gambar_banner TEXT NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL
 

@@ -2,6 +2,8 @@ CREATE TABLE groups(
   id SERIAL PRIMARY KEY,
   nama_group VARCHAR(50) NOT NULL,
   deksripsi TEXT NOT NULL,
+  gambar_profile TEXT NULL,
+  gambar_banner TEXT NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL
 );

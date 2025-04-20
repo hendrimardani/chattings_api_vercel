@@ -16,17 +16,22 @@ const userProfileSchema = Joi.object({
   nama: Joi.string().min(3).required(),
   nik: Joi.string().length(16).required(),
   umur: Joi.number().integer().required(),
+  alamat: Joi.string().required(),
   jenis_kelamin: Joi.string().valid('laki-laki', 'perempuan').required(),
   tgl_lahir: Joi.date().required(),
+  gambar_profile: Joi.string().required(),
+  gambar_banner: Joi.string().required()
 });
 
 const groupSchema = Joi.object({
   nama_group: Joi.string().min(3).required(),
   deskripsi: Joi.string().min(3).required(),
+  gambar_profile: Joi.string().required(),
+  gambar_banner: Joi.string().required()
 });
 
 const userGroupSchema = Joi.object({
-  user_profile_id: Joi.array().items(Joi.number()),
+  user_id: Joi.array().items(Joi.number()),
   role: Joi.string().valid('member', 'admin').required(),
 });
 

@@ -11,7 +11,6 @@ class ChattingsHandler {
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
     this.postUserByGroupIdHandler = this.postUserByGroupIdHandler.bind(this);
-    this.getUserGroupByUserIdHandler = this.getUserGroupByUserIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
     this.getGroupByIdHandler = this.getGroupByIdHandler.bind(this);
     this.getUserGroupsHandler = this.getUserGroupsHandler.bind(this);
@@ -21,7 +20,6 @@ class ChattingsHandler {
     this.postMessageHandler = this.postMessageHandler.bind(this);
     this.getMessagesHandler = this.getMessagesHandler.bind(this);
     this.getMessageByIdHandler = this.getMessageByIdHandler.bind(this);
-    this.getMessageByGroupIdHandler = this.getMessageByGroupIdHandler.bind(this);
     this.putMessageByIdHandler = this.putMessageByIdHandler.bind(this);
     this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
   }
@@ -55,7 +53,7 @@ class ChattingsHandler {
     const token = require('@hapi/jwt').token.generate(
       { id: dataLoginUserProfile.user_id, nama: dataLoginUserProfile.nama },
       { key: process.env.JWT_SECRET, algorithm: 'HS256' },
-      { ttlSec: 604800 }// Token kedaluwarsa dalam 7 hari setelah login
+      { ttlSec: 604800 }  // Token kedaluwarsa dalam 7 hari setelah login
     );
 
     return {
@@ -85,9 +83,8 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
 
-    const { id } = request.params;
-    const user_profile_id = id;
-    const dataUserProfileById = await this._service.getUserProfileById({ user_profile_id });
+    const { user_id } = request.params;
+    const dataUserProfileById = await this._service.getUserProfileById({ user_id });
 
     return {
       status: 'success',
@@ -99,10 +96,10 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const { id } = request.params;
-    const { nama, nik, umur, jenis_kelamin, tgl_lahir } = request.payload;
+    const { user_id } = request.params;
+    const { nama, nik, umur, jenis_kelamin, tgl_lahir, alamat, gambar_profile, gambar_banner } = request.payload;
 
-    await this._service.editUserProfileById({ id, nama, nik, umur, jenis_kelamin, tgl_lahir });
+    await this._service.editUserProfileById({ user_id, nama, nik, umur, jenis_kelamin, tgl_lahir, alamat, gambar_profile, gambar_banner });
 
     return {
       status: 'success',
@@ -114,7 +111,6 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    
     const { id } = request.params;
     await this._service.deleteUserById({ id });
 
@@ -128,16 +124,21 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
+    const { user_id_list_string } = request.params;
+    // Ubah kedalam list
+    const user_id_list = JSON.parse(user_id_list_string);
 
-    const { user_profile_id } = request.params;
-    const dataUserProfileById = await this._service.getUserProfileById({ user_profile_id });
+    // Ubah '[327]' ke 327
+    const user_id = Number(user_id_list_string.replace(/[\[\]]/g, ""));
+    const dataUserProfileById = await this._service.getUserProfileById({ user_id });
     const created_by = dataUserProfileById.nama;
-    const { nama_group, deskripsi, role='admin' } = request.payload;
 
-    const group = await this._service.addGroup({ nama_group, deskripsi });
+    const { nama_group, deskripsi, role='admin', gambar_profile, gambar_banner } = request.payload;
+
+    const group = await this._service.addGroup({ nama_group, deskripsi, gambar_profile, gambar_banner });
     const group_id = group.id;
 
-    const dataUserGroup = await this._service.addUserGroup({ user_profile_id, group_id, role, created_by });
+    const dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });
 
     const response = h.response({
       status: 'success',
@@ -148,20 +149,6 @@ class ChattingsHandler {
     return response;
   }
 
-  async getUserGroupByUserIdHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
-    const { user_id } = request.params;
-
-    const dataUserGroupByUserId = await this._service.getUserGroupByUserId({ user_id });
-
-    return {
-      status: 'success',
-      dataUserGroupByUserId,
-    };
-  }
-
   async postUserByGroupIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
@@ -170,16 +157,15 @@ class ChattingsHandler {
     // console.log('Nama saat ini dari token JWT', currentUserName);
 
     const { group_id } = request.params;
-    const { user_profile_id, role } = request.payload;
-
-    const addedOtherUser = await this._service.getUserProfileByUserIdArray({ user_profile_id });
+    const { user_id, role } = request.payload;
+    const user_id_list = user_id;
+    
+    const addedOtherUser = await this._service.getUserProfileByUserIdArray({ user_id_list });
     const dataUserProfileByIdArray = addedOtherUser.map((item) => item.user_id);
-
-    const user_id = dataUserProfileByIdArray;
-    await this._service.getUserGroupByUserIdGroupId({ user_id, group_id });
+    console.log(addedOtherUser)
+    await this._service.getUserGroupByUserIdGroupId({ user_id_list, group_id });
     const created_by = currentUserName;
-
-    const dataUserByGroupId = await this._service.addUserGroup({ user_profile_id: dataUserProfileByIdArray, group_id, role, created_by });
+    const dataUserByGroupId = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });
 
     const response = h.response({
       status: 'success',
@@ -235,9 +221,9 @@ class ChattingsHandler {
     }
 
     const { group_id } = request.params;
-    const { nama_group, deskripsi } = request.payload;
+    const { nama_group, deskripsi, gambar_profile, gambar_banner } = request.payload;
 
-    await this._service.editGroupById({ group_id, nama_group, deskripsi });
+    await this._service.editGroupById({ group_id, nama_group, deskripsi, gambar_profile, gambar_banner  });
 
     return {
       status: 'success',
@@ -263,13 +249,13 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
 
-    const { user_profile_id, group_id } = request.params;
+    const { user_id, group_id } = request.params;
     const { isi_pesan, is_status=false } = request.payload;
 
     const notification = await this._service.addNotification({ is_status });
     const notification_id = notification.id;
 
-    const dataMessage = await this._service.addMessage({ user_profile_id, group_id, notification_id, isi_pesan });
+    const dataMessage = await this._service.addMessage({ user_id, group_id, notification_id, isi_pesan });
 
     const response = h.response({
       status: 'success',
@@ -306,29 +292,15 @@ class ChattingsHandler {
     };
   }
 
-  async getMessageByGroupIdHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
-    const { group_id } = request.params;
-    const dataMessagesByGroupId = await this._service.getMessageByGroupId({ group_id });
-
-    // console.log(dataMessagesByGroupId);
-    return {
-      status: 'success',
-      dataMessagesByGroupId,
-    };
-  }
-
   async putMessageByIdHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
 
-    const { id, user_profile_id, group_id } = request.params;
+    const { id, user_id, group_id } = request.params;
     const { isi_pesan } = request.payload;
 
-    await this._service.editMessageById({ id, user_profile_id, group_id, isi_pesan });
+    await this._service.editMessageById({ id, user_id, group_id, isi_pesan });
 
     return {
       status: 'success',
@@ -341,8 +313,8 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
 
-    const { id, user_profile_id } = request.params;
-    await this._service.deleteMessageById({ id, user_profile_id });
+    const { id, user_id } = request.params;
+    await this._service.deleteMessageById({ id, user_id });
 
     return {
       status: 'success',
