@@ -7,7 +7,7 @@ CREATE TABLE user_profile (
   jenis_kelamin gender NULL,
   alamat TEXT NULL,
   nik VARCHAR(16) UNIQUE NULL,
-  umur INTEGER NULL,
+  umur VARCHAR(2) NULL,
   tgl_lahir DATE NULL,
   gambar_profile TEXT NULL,
   gambar_banner TEXT NULL,
