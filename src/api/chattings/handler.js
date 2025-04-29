@@ -101,8 +101,9 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_id } = request.params;
-    const { dataJsonString, gambar_profile = null} = request.payload;
+    const { dataJsonString, gambar_profile } = request.payload;
     const dataJson = JSON.parse(dataJsonString);
+    console.log("DITANGKAP OLEH SERVER : ", request.payload);
 
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
     const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
