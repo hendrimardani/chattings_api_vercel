@@ -122,7 +122,9 @@ class ChattingsService {
     const date = dayjs().tz('Asia/Jakarta').format();
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
-    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_profile/${createdAt}.jpg`, bufferFile);
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_profile/${createdAt}.jpg`, bufferFile, {
+      contentType: 'image/*',
+    });
     if (error) {
       // console.log(error);
     } else {
