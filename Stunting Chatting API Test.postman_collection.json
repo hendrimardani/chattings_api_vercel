@@ -598,14 +598,12 @@
 							"                // Buka console Ctrl + Alt + C\r",
 							"                console.log('Update User Profile: ', dataUserProfileById); \r",
 							"\r",
-							"                const expectedNama = 'Updated jojon';\r",
+							"                const expectedNama = 'Updated erik';\r",
 							"                const expectedNik = '1200259903931231';\r",
 							"                const expectedUmur = '20';\r",
 							"                const expectedAlamat = 'Jalan cagak';\r",
 							"                const expectedJenisKelamin = 'laki-laki';\r",
 							"                const expectedTglLahir = '2025-03-10';\r",
-							"                const expectedGambarProfile = 'belum ada';\r",
-							"                const expectedGambarBanner = 'belum ada';\r",
 							"\r",
 							"                pm.expect(dataUserProfileById.nama).to.equals(expectedNama);\r",
 							"                pm.expect(dataUserProfileById.nik).to.equals(expectedNik);\r",
@@ -613,9 +611,6 @@
 							"                pm.expect(dataUserProfileById.alamat).to.equals(expectedAlamat);\r",
 							"                pm.expect(dataUserProfileById.jenis_kelamin).to.equals(expectedJenisKelamin);\r",
 							"                pm.expect(dataUserProfileById.tgl_lahir).to.equals(expectedTglLahir);\r",
-							"                pm.expect(dataUserProfileById.gambar_profile).to.equals(expectedGambarProfile);\r",
-							"                pm.expect(dataUserProfileById.gambar_banner).to.equals(expectedGambarBanner);\r",
-							"\r",
 							"            });\r",
 							"        } else {\r",
 							"            console.log('Request Error:', error);\r",
@@ -653,13 +648,24 @@
 				"method": "PUT",
 				"header": [],
 				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"nama\": \"Updated jojon\",\r\n    \"nik\": \"1200259903931231\", // Harus uniq\r\n    \"umur\": \"20\",\r\n    \"alamat\": \"Jalan cagak\",\r\n    \"jenis_kelamin\": \"laki-laki\",\r\n    \"tgl_lahir\": \"2025-03-10\",\r\n    \"gambar_profile\": \"belum ada\",\r\n    \"gambar_banner\": \"belum ada\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "dataJsonString",
+							"value": "{ \"nama\": \"Updated erik\", \"nik\": \"1200259903931231\", \"umur\": \"20\", \"alamat\": \"Jalan cagak\", \"jenis_kelamin\": \"laki-laki\", \"tgl_lahir\": \"2025-03-10\" }",
+							"type": "text"
+						},
+						{
+							"key": "gambar_profile",
+							"type": "file",
+							"src": "/C:/Users/ACER/OneDrive/Gambar/Screenshots/Screenshot 2025-04-23 171314.png"
+						},
+						{
+							"key": "gambar_banner",
+							"type": "file",
+							"src": "/C:/Users/ACER/OneDrive/Gambar/Screenshots/Screenshot 2025-04-22 192708.png"
 						}
-					}
+					]
 				},
 				"url": {
 					"raw": "localhost:3000/user_profile/{{userId}}",
