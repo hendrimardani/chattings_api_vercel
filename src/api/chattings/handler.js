@@ -1,7 +1,6 @@
 const ClientError = require('../../exceptions/ClientError');
 const { isReadableStream, streamToString, streamToBuffer } = require('../chattings/utils');
-const { serve } =require('https://deno.land/std/http/server.ts');
-const { MultipartReader } = require('https://deno.land/std@0.114.0/mime/multipart.ts');
+const { createClient } = require('@supabase/supabase-js');
 
 class ChattingsHandler {
   constructor(service) {
