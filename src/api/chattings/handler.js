@@ -104,7 +104,6 @@ class ChattingsHandler {
     const { dataJsonString, gambar_profile = null} = request.payload;
     const dataJson = JSON.parse(dataJsonString);
 
-    if (gambar_profile !== null || gambar_banner !== null) {
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
     const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
 
@@ -117,7 +116,6 @@ class ChattingsHandler {
       status: 'success',
       message: 'Profile berhasil diperbarui',
     };
-    }
   }
 
   async deleteUserByIdHandler(request, h) {
