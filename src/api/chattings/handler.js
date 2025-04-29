@@ -102,6 +102,8 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const { dataJsonString, gambar_profile } = request.payload;
+    console.log("data Json : ", dataJsonString);
+    console.log("data Gambar : ", gambar_profile);
     const dataJson = JSON.parse(dataJsonString);
 
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
