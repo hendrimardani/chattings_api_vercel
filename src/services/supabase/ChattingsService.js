@@ -133,7 +133,7 @@ class ChattingsService {
     }
   }
 
-  async editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
+  async editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile }) {
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
@@ -146,7 +146,7 @@ class ChattingsService {
         tgl_lahir: dataJson.tgl_lahir,
         alamat: dataJson.alamat,
         gambar_profile: absolutePathUrlGambarProfile,
-        gambar_banner: absolutePathUrlGambarBanner,
+        gambar_banner: null,
         updated_at: updateAt
       })
       .eq('user_id', user_id)

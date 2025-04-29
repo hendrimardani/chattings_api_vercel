@@ -101,21 +101,23 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_id } = request.params;
-    const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
+    const { dataJsonString, gambar_profile = null} = request.payload;
     const dataJson = JSON.parse(dataJsonString);
 
+    if (gambar_profile !== null || gambar_banner !== null) {
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
     const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
 
-    const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-    const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
+    // const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+    // const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
 
-    await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+    await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile });
 
     return {
       status: 'success',
       message: 'Profile berhasil diperbarui',
     };
+    }
   }
 
   async deleteUserByIdHandler(request, h) {
