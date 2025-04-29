@@ -101,7 +101,7 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_id } = request.params;
-    const { dataJsonString, gambar_profile, gambar_banner } = request.payload;
+    const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
     const dataJson = JSON.parse(dataJsonString);
 
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
@@ -144,7 +144,7 @@ class ChattingsHandler {
     const dataUserProfileById = await this._service.getUserProfileById({ user_id });
     const created_by = dataUserProfileById.nama;
 
-    const { nama_group, deskripsi, role='admin', gambar_profile, gambar_banner } = request.payload;
+    const { nama_group, deskripsi, role = 'admin', gambar_profile, gambar_banner } = request.payload;
 
     const group = await this._service.addGroup({ nama_group, deskripsi, gambar_profile, gambar_banner });
     const group_id = group.id;
@@ -170,7 +170,7 @@ class ChattingsHandler {
     const { group_id } = request.params;
     const { user_id, role } = request.payload;
     const user_id_list = user_id;
-    
+
     const addedOtherUser = await this._service.getUserProfileByUserIdArray({ user_id_list });
     const dataUserProfileByIdArray = addedOtherUser.map((item) => item.user_id);
     console.log(addedOtherUser)
@@ -234,7 +234,7 @@ class ChattingsHandler {
     const { group_id } = request.params;
     const { nama_group, deskripsi, gambar_profile, gambar_banner } = request.payload;
 
-    await this._service.editGroupById({ group_id, nama_group, deskripsi, gambar_profile, gambar_banner  });
+    await this._service.editGroupById({ group_id, nama_group, deskripsi, gambar_profile, gambar_banner });
 
     return {
       status: 'success',
@@ -261,7 +261,7 @@ class ChattingsHandler {
     }
 
     const { user_id, group_id } = request.params;
-    const { isi_pesan, is_status=false } = request.payload;
+    const { isi_pesan, is_status = false } = request.payload;
 
     const notification = await this._service.addNotification({ is_status });
     const notification_id = notification.id;
