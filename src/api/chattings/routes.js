@@ -65,8 +65,7 @@ const routes = (handler) => [
         output: 'stream',
         parse: true,
         multipart: true,
-        allow: 'multipart/form-data',
-        maxBytes: 10 * 1024 * 1024 // batas ukuran upload, contoh 10MB
+        allow: 'multipart/form-data'
       }
     },
   },
