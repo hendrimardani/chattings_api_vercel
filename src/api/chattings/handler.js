@@ -103,7 +103,6 @@ class ChattingsHandler {
     const { user_id } = request.params;
     const { dataJsonString, gambar_profile } = request.payload;
     const dataJson = JSON.parse(dataJsonString);
-    console.log("DITANGKAP OLEH SERVER : ", request.payload);
 
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
     const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
