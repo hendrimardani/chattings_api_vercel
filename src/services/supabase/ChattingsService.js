@@ -7,6 +7,7 @@ const { format } = require('date-fns');
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone');
+const { createClient } = require('@supabase/supabase-js');
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -93,26 +94,64 @@ class ChattingsService {
     return dataLoginUserProfile;
   }
 
-  async editUserProfileById({ user_id, nama, nik, umur, jenis_kelamin, tgl_lahir, alamat, gambar_profile, gambar_banner }) {
+  
+  async uploadFileGambarBanner(userId, mimeType, bufferFile) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const date = dayjs().tz('Asia/Jakarta').format();
+    const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
+
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_banner/${createdAt}.jpg`, bufferFile, {
+      contentType: mimeType || 'image/jpeg',
+    });
+    if (error) {
+      // console.log(error);
+    } else {
+      const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      return absolutePathUrl;
+    }
+  }
+  
+  async uploadFileGambarProfile(userId, mimeType, bufferFile) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const date = dayjs().tz('Asia/Jakarta').format();
+    const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
+
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_profile/${createdAt}.jpg`, bufferFile, {
+      contentType: mimeType || 'image/jpeg',
+    });
+    if (error) {
+      // console.log(error);
+    } else {
+      const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      return absolutePathUrl;
+    }
+  }
+
+  async editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
       .from('user_profile')
       .update({
-        nama: nama,
-        nik: nik,
-        umur: umur,
-        jenis_kelamin: jenis_kelamin,
-        tgl_lahir: tgl_lahir,
-        alamat: alamat,
-        gambar_profile,
-        gambar_banner,
+        nama: dataJson.nama,
+        nik: dataJson.nik,
+        umur: dataJson.umur,
+        jenis_kelamin: dataJson.jenis_kelamin,
+        tgl_lahir: dataJson.tgl_lahir,
+        alamat: dataJson.alamat,
+        gambar_profile: absolutePathUrlGambarProfile,
+        gambar_banner: absolutePathUrlGambarBanner,
         updated_at: updateAt
       })
       .eq('user_id', user_id)
       .select('*');
 
-    // console.log('editUserProfileByid: ', data, error);
     if (error && error.code === '23505') {
       throw new ClientError('NIK atau email sudah digunakan');
     }

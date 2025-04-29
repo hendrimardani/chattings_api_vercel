@@ -600,7 +600,7 @@
 							"\r",
 							"                const expectedNama = 'Updated jojon';\r",
 							"                const expectedNik = '1200259903931231';\r",
-							"                const expectedUmur = 20;\r",
+							"                const expectedUmur = '20';\r",
 							"                const expectedAlamat = 'Jalan cagak';\r",
 							"                const expectedJenisKelamin = 'laki-laki';\r",
 							"                const expectedTglLahir = '2025-03-10';\r",
@@ -654,7 +654,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"nama\": \"Updated jojon\",\r\n    \"nik\": \"1200259903931231\", // Harus uniq\r\n    \"umur\": 20,\r\n    \"alamat\": \"Jalan cagak\",\r\n    \"jenis_kelamin\": \"laki-laki\",\r\n    \"tgl_lahir\": \"2025-03-10\",\r\n    \"gambar_profile\": \"belum ada\",\r\n    \"gambar_banner\": \"belum ada\"\r\n}",
+					"raw": "{\r\n    \"nama\": \"Updated jojon\",\r\n    \"nik\": \"1200259903931231\", // Harus uniq\r\n    \"umur\": \"20\",\r\n    \"alamat\": \"Jalan cagak\",\r\n    \"jenis_kelamin\": \"laki-laki\",\r\n    \"tgl_lahir\": \"2025-03-10\",\r\n    \"gambar_profile\": \"belum ada\",\r\n    \"gambar_banner\": \"belum ada\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

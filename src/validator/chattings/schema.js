@@ -12,17 +12,6 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-const userProfileSchema = Joi.object({
-  nama: Joi.string().min(3).required(),
-  nik: Joi.string().length(16).required(),
-  umur: Joi.string().length(2).required(),
-  alamat: Joi.string().required(),
-  jenis_kelamin: Joi.string().valid('laki-laki', 'perempuan').required(),
-  tgl_lahir: Joi.date().required(),
-  gambar_profile: Joi.string().required(),
-  gambar_banner: Joi.string().required()
-});
-
 const groupSchema = Joi.object({
   nama_group: Joi.string().min(3).required(),
   deskripsi: Joi.string().min(3).required(),
@@ -40,4 +29,4 @@ const messagesSchema = Joi.object({
   isi_pesan: Joi.string().required(),
 });
 
-module.exports = { registerSchema, loginSchema, userProfileSchema, groupSchema, userGroupSchema, messagesSchema };
+module.exports = { registerSchema, loginSchema,  groupSchema, userGroupSchema, messagesSchema };

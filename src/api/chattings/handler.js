@@ -1,3 +1,7 @@
+const ClientError = require('../../exceptions/ClientError');
+const { isReadableStream, streamToString, streamToBuffer } = require('../chattings/utils');
+const { createClient } = require('@supabase/supabase-js');
+
 class ChattingsHandler {
   constructor(service) {
     this._service = service;
@@ -97,9 +101,18 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_id } = request.params;
-    const { nama, nik, umur, jenis_kelamin, tgl_lahir, alamat, gambar_profile, gambar_banner } = request.payload;
+    const { dataJsonString, gambar_profile, gambar_banner } = request.payload;
 
-    await this._service.editUserProfileById({ user_id, nama, nik, umur, jenis_kelamin, tgl_lahir, alamat, gambar_profile, gambar_banner });
+    const mimeTypeGambarProfile = gambar_profile.hapi.headers['content-type'];
+    const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+    const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, mimeTypeGambarProfile, bufferFileGambarProfile);
+
+    const mimeTypeGambarBanner = gambar_banner.hapi.headers['content-type'];
+    const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+    const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, mimeTypeGambarBanner, bufferFileGambarBanner);
+
+    const dataJson = JSON.parse(dataJsonString);
+    await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
 
     return {
       status: 'success',

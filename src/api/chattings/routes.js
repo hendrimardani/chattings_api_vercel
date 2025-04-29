@@ -61,17 +61,12 @@ const routes = (handler) => [
     handler: handler.putUserProfileByIdHandler,
     options: {
       auth: 'jwt', // Tambahkan auth di sini
-      validate: {
-        payload: (value, options) => {
-          return ChaatingValidator.validateUserProfile(value);
-        },
-        failAction: (request, h, error) => {
-          return h.response({
-            status: 'fail',
-            message: error.details ? error.details.map((err) => err.message) : error.message,
-          }).code(400).takeover();
-        },
-      },
+      payload: {
+        output: 'stream',
+        parse: true,
+        multipart: true,
+        allow: 'multipart/form-data'
+      }
     },
   },
   {
