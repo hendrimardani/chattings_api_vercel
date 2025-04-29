@@ -102,11 +102,11 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const { dataJsonString, gambar_profile } = request.payload;
-    console.log("data Json : ", dataJsonString)
+    console.log("data Json : ", dataJsonString);
     const dataJson = JSON.parse(dataJsonString);
 
     // const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-    const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
+    // const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
 
     // const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
     // const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
