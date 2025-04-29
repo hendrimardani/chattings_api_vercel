@@ -102,16 +102,14 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const { dataJsonString, gambar_profile, gambar_banner } = request.payload;
-
-    const mimeTypeGambarProfile = gambar_profile.hapi.headers['content-type'];
-    const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-    const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, mimeTypeGambarProfile, bufferFileGambarProfile);
-
-    const mimeTypeGambarBanner = gambar_banner.hapi.headers['content-type'];
-    const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-    const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, mimeTypeGambarBanner, bufferFileGambarBanner);
-
     const dataJson = JSON.parse(dataJsonString);
+
+    const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+    const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
+
+    const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+    const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
+
     await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
 
     return {

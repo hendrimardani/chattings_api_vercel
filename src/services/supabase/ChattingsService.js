@@ -95,7 +95,7 @@ class ChattingsService {
   }
 
   
-  async uploadFileGambarBanner(userId, mimeType, bufferFile) {
+  async uploadFileGambarBanner(userId, bufferFile) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
@@ -104,7 +104,7 @@ class ChattingsService {
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
     const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_banner/${createdAt}.jpg`, bufferFile, {
-      contentType: mimeType || 'image/jpeg',
+      contentType: 'image/png' || 'image/jpeg' || 'image/jpg',
     });
     if (error) {
       // console.log(error);
@@ -114,7 +114,7 @@ class ChattingsService {
     }
   }
   
-  async uploadFileGambarProfile(userId, mimeType, bufferFile) {
+  async uploadFileGambarProfile(userId, bufferFile) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
@@ -123,7 +123,7 @@ class ChattingsService {
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
     const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_profile/${createdAt}.jpg`, bufferFile, {
-      contentType: mimeType || 'image/jpeg',
+      contentType: 'image/png' || 'image/jpeg' || 'image/jpg',
     });
     if (error) {
       // console.log(error);
