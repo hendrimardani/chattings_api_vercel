@@ -123,10 +123,10 @@ class ChattingsService {
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
     const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_profile/${createdAt}.jpg`, bufferFile, {
-      contentType: 'image/*',
+      contentType: 'image/png',
     });
     if (error) {
-      console.log(error);
+      // console.log(error);
     } else {
       const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
       return absolutePathUrl;
