@@ -102,16 +102,16 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const { dataJsonString, gambar_profile } = request.payload;
-    console.log("data Json : ", dataJsonString);
     const dataJson = JSON.parse(dataJsonString);
 
-    // const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-    // const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
+    const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+    const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
+    console.log(absolutePathUrlGambarProfile);
 
-    // const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-    // const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
+    const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+    const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
 
-    // await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile });
+    await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile });
 
     return {
       status: 'success',
