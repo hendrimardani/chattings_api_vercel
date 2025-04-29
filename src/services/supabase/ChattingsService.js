@@ -126,7 +126,7 @@ class ChattingsService {
       contentType: 'image/*',
     });
     if (error) {
-      // console.log(error);
+      console.log(error);
     } else {
       const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
       return absolutePathUrl;
