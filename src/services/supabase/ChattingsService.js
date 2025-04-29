@@ -94,6 +94,43 @@ class ChattingsService {
     return dataLoginUserProfile;
   }
 
+  async isGambarBannerAvailable(userId) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/gambar_banner/`, {
+      limit: 3,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      // console.error('Gagal membaca folder:', error.message);
+    } else if (data.length === 1) {
+      return 1;
+    } else {
+      return data;
+    }
+  }
+
+  async isGambarProfilevailable(userId) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/gambar_profile/`, {
+      limit: 3,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      // console.error('Gagal membaca folder:', error.message);
+    } else if (data.length === 1) {
+      return 1;
+    } else {
+      return data;
+    }
+  }
   
   async uploadFileGambarBanner(userId, bufferFile) {
     const supabaseUrl = process.env.SUPABASE_URL;
@@ -104,7 +141,7 @@ class ChattingsService {
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
     const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_banner/${createdAt}.jpg`, bufferFile, {
-      contentType: 'image/png' || 'image/jpeg' || 'image/jpg',
+      contentType: 'image/*',
     });
     if (error) {
       // console.log(error);
