@@ -105,8 +105,8 @@ class ChattingsHandler {
     const dataJson = JSON.parse(dataJsonString);
 
     const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-    const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
-    console.log(absolutePathUrlGambarProfile);
+    // const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
+    console.log(bufferFileGambarProfile);
 
     // const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
     // const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
