@@ -33,6 +33,11 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
-    "joi": "^17.13.3"
+    "joi": "^17.13.3",
+    "@eslint/js": "^9.22.0",
+    "eslint": "^9.22.0",
+    "eslint-config-dicodingacademy": "^0.9.4",
+    "globals": "^16.0.0",
+    "nodemon": "^3.1.9"
   }
 }
