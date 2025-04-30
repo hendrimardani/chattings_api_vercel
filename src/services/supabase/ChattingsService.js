@@ -107,9 +107,13 @@ class ChattingsService {
     if (error) {
       // console.error('Gagal membaca folder:', error.message);
     } else if (data.length === 1) {
-      return 1;
-    } else {
-      return data;
+        const listGambarBanner = data;
+        const jumlahData = 1;
+        return { listGambarBanner, jumlahData };
+      } else {
+        const listGambarBanner = data;
+        const jumlahData = data.length;
+        return { listGambarBanner, jumlahData };
     }
   }
 
@@ -126,9 +130,13 @@ class ChattingsService {
     if (error) {
       // console.error('Gagal membaca folder:', error.message);
     } else if (data.length === 1) {
-      return 1;
+      const listGambarProfile = data;
+      const jumlahData = 1;
+      return { listGambarProfile, jumlahData };
     } else {
-      return data;
+      const listGambarProfile = data;
+      const jumlahData = data.length;
+      return { listGambarProfile, jumlahData };
     }
   }
   
@@ -150,6 +158,7 @@ class ChattingsService {
       return absolutePathUrl;
     }
   }
+
   
   async uploadFileGambarProfile(userId, bufferFile) {
     const supabaseUrl = process.env.SUPABASE_URL;

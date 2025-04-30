@@ -109,9 +109,9 @@ class ChattingsHandler {
 
     if (gambar_profile === null) {     
       // Jika yang diunggah hanya file gambar banner 
-      const listGambarProfile = await this._service.isGambarProfilevailable(user_id);
-      
-      if (listGambarProfile === 1) {
+      const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailable(user_id);
+
+      if (jumlahData === 1) {
         const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
       } else {
@@ -124,9 +124,9 @@ class ChattingsHandler {
       await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else if (gambar_banner === null) {
       // Jika yang diunggah hanya file gambar profile 
-      const listGambarBanner = await this._service.isGambarBannerAvailable(user_id);
+      const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailable(user_id);
 
-      if (listGambarBanner === 1) {
+      if (jumlahData === 1) {
         const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
       } else {
