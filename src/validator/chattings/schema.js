@@ -12,13 +12,6 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-const groupSchema = Joi.object({
-  nama_group: Joi.string().min(3).required(),
-  deskripsi: Joi.string().min(3).required(),
-  gambar_profile: Joi.string().required(),
-  gambar_banner: Joi.string().required()
-});
-
 const userGroupSchema = Joi.object({
   user_id: Joi.array().items(Joi.number()),
   role: Joi.string().valid('member', 'admin').required(),
@@ -29,4 +22,4 @@ const messagesSchema = Joi.object({
   isi_pesan: Joi.string().required(),
 });
 
-module.exports = { registerSchema, loginSchema,  groupSchema, userGroupSchema, messagesSchema };
+module.exports = { registerSchema, loginSchema, userGroupSchema, messagesSchema };

@@ -94,7 +94,92 @@ class ChattingsService {
     return dataLoginUserProfile;
   }
 
-  async isGambarBannerAvailable(userId) {
+  async isGambarBannerAvailableOnGroups(userId, namaGroup) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/groups/${namaGroup}/gambar_banner/`, {
+      limit: 3,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      // console.error('Gagal membaca folder:', error.message);
+    } else if (data.length === 1 || data.length === 0) {
+      const listGambarBanner = data;
+      const jumlahData = 0;
+      return { listGambarBanner, jumlahData };
+    } else {
+      const listGambarBanner = data;
+      const jumlahData = data.length;
+      return { listGambarBanner, jumlahData };
+    }
+  }
+
+  async isGambarProfilevailableOnGroups(userId, namaGroup) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/groups/${namaGroup}/gambar_profile/`, {
+      limit: 3,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      // console.error('Gagal membaca folder:', error.message);
+    } else if (data.length === 1 || data.length === 0) {
+      const listGambarProfile = data;
+      const jumlahData = 0;
+      return { listGambarProfile, jumlahData };
+    } else {
+      const listGambarProfile = data;
+      const jumlahData = data.length;
+      return { listGambarProfile, jumlahData };
+    }
+  }
+
+  async uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFile) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const date = dayjs().tz('Asia/Jakarta').format();
+    const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
+
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/groups/${namaGroup}/gambar_banner/${createdAt}.jpg`, bufferFile, {
+      contentType: 'image/*',
+    });
+    if (error) {
+      // console.log(error);
+    } else {
+      const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      return absolutePathUrl;
+    }
+  }
+
+  
+  async uploadFileGambarProfileOnGroups(userId, namaGroup, bufferFile) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const date = dayjs().tz('Asia/Jakarta').format();
+    const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
+
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/groups/${namaGroup}/gambar_profile/${createdAt}.jpg`, bufferFile, {
+      contentType: 'image/*',
+    });
+    if (error) {
+      // console.log(error);
+    } else {
+      const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      return absolutePathUrl;
+    }
+  }
+
+  async isGambarBannerAvailableOnUserProfile(userId) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
@@ -117,7 +202,7 @@ class ChattingsService {
     }
   }
 
-  async isGambarProfilevailable(userId) {
+  async isGambarProfilevailableOnUserProfile(userId) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
@@ -140,7 +225,7 @@ class ChattingsService {
     }
   }
   
-  async uploadFileGambarBanner(userId, bufferFile) {
+  async uploadFileGambarBannerOnUserProfile(userId, bufferFile) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
@@ -160,7 +245,7 @@ class ChattingsService {
   }
 
   
-  async uploadFileGambarProfile(userId, bufferFile) {
+  async uploadFileGambarProfileOnUserProfile(userId, bufferFile) {
     const supabaseUrl = process.env.SUPABASE_URL;
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
@@ -180,7 +265,6 @@ class ChattingsService {
   }
 
   async editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
-    console.log(dataJson);
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
@@ -198,8 +282,6 @@ class ChattingsService {
       })
       .eq('user_id', user_id)
       .select('*');
-
-    console.log(data, error);
 
     if (error && error.code === '23505') {
       throw new ClientError('NIK atau email sudah digunakan');
@@ -230,7 +312,7 @@ class ChattingsService {
     return data;
   }
 
-  async addGroup({ nama_group, deskripsi, gambar_profile, gambar_banner }) {
+  async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
 
@@ -239,7 +321,14 @@ class ChattingsService {
 
     const { data, error } = await this._supabase
       .from('groups')
-      .insert([{ nama_group, deskripsi, gambar_profile, gambar_banner, created_at, updated_at }])
+      .insert([{ 
+        nama_group: dataJson.nama_group, 
+        deskripsi: dataJson.deskripsi, 
+        gambar_profile: absolutePathUrlGambarProfile, 
+        gambar_banner: absolutePathUrlGambarBanner, 
+        created_at, 
+        updated_at
+       }])
       .select()
       .maybeSingle();
 
@@ -265,7 +354,7 @@ class ChattingsService {
     return dataUserProfileById;
   }
 
-  async addUserGroup({ user_id_list, group_id, role, created_by }) {
+  async addUserGroup({ user_id_list, group_id, dataJson, created_by }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
 
@@ -280,9 +369,9 @@ class ChattingsService {
     }
     const insertData = user_id_list.map(user_id => ({
       user_id: user_id,
-      group_id,
-      role,
-      created_by,
+      group_id: group_id,
+      role: dataJson.role,
+      created_by: created_by,
       created_at: created_at,
       updated_at: updated_at
     }));
