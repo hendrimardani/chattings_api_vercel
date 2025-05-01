@@ -99,7 +99,7 @@ class ChattingsService {
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
 
-    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/gambar_banner/`, {
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/user_profile/gambar_banner/`, {
       limit: 3,
       sortBy: { column: 'created_at', order: 'desc' }
     });
