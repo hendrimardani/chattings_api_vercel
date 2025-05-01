@@ -180,6 +180,7 @@ class ChattingsService {
   }
 
   async editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
+    console.log(dataJson);
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
