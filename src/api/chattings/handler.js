@@ -180,7 +180,7 @@ class ChattingsHandler {
     const dataUserProfileById = await this._service.getUserProfileById({ user_id });
     const created_by = dataUserProfileById.nama;
 
-    const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
+    const { dataJsonString, role = 'admin', gambar_profile = null, gambar_banner = null } = request.payload;
     const dataJson = JSON.parse(dataJsonString);
     const namaGroup = dataJson.nama_group;
 
@@ -205,7 +205,7 @@ class ChattingsHandler {
       const group = await this._service.addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
       const group_id = group.id;
   
-      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, dataJson, created_by });
+      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });
     } else if (gambar_banner === null) {
       // Jika yang diunggah hanya file gambar profile 
       const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnGroups(user_id, namaGroup);
@@ -223,7 +223,7 @@ class ChattingsHandler {
       const group = await this._service.addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
       const group_id = group.id;
   
-      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, dataJson, created_by });
+      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });
     } else {
       // Jika yang diunggah keduanya
       const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
@@ -235,7 +235,7 @@ class ChattingsHandler {
       const group = await this._service.addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
       const group_id = group.id;
   
-      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, dataJson, created_by });
+      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });
     }
 
     const response = h.response({
@@ -260,7 +260,9 @@ class ChattingsHandler {
 
     const addedOtherUser = await this._service.getUserProfileByUserIdArray({ user_id_list });
     const dataUserProfileByIdArray = addedOtherUser.map((item) => item.user_id);
-    console.log(addedOtherUser)
+    
+    console.log(addedOtherUser);
+
     await this._service.getUserGroupByUserIdGroupId({ user_id_list, group_id });
     const created_by = currentUserName;
     const dataUserByGroupId = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });

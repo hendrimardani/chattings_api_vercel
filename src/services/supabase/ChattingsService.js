@@ -354,7 +354,7 @@ class ChattingsService {
     return dataUserProfileById;
   }
 
-  async addUserGroup({ user_id_list, group_id, dataJson, created_by }) {
+  async addUserGroup({ user_id_list, group_id, role, created_by }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
 
@@ -370,7 +370,7 @@ class ChattingsService {
     const insertData = user_id_list.map(user_id => ({
       user_id: user_id,
       group_id: group_id,
-      role: dataJson.role,
+      role: role,
       created_by: created_by,
       created_at: created_at,
       updated_at: updated_at
