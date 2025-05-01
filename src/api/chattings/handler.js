@@ -102,9 +102,6 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
-    console.log(dataJsonString);
-    console.log(gambar_profile);
-    console.log(gambar_banner);
     const dataJson = JSON.parse(dataJsonString);
 
     let absolutePathUrlGambarProfile = null;

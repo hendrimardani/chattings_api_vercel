@@ -198,6 +198,8 @@ class ChattingsService {
       .eq('user_id', user_id)
       .select('*');
 
+    console.log(data, error);
+
     if (error && error.code === '23505') {
       throw new ClientError('NIK atau email sudah digunakan');
     }
