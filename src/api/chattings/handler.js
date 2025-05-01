@@ -111,12 +111,12 @@ class ChattingsHandler {
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailable(user_id);
 
-      if (jumlahData === 1) {
+      if (jumlahData === 0) {
         const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
       } else {
         const latestGambarProfile = listGambarProfile[0].name;
-        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/gambar_profile/${latestGambarProfile}`;
+        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/user_profile/gambar_profile/${latestGambarProfile}`;
         const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBanner(user_id, bufferFileGambarBanner);
       }
@@ -126,12 +126,12 @@ class ChattingsHandler {
       // Jika yang diunggah hanya file gambar profile 
       const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailable(user_id);
 
-      if (jumlahData === 1) {
+      if (jumlahData === 0) {
         const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
       } else {
         const latestGambarBanner = listGambarBanner[0].name;
-        absolutePathUrlGambarBanner = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/gambar_banner/${latestGambarBanner}`;
+        absolutePathUrlGambarBanner = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/user_profile/gambar_banner/${latestGambarBanner}`;
         const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfile(user_id, bufferFileGambarProfile);
       }

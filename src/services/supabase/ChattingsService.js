@@ -106,14 +106,14 @@ class ChattingsService {
 
     if (error) {
       // console.error('Gagal membaca folder:', error.message);
-    } else if (data.length === 1) {
-        const listGambarBanner = data;
-        const jumlahData = 1;
-        return { listGambarBanner, jumlahData };
-      } else {
-        const listGambarBanner = data;
-        const jumlahData = data.length;
-        return { listGambarBanner, jumlahData };
+    } else if (data.length === 1 || data.length === 0) {
+      const listGambarBanner = data;
+      const jumlahData = 0;
+      return { listGambarBanner, jumlahData };
+    } else {
+      const listGambarBanner = data;
+      const jumlahData = data.length;
+      return { listGambarBanner, jumlahData };
     }
   }
 
@@ -122,16 +122,16 @@ class ChattingsService {
     const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
     const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
 
-    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/gambar_profile/`, {
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_id/${userId}/user_profile/gambar_profile/`, {
       limit: 3,
       sortBy: { column: 'created_at', order: 'desc' }
     });
 
     if (error) {
       // console.error('Gagal membaca folder:', error.message);
-    } else if (data.length === 1) {
+    } else if (data.length === 1 || data.length === 0) {
       const listGambarProfile = data;
-      const jumlahData = 1;
+      const jumlahData = 0;
       return { listGambarProfile, jumlahData };
     } else {
       const listGambarProfile = data;
@@ -148,7 +148,7 @@ class ChattingsService {
     const date = dayjs().tz('Asia/Jakarta').format();
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
-    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_banner/${createdAt}.jpg`, bufferFile, {
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/user_profile/gambar_banner/${createdAt}.jpg`, bufferFile, {
       contentType: 'image/*',
     });
     if (error) {
@@ -168,7 +168,7 @@ class ChattingsService {
     const date = dayjs().tz('Asia/Jakarta').format();
     const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
 
-    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/gambar_profile/${createdAt}.jpg`, bufferFile, {
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_id/${userId}/user_profile/gambar_profile/${createdAt}.jpg`, bufferFile, {
       contentType: 'image/*',
     });
     if (error) {
