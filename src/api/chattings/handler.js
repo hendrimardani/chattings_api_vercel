@@ -107,7 +107,13 @@ class ChattingsHandler {
     let absolutePathUrlGambarProfile = null;
     let absolutePathUrlGambarBanner = null;
 
-    if (gambar_profile === null) {     
+    if (gambar_profile === null && gambar_banner === null) {
+      // Jika yang diunggah tidak ada
+      const group = await this._service.addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      const group_id = group.id;
+  
+      dataUserGroup = await this._service.addUserGroup({ user_id_list, group_id, role, created_by });
+    } else if (gambar_profile === null) {     
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfile(user_id);
 
