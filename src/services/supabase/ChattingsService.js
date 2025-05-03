@@ -367,6 +367,7 @@ class ChattingsService {
     if (dataUserProfileById === null) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
+    
     const insertData = user_id_list.map(user_id => ({
       user_id: user_id,
       group_id: group_id,

@@ -267,10 +267,7 @@ class ChattingsHandler {
     const { user_id, role } = request.payload;
     const user_id_list = user_id;
 
-    const addedOtherUser = await this._service.getUserProfileByUserIdArray({ user_id_list });
-    const dataUserProfileByIdArray = addedOtherUser.map((item) => item.user_id);
-
-    console.log(addedOtherUser);
+    await this._service.getUserProfileByUserIdArray({ user_id_list });
 
     await this._service.getUserGroupByUserIdGroupId({ user_id_list, group_id });
     const created_by = currentUserName;
