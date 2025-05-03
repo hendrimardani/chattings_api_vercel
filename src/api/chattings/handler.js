@@ -325,12 +325,60 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-
     const { group_id } = request.params;
-    const { nama_group, deskripsi, gambar_profile, gambar_banner } = request.payload;
+    const { dataJsonString, gambar_profile = null, gambar_banner = null} = request.payload;
+    const dataJson = JSON.parse(dataJsonString);
+    
+    const userId = dataJson.user_id;  
+    const namaGroup = dataJson.nama_group;
 
-    await this._service.editGroupById({ group_id, nama_group, deskripsi, gambar_profile, gambar_banner });
+    let absolutePathUrlGambarProfile = null;
+    let absolutePathUrlGambarBanner = null;
 
+    if (gambar_profile === null && gambar_banner === null) {
+      // Jika yang diunggah tidak ada
+      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+    } else if (gambar_profile === null) {     
+      // Jika yang diunggah hanya file gambar banner 
+      const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnGroups(userId, namaGroup);
+
+      if (jumlahData === 0) {
+        const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+        absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
+      } else {
+        const latestGambarProfile = listGambarProfile[0].name;
+        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${userId}/groups/gambar_profile/${latestGambarProfile}`;
+        const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+        absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
+      }
+
+      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+    } else if (gambar_banner === null) {
+      // Jika yang diunggah hanya file gambar profile 
+      const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnGroups(userId, namaGroup);
+
+      if (jumlahData === 0) {
+        const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+        absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnGroups(userId, namaGroup, bufferFileGambarProfile);
+      } else {
+        const latestGambarBanner = listGambarBanner[0].name;
+        absolutePathUrlGambarBanner = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${userId}/groups/gambar_banner/${latestGambarBanner}`;
+        const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+        absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnGroups(userId, namaGroup, bufferFileGambarProfile);
+      }
+
+      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+    } else {
+      // Jika yang diunggah keduanya
+      const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+      absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnGroups(userId, namaGroup, bufferFileGambarProfile);
+  
+      const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+      absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
+  
+      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+    }
+    
     return {
       status: 'success',
       message: 'Group berhasil diperbarui',

@@ -420,15 +420,15 @@ class ChattingsService {
     return dataUserGroupByUserIdGroupId;
   }
 
-  async editGroupById({ group_id, nama_group, deskripsi, gambar_profile, gambar_banner }) {
+  async editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     const updateAt = dayjs().tz('Asia/Jakarta').format();
     const { data, error } = await this._supabase
       .from('groups')
       .update({
-        nama_group: nama_group,
-        deskripsi: deskripsi,
-        gambar_profile: gambar_profile,
-        gambar_banner: gambar_banner,
+        nama_group: dataJson.nama_group,
+        deskripsi: dataJson.deskripsi,
+        gambar_profile: absolutePathUrlGambarProfile,
+        gambar_banner: absolutePathUrlGambarBanner,
         updated_at: updateAt,
       })
       .eq('id', group_id)
