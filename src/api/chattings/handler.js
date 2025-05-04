@@ -108,8 +108,16 @@ class ChattingsHandler {
     let absolutePathUrlGambarBanner = null;
 
     if (gambar_profile === null && gambar_banner === null) {
-      // Jika yang diunggah tidak ada  
-      await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      const dataUserProfileById = await this._service.getUserProfileById({ user_id });
+      const isNotNullGambarProfile = dataUserProfileById.gambar_profile;
+      const isNotNullGambarBanner = dataUserProfileById.gambar_banner;
+      
+      if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
+        absolutePathUrlGambarProfile = isNotNullGambarProfile;
+        absolutePathUrlGambarBanner = isNotNullGambarBanner;
+      }
+      // Jika yang diunggah tidak ada
+      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     } else if (gambar_profile === null) {     
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfile(user_id);
@@ -336,6 +344,14 @@ class ChattingsHandler {
     let absolutePathUrlGambarBanner = null;
 
     if (gambar_profile === null && gambar_banner === null) {
+      const dataGroupById = await this._service.getGroupById({ group_id });
+      const isNotNullGambarProfile = dataGroupById.gambar_profile;
+      const isNotNullGambarBanner = dataGroupById.gambar_banner;
+      
+      if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
+        absolutePathUrlGambarProfile = isNotNullGambarProfile;
+        absolutePathUrlGambarBanner = isNotNullGambarBanner;
+      }
       // Jika yang diunggah tidak ada
       await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     } else if (gambar_profile === null) {     
