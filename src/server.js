@@ -47,29 +47,10 @@ const init = async () => {
       return h.continue;
     });
 
-    // Jika dijalankan di vercel
-    // await server.initialize();
-
-    // Jika dijalankan di localhost
     await server.start();
     console.log(`Server berjalan pada ${server.info.uri}`);
   }
   return server;
 };
 
-// Jika dijalankan di localhost
 init();
-
-// Jika dijalankan di vercel
-// module.exports = async (req, res) => {
-//   const server = await init();
-
-//   const response = await server.inject({
-//     method: req.method,
-//     url: req.url,
-//     payload: req.body,
-//     headers: req.headers
-//   });
-
-//   res.status(response.statusCode).json(response.result);
-// };
