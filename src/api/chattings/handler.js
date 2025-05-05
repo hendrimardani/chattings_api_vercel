@@ -363,7 +363,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
       } else {
         const latestGambarProfile = listGambarProfile[0].name;
-        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${userId}/groups/${namaGroup}gambar_profile/${latestGambarProfile}`;
+        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${userId}/groups/${namaGroup}/gambar_profile/${latestGambarProfile}`;
         const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
       }
