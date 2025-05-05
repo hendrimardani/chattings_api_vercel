@@ -289,6 +289,7 @@ class ChattingsService {
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
     }
+    return data;
   }
 
   async deleteUserById({ id }) {

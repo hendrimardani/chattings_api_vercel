@@ -101,11 +101,28 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_id } = request.params;
-    const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
-    const dataJson = JSON.parse(dataJsonString);
-
+    const { dataJsonString = null, gambar_profile = null, gambar_banner = null } = request.payload;
+    
+    let dataJson = null;
+    let dataUpdateUserProfileById = null;
     let absolutePathUrlGambarProfile = null;
     let absolutePathUrlGambarBanner = null;
+
+    if (dataJsonString !== null) {
+      dataJson = JSON.parse(dataJsonString);
+    } else {
+      dataJson = await this._service.getUserProfileById({ user_id });
+      const dataUserProfileById = await this._service.getUserProfileById({ user_id });
+      const isNotNullGambarProfile = dataUserProfileById.gambar_profile;
+      const isNotNullGambarBanner = dataUserProfileById.gambar_banner;
+
+      if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
+        absolutePathUrlGambarProfile = isNotNullGambarProfile;
+        absolutePathUrlGambarBanner = isNotNullGambarBanner;
+      }
+      // Jika yang diunggah tidak ada
+      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+    }
 
     if (gambar_profile === null && gambar_banner === null) {
       const dataUserProfileById = await this._service.getUserProfileById({ user_id });
@@ -117,7 +134,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = isNotNullGambarBanner;
       }
       // Jika yang diunggah tidak ada
-      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     } else if (gambar_profile === null) {     
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfile(user_id);
@@ -132,7 +149,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
       }
 
-      await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else if (gambar_banner === null) {
       // Jika yang diunggah hanya file gambar profile 
       const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnUserProfile(user_id);
@@ -147,7 +164,7 @@ class ChattingsHandler {
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
       }
 
-      await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else {
       // Jika yang diunggah keduanya
       const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
@@ -156,12 +173,13 @@ class ChattingsHandler {
       const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
       const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
   
-      await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     }
 
     return {
       status: 'success',
       message: 'Profile berhasil diperbarui',
+      dataUpdateUserProfileById
     };
   }
 
