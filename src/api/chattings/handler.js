@@ -352,14 +352,32 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { group_id } = request.params;
-    const { dataJsonString, gambar_profile = null, gambar_banner = null} = request.payload;
-    const dataJson = JSON.parse(dataJsonString);
-    
-    const userId = dataJson.user_id;  
-    const namaGroup = dataJson.nama_group;
+    const { dataJsonString = null, gambar_profile = null, gambar_banner = null} = request.payload;
 
+    let userId = null;
+    let namaGroup = null;
+    let dataJson = null;
+    let dataUpdateGroupById = null;
     let absolutePathUrlGambarProfile = null;
     let absolutePathUrlGambarBanner = null;
+
+    if (dataJsonString !== null) {
+      dataJson = JSON.parse(dataJsonString);
+      userId = dataJson.user_id;  
+      namaGroup = dataJson.nama_group;
+    } else {
+      dataJson = await this._service.getGroupById({ group_id });
+      const dataGroupById = await this._service.getGroupById({ group_id });
+      const isNotNullGambarProfile = dataGroupById.gambar_profile;
+      const isNotNullGambarBanner = dataGroupById.gambar_banner;
+
+      if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
+        absolutePathUrlGambarProfile = isNotNullGambarProfile;
+        absolutePathUrlGambarBanner = isNotNullGambarBanner;
+      }
+      // Jika yang diunggah tidak ada
+      dataUpdateGroupById = await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+    }
 
     if (gambar_profile === null && gambar_banner === null) {
       const dataGroupById = await this._service.getGroupById({ group_id });
@@ -371,7 +389,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = isNotNullGambarBanner;
       }
       // Jika yang diunggah tidak ada
-      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateGroupById = await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     } else if (gambar_profile === null) {     
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnGroups(userId, namaGroup);
@@ -386,7 +404,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
       }
 
-      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateGroupById = await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     } else if (gambar_banner === null) {
       // Jika yang diunggah hanya file gambar profile 
       const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnGroups(userId, namaGroup);
@@ -401,7 +419,7 @@ class ChattingsHandler {
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnGroups(userId, namaGroup, bufferFileGambarProfile);
       }
 
-      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateGroupById = await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     } else {
       // Jika yang diunggah keduanya
       const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
@@ -410,12 +428,13 @@ class ChattingsHandler {
       const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
       absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnGroups(userId, namaGroup, bufferFileGambarBanner);
   
-      await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateGroupById = await this._service.editGroupById({ group_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     }
     
     return {
       status: 'success',
       message: 'Group berhasil diperbarui',
+      dataUpdateGroupById
     };
   }
 

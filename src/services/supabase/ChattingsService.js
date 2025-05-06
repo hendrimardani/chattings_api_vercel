@@ -439,6 +439,8 @@ class ChattingsService {
     if (data.length === 0) {
       throw new NotFoundError('Gagal memperbarui pesan. Id tidak ditemukan');
     }
+
+    return data;
   }
 
   async deleteGroupById({ id }) {
