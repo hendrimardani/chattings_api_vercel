@@ -1,14 +1,10 @@
--- CREATE TYPE choice AS ENUM ('YA', 'TIDAK');
+-- CREATE TYPE choice AS ENUM ('ya', 'tidak');
 
 CREATE TABLE young_women_service(
   id SERIAL PRIMARY KEY,
-  nama VARCHAR(50) NOT NULL,
-  nik VARCHAR(16) UNIQUE NOT NULL,
-  tgl_lahir DATE NOT NULL,
-  umur VARCHAR(50) NOT NULL,
   mendapat_ttd choice NOT NULL,
   periksa_anemia choice NOT NULL,
-  hasil_periksa_anemia choice not NULL,
+  hasil_periksa_anemia choice NOT NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL
 );

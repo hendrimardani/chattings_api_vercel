@@ -1,11 +1,7 @@
--- CREATE TYPE choice AS ENUM ('YA', 'TIDAK');
+-- CREATE TYPE choice AS ENUM ('ya', 'tidak');
 
 CREATE TABLE family_service(
   id SERIAL PRIMARY KEY,
-  nama_kepala_keluarga VARCHAR(50) NOT NULL,
-  alamat TEXT NOT NULL,
-  nama_anak VARCHAR(50) NOT NULL,
-  nama_bumil VARCHAR(50) NOT NULL,
   kategori_keluarga_rentan choice NOT NULL,
   memiliki_kartu_keluarga choice NOT NULL,
   memiliki_jamban_sehat choice NOT NULL,

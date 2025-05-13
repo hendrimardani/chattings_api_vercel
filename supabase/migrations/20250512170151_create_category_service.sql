@@ -1,4 +1,4 @@
-CREATE TYPE choiceService AS ENUM ('BUMIL', 'ANAK', 'CALON PENGANTIN', 'REMAJA PUTRI', 'KELUARGA');
+-- CREATE TYPE choiceService AS ENUM ('bumil', 'anak', 'calon pengantin', 'remaja putri', 'keluarga');
 
 CREATE TABLE category_service(
   id SERIAL PRIMARY KEY,
