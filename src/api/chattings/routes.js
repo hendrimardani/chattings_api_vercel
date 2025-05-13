@@ -77,9 +77,9 @@ const routes = (handler) => [
       auth: 'jwt'  // Tambahkan auth di sini
     },
   },
-  {
+  // {
     
-  },
+  // },
   {
     method: 'POST',
     path: '/user_profile/{user_id_list_string}/group',

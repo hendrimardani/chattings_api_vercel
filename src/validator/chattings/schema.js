@@ -13,9 +13,9 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-const childService = Joi.object({
-  nama: Joi.
-});
+// const childService = Joi.object({
+//   nama: Joi.
+// });
 
 const userGroupSchema = Joi.object({
   user_id: Joi.array().items(Joi.number()),
