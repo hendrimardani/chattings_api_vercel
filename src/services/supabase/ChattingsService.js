@@ -17,7 +17,7 @@ class ChattingsService {
     this._supabase = supabase;
   }
 
-  async addUser({ email, password, repeat_password }) {
+  async addUser({ email, role, password, repeat_password }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
@@ -34,7 +34,7 @@ class ChattingsService {
 
     const { data, error } = await this._supabase
       .from('users')
-      .insert([{ email, password, created_at, updated_at }])
+      .insert([{ email, role, password, created_at, updated_at }])
       .select()
       .maybeSingle();
 
