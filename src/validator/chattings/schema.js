@@ -13,9 +13,16 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
-// const childService = Joi.object({
-//   nama: Joi.
-// });
+
+const pregnantMomService = Joi.object({
+  nama: Joi.string().min(3).required(),
+  nik: Joi.string().length(16).required(),
+  tgl_lahir: Joi.date().required(),
+  umur: Joi.string().max(3).required(),
+  hari_pertama_haid_terakhir: Joi.date().required(),
+  tgl_perkiraan_lahir: Joi.date().required(),
+  umur_kehamilan: Joi.string().required(),
+});
 
 const userGroupSchema = Joi.object({
   user_id: Joi.array().items(Joi.number()),

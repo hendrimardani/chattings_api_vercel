@@ -264,6 +264,115 @@ class ChattingsService {
     }
   }
 
+    async isGambarBannerAvailableOnUserProfilePatient(userPatientId) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_patient_id/${userPatientId}/user_profile/gambar_banner/`, {
+      limit: 3,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      // console.error('Gagal membaca folder:', error.message);
+    } else if (data.length === 1 || data.length === 0) {
+      const listGambarBanner = data;
+      const jumlahData = 0;
+      return { listGambarBanner, jumlahData };
+    } else {
+      const listGambarBanner = data;
+      const jumlahData = data.length;
+      return { listGambarBanner, jumlahData };
+    }
+  }
+
+  async isGambarProfilevailableOnUserProfilePatient(userPatientId) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseGetFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const { data, error } = await supabaseGetFile.storage.from('avatars').list(`user_patient_id/${userPatientId}/user_profile/gambar_profile/`, {
+      limit: 3,
+      sortBy: { column: 'created_at', order: 'desc' }
+    });
+
+    if (error) {
+      // console.error('Gagal membaca folder:', error.message);
+    } else if (data.length === 1 || data.length === 0) {
+      const listGambarProfile = data;
+      const jumlahData = 0;
+      return { listGambarProfile, jumlahData };
+    } else {
+      const listGambarProfile = data;
+      const jumlahData = data.length;
+      return { listGambarProfile, jumlahData };
+    }
+  }
+  
+  async uploadFileGambarBannerOnUserProfilePatient(userPatientId, bufferFile) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const date = dayjs().tz('Asia/Jakarta').format();
+    const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
+
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_patient_id/${userPatientId}/user_profile/gambar_banner/${createdAt}.jpg`, bufferFile, {
+      contentType: 'image/*',
+    });
+    if (error) {
+      // console.log(error);
+    } else {
+      const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      return absolutePathUrl;
+    }
+  }
+
+  async uploadFileGambarProfileOnUserProfilePatient(userPatientId, bufferFile) {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseKeyRole = process.env.SUPABASE_KEY_SERVICE_ROLE;
+    const supabaseUploadFile = createClient(supabaseUrl, supabaseKeyRole);
+
+    const date = dayjs().tz('Asia/Jakarta').format();
+    const createdAt = dayjs(date).utc().format('YYYY_MM_DD_HH_mm_ss');
+
+    const { data, error } = await supabaseUploadFile.storage.from('avatars').upload(`user_patient_id/${userPatientId}/user_profile/gambar_profile/${createdAt}.jpg`, bufferFile, {
+      contentType: 'image/*',
+    });
+    if (error) {
+      // console.log(error);
+    } else {
+      const absolutePathUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${data.fullPath}`;
+      return absolutePathUrl;
+    }
+  }
+
+  async getUserProfiles() {
+    const { data, error } = await this._supabase
+      .from('user_profile')
+      .select('*, users(*)');
+
+    return data;
+  }
+
+  async getUserProfileById({ user_id }) {
+    const { data, error } = await this._supabase
+      .from('user_profile')
+      .select('*')
+      .eq('user_id', user_id)
+      .maybeSingle();
+
+    // console.log('getUserProfileById', data);
+
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+
+    const dataUserProfileById = data;
+    return dataUserProfileById;
+  }
+
   async editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
@@ -292,6 +401,59 @@ class ChattingsService {
     return data;
   }
 
+  async getUserProfilePatiens() {
+    const { data, error } = await this._supabase
+      .from('user_profile_patient')
+      .select('*, users(*)');
+
+    return data;
+  }
+
+  async getUserProfilePatientById({ user_patient_id }) {
+    const { data, error } = await this._supabase
+      .from('user_profile_patient')
+      .select('*')
+      .eq('user_patient_id', user_patient_id)
+      .maybeSingle();
+
+    // console.log('getUserProfileById', data);
+
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+
+    const dataUserProfilePatientById = data;
+    return dataUserProfilePatientById;
+  }
+
+  async editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
+    const updateAt = dayjs().tz('Asia/Jakarta').format();
+
+    const { data, error } = await this._supabase
+      .from('user_profile_patient')
+      .update({
+        nama_bumil: dataJson.nama_bumil,
+        nik_bumil: dataJson.nik_bumil,
+        tgl_lahir_bumil: dataJson.tgl_lahir_bumil,
+        umur_bumil: dataJson.umur_bumil,
+        nama_ayah: dataJson.nama_ayah,
+        alamat: dataJson.alamat,
+        gambar_profile: absolutePathUrlGambarProfile,
+        gambar_banner: absolutePathUrlGambarBanner,
+        updated_at: updateAt
+      })
+      .eq('user_patient_id', user_patient_id)
+      .select('*');
+
+    if (error && error.code === '23505') {
+      throw new ClientError('NIK atau email sudah digunakan');
+    }
+    if (data.length === 0) {
+      throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
+    }
+    return data;
+  }
+
   async deleteUserById({ id }) {
     const { data, error } = await this._supabase
       .from('users')
@@ -303,14 +465,6 @@ class ChattingsService {
     if (data.length === 0) {
       throw new NotFoundError('Gagal memghapus pengguna. Id tidak ditemukan');
     }
-  }
-
-  async getUsers() {
-    const { data, error } = await this._supabase
-      .from('user_profile')
-      .select('*, users(*)');
-
-    return data;
   }
 
   async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
@@ -336,23 +490,6 @@ class ChattingsService {
     // console.log('addGroup ID: ', data, error);
 
     return data;
-  }
-
-  async getUserProfileById({ user_id }) {
-    const { data, error } = await this._supabase
-      .from('user_profile')
-      .select('*')
-      .eq('user_id', user_id)
-      .maybeSingle();
-
-    // console.log('getUserProfileById', data);
-
-    if (data === null) {
-      throw new NotFoundError('Pengguna tidak ditemukan');
-    }
-
-    const dataUserProfileById = data;
-    return dataUserProfileById;
   }
 
   async addUserGroup({ user_id_list, group_id, role, created_by }) {

@@ -41,8 +41,8 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/users',
-    handler: handler.getUsersHandler,
+    path: '/user_profiles',
+    handler: handler.getUserProfilesHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
     },
@@ -70,6 +70,36 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/user_profile_patiens',
+    handler: handler.getUserProfilePatiensHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
+    path: '/user_profile_patient/{user_patient_id}',
+    handler: handler.getUserProfilePatientByIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/user_profile_patient/{user_patient_id}',
+    handler: handler.putUserProfilePatientByIdHandler,
+    options: {
+      auth: 'jwt', // Tambahkan auth di sini
+      payload: {
+        output: 'stream',
+        parse: true,
+        multipart: true,
+        allow: 'multipart/form-data'
+      },
+    }
+  },
+  {
     method: 'DELETE',
     path: '/user/{id}',
     handler: handler.deleteUserByIdHandler,
@@ -77,9 +107,6 @@ const routes = (handler) => [
       auth: 'jwt'  // Tambahkan auth di sini
     },
   },
-  // {
-    
-  // },
   {
     method: 'POST',
     path: '/user_profile/{user_id_list_string}/group',
