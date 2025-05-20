@@ -39,9 +39,19 @@ class ChattingsHandler {
     // const id = request.auth.credentials.user.id;
     // console.log('ID dari token JWT', id);
 
+    let dataRegister = null;
     const id = user.id;
-    const hashedPassword = user.password;
-    const dataRegister = await this._service.addUserProfile({ id, nama, hashedPassword });
+    
+    if (role === 'pasien') {
+      const nama_bumil = nama;
+
+      const dataChildrenPatient = await this._service.addChildrenPatient();
+      const children_patient_id = dataChildrenPatient.id;
+
+      dataRegister = await this._service.addUserProfilePatient({ id, children_patient_id, nama_bumil}); 
+    } else {
+      dataRegister = await this._service.addUserProfile({ id, nama });
+    }
 
     const response = h.response({
       status: 'success',

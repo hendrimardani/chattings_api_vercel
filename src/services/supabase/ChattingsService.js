@@ -47,6 +47,38 @@ class ChattingsService {
     return data;
   }
 
+  async addChildrenPatient() {
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    
+    const created_at = localTime;
+    const updated_at = created_at;
+
+    const { data, error } =  await this._supabase
+      .from('children_patient')
+      .insert([{ created_at: created_at, updated_at: updated_at }])
+      .select()
+      .maybeSingle();
+      
+    // console.log('addChildrenPatient', data, error);
+    return data;
+  }
+
+  async addUserProfilePatient({ id, children_patient_id, nama_bumil }) {    
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    
+    const created_at = localTime;
+    const updated_at = created_at;
+
+    const { data, error } =  await this._supabase
+      .from('user_profile_patient')
+      .insert([{ user_patient_id: id, children_patient_id: children_patient_id, nama_bumil: nama_bumil, created_at, updated_at }])
+      .select()
+      .maybeSingle();
+      
+      // console.log('addUserProfilePatient', data, error);
+    return data;
+  }
+
   async addUserProfile({ id, nama }) {    
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
@@ -83,6 +115,7 @@ class ChattingsService {
   async login({ email, password }) {
     const dataLoginByEmail = await this.getUserByEmail({ email });
     const user_id = dataLoginByEmail.id;
+    const role = dataLoginByEmail.role;
 
     // console.log('login: ', dataLoginByEmail);
     const isValidPassword = await bcrypt.compare(password, dataLoginByEmail.password);
@@ -90,8 +123,14 @@ class ChattingsService {
     if (!isValidPassword) {
       throw new InvariantError('Email atau password salah');
     }
-    const dataLoginUserProfile = await this.getUserProfileById({ user_id });
-    return dataLoginUserProfile;
+    if (role === 'pasien') {
+      const user_patient_id = user_id;
+      const dataLoginUserProfilePatient = await this.getUserProfilePatientById({ user_patient_id });
+      return dataLoginUserProfilePatient;
+    } else {
+      const dataLoginUserProfile = await this.getUserProfileById({ user_id });
+      return dataLoginUserProfile;
+    }
   }
 
   async isGambarBannerAvailableOnGroups(userId, namaGroup) {
