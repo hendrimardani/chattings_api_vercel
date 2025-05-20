@@ -17,7 +17,7 @@
     { "src": "/login", "dest": "src/server.js" },
     { "src": "/user_profiles", "dest": "src/server.js" },
     { "src": "/user_profile/(.*)", "dest": "src/server.js" },
-    { "src": "/user_profile_patients" }
+    { "src": "/user_profile_patients" },
     { "src": "/user_profile_patient/(.*)" },
     { "src": "/user/(.*)", "dest": "src/server.js" },
     { "src": "/user_profile/(.*)/group", "dest": "src/server.js" },
