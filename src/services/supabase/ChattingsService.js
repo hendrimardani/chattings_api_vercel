@@ -117,7 +117,7 @@ class ChattingsService {
     const user_id = dataLoginByEmail.id;
     const role = dataLoginByEmail.role;
 
-    // console.log('login: ', dataLoginByEmail);
+    console.log('login: ', dataLoginByEmail);
     const isValidPassword = await bcrypt.compare(password, dataLoginByEmail.password);
 
     if (!isValidPassword) {
