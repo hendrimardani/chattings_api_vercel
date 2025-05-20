@@ -87,6 +87,7 @@ class ChattingsHandler {
       message: 'Berhasil masuk',
       dataLogin: {
         dataLoginUser,
+        role,
         token
       },
     };
