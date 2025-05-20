@@ -125,11 +125,11 @@ class ChattingsService {
     }
     if (role === 'pasien') {
       const user_patient_id = user_id;
-      const dataLoginUserProfilePatient = await this.getUserProfilePatientById({ user_patient_id });
-      return dataLoginUserProfilePatient;
+      const dataLoginUser = await this.getUserProfilePatientById({ user_patient_id });
+      return { role, dataLoginUser };
     } else {
-      const dataLoginUserProfile = await this.getUserProfileById({ user_id });
-      return dataLoginUserProfile;
+      const dataLoginUser = await this.getUserProfileById({ user_id });
+      return { role, dataLoginUser };
     }
   }
 

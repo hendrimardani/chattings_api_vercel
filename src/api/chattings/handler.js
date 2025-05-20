@@ -41,7 +41,7 @@ class ChattingsHandler {
 
     let dataRegister = null;
     const id = user.id;
-    
+
     if (role === 'pasien') {
       const nama_bumil = nama;
 
@@ -65,19 +65,28 @@ class ChattingsHandler {
 
   async postLoginHandler(request, h) {
     const { email, password } = request.payload;
-    const dataLoginUserProfile = await this._service.login({ email, password });
+    const { role, dataLoginUser } = await this._service.login({ email, password });
+    let token = null;
 
-    const token = require('@hapi/jwt').token.generate(
-      { id: dataLoginUserProfile.user_id, nama: dataLoginUserProfile.nama },
-      { key: process.env.JWT_SECRET, algorithm: 'HS256' },
-      { ttlSec: 604800 }  // Token kedaluwarsa dalam 7 hari setelah login
-    );
+    if (role === 'pasien') {
+        token = require('@hapi/jwt').token.generate(
+        { id: dataLoginUser.user_patient_id, nama: dataLoginUser.nama_bumil },
+        { key: process.env.JWT_SECRET, algorithm: 'HS256' },
+        { ttlSec: 604800 }  // Token kedaluwarsa dalam 7 hari setelah login
+      );
+    } else {
+        token = require('@hapi/jwt').token.generate(
+        { id: dataLoginUser.user_id, nama: dataLoginUser.nama },
+        { key: process.env.JWT_SECRET, algorithm: 'HS256' },
+        { ttlSec: 604800 }  // Token kedaluwarsa dalam 7 hari setelah login
+      );
+    }
 
     return {
       status: 'success',
       message: 'Berhasil masuk',
       dataLogin: {
-        dataLoginUserProfile,
+        dataLoginUser,
         token
       },
     };
