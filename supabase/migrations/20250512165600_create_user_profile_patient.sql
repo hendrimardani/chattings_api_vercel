@@ -12,8 +12,7 @@ CREATE TABLE user_profile_patient(
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
 
-  CONSTRAINT fk_users FOREIGN KEY (user_patient_id) REFERENCES users(id) ON DELETE CASCADE,
-  CONSTRAINT fk_children_patient FOREIGN KEY (children_patient_id) REFERENCES children_patient(id) ON DELETE CASCADE
+  CONSTRAINT fk_users FOREIGN KEY (user_patient_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Atur auto increment

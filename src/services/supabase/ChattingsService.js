@@ -63,7 +63,7 @@ class ChattingsService {
     return data;
   }
 
-  async addUserProfilePatient({ id, children_patient_id, nama_bumil }) {    
+  async addUserProfilePatient({ id, nama_bumil }) {    
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
     const created_at = localTime;
@@ -71,7 +71,7 @@ class ChattingsService {
 
     const { data, error } =  await this._supabase
       .from('user_profile_patient')
-      .insert([{ user_patient_id: id, children_patient_id: children_patient_id, nama_bumil: nama_bumil, created_at, updated_at }])
+      .insert([{ user_patient_id: id, nama_bumil: nama_bumil, created_at, updated_at }])
       .select()
       .maybeSingle();
       
