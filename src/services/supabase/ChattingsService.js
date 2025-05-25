@@ -506,6 +506,14 @@ class ChattingsService {
     }
   }
 
+  async getBranches() {
+    const { data, error } = await this._supabase
+      .from('branch')
+      .select('*');
+
+    return data;
+  }
+
   async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
