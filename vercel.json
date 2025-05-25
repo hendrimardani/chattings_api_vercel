@@ -13,6 +13,7 @@
   "routes": [
     { "src": "/index.html", "dest": "src/index.html" },
     { "src": "/", "dest": "src/index.html" },
+    { "src": "/branches", "dest": "src/server.js" },
     { "src": "/register", "dest": "src/server.js" },
     { "src": "/login", "dest": "src/server.js" },
     { "src": "/user_profiles", "dest": "src/server.js" },

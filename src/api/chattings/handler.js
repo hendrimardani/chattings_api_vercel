@@ -5,6 +5,8 @@ const { createClient } = require('@supabase/supabase-js');
 class ChattingsHandler {
   constructor(service) {
     this._service = service;
+    
+    this.getAllBranchesHandler = this.getAllBranchesHandler.bind(this);
 
     this.postRegisterHandler = this.postRegisterHandler.bind(this);
     this.postLoginHandler = this.postLoginHandler.bind(this);
@@ -31,6 +33,18 @@ class ChattingsHandler {
     this.getMessageByIdHandler = this.getMessageByIdHandler.bind(this);
     this.putMessageByIdHandler = this.putMessageByIdHandler.bind(this);
     this.deleteMessageByIdHandler = this.deleteMessageByIdHandler.bind(this);
+  }
+
+  async getAllBranchesHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const dataBranches = await this._service.getBranches();
+
+    return {
+      status: 'success',
+      dataBranches,
+    };
   }
 
   async postRegisterHandler(request, h) {

@@ -17,7 +17,15 @@ class ChattingsService {
     this._supabase = supabase;
   }
 
-  async getBranchByNamaCabang({ nama_cabang }) {
+  async getBranches() {
+    const { data, error } = await this._supabase
+      .from('branch')
+      .select('*');
+
+    return data;
+  }
+
+    async getBranchByNamaCabang({ nama_cabang }) {
     const { data, error } = await this._supabase
       .from('branch')
       .select('*')

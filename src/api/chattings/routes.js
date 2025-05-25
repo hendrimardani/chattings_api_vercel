@@ -2,6 +2,14 @@ const ChaatingValidator = require('../../validator/chattings');
 
 const routes = (handler) => [
   {
+    method: 'GET',
+    path: '/branches',
+    handler: handler.getAllBranchesHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'POST',
     path: '/register',
     options: {
