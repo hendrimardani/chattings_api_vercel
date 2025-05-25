@@ -13,7 +13,6 @@
   "routes": [
     { "src": "/index.html", "dest": "src/index.html" },
     { "src": "/", "dest": "src/index.html" },
-    { "src": "/branches", "dest": "src/server.js" },
     { "src": "/register", "dest": "src/server.js" },
     { "src": "/login", "dest": "src/server.js" },
     { "src": "/user_profiles", "dest": "src/server.js" },
@@ -21,6 +20,7 @@
     { "src": "/user_profile_patients" },
     { "src": "/user_profile_patient/(.*)" },
     { "src": "/user/(.*)", "dest": "src/server.js" },
+    { "src": "/branches", "dest": "src/server.js" },
     { "src": "/user_profile/(.*)/group", "dest": "src/server.js" },
     { "src": "/group/(.*)", "dest": "src/server.js" },
     { "src": "/user_profiles/groups", "dest": "src/server.js" },
