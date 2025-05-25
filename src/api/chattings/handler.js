@@ -34,7 +34,7 @@ class ChattingsHandler {
   }
 
   async postRegisterHandler(request, h) {
-    const { nama, email, role, password, repeat_password } = request.payload;
+    const { nama, email, role, nama_cabang, password, repeat_password } = request.payload;
     const user = await this._service.addUser({ email, role, password, repeat_password });
 
     // id ini digunakan ketika mengakses user sedang login lewat authentikasi
@@ -44,15 +44,13 @@ class ChattingsHandler {
     let dataRegister = null;
     const id = user.id;
 
+    const dataCabangByNamaCabang = await this._service.getBranchByNamaCabang({ nama_cabang });
+    const branch_id = dataCabangByNamaCabang.id;
+
     if (role === 'pasien') {
-      const nama_bumil = nama;
-
-      const dataChildrenPatient = await this._service.addChildrenPatient();
-      const children_patient_id = dataChildrenPatient.id;
-
-      dataRegister = await this._service.addUserProfilePatient({ id, children_patient_id, nama_bumil}); 
+      dataRegister = await this._service.addUserProfilePatient({ id, nama, branch_id }); 
     } else {
-      dataRegister = await this._service.addUserProfile({ id, nama });
+      dataRegister = await this._service.addUserProfile({ id, nama, branch_id });
     }
 
     const response = h.response({

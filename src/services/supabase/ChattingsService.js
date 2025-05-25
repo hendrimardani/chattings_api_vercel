@@ -17,6 +17,22 @@ class ChattingsService {
     this._supabase = supabase;
   }
 
+  async getBranchByNamaCabang({ nama_cabang }) {
+    const { data, error } = await this._supabase
+      .from('branch')
+      .select('*')
+      .eq('nama_cabang', nama_cabang)
+      .maybeSingle();
+
+    // console.log('getBranchByCabangName', data, error);
+    if (data === null) {
+      throw new NotFoundError('Cabang tidak ditemukan');
+    }
+
+    const dataCabangByNamaCabang = data;
+    return dataCabangByNamaCabang;
+  }
+
   async addUser({ email, role, password, repeat_password }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
@@ -47,6 +63,22 @@ class ChattingsService {
     return data;
   }
 
+  async addUserProfilePatient({ id, nama, branch_id }) {    
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    
+    const created_at = localTime;
+    const updated_at = created_at;
+
+    const { data, error } =  await this._supabase
+      .from('user_profile_patient')
+      .insert([{ user_patient_id: id, branch_id: branch_id, nama_bumil: nama, created_at, updated_at }])
+      .select()
+      .maybeSingle();
+      
+      // console.log('addUserProfilePatient', data, error);
+    return data;
+  }
+
   async addChildrenPatient() {
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
@@ -63,23 +95,7 @@ class ChattingsService {
     return data;
   }
 
-  async addUserProfilePatient({ id, nama_bumil }) {    
-    const localTime = dayjs().tz('Asia/Jakarta').format();
-    
-    const created_at = localTime;
-    const updated_at = created_at;
-
-    const { data, error } =  await this._supabase
-      .from('user_profile_patient')
-      .insert([{ user_patient_id: id, nama_bumil: nama_bumil, created_at, updated_at }])
-      .select()
-      .maybeSingle();
-      
-      // console.log('addUserProfilePatient', data, error);
-    return data;
-  }
-
-  async addUserProfile({ id, nama }) {    
+  async addUserProfile({ id, nama, branch_id }) {    
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
     const created_at = localTime;
@@ -87,7 +103,7 @@ class ChattingsService {
 
     const { data, error } =  await this._supabase
       .from('user_profile')
-      .insert([{ user_id: id, nama, created_at, updated_at }])
+      .insert([{ user_id: id, branch_id: branch_id, nama, created_at, updated_at }])
       .select()
       .maybeSingle();
       
