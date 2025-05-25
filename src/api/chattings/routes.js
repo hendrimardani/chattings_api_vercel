@@ -109,6 +109,14 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
+    path: '/branch/{id}',
+    handler: handler.getBranchByIdHandler,
+    options: {
+      auth: 'jwt'  // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
     path: '/branches',
     handler: handler.getBranchesHandler,
     options: {

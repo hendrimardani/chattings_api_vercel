@@ -15,7 +15,8 @@ class ChattingsHandler {
     this.getUserProfilePatientByIdHandler = this.getUserProfilePatientByIdHandler.bind(this);
     this.putUserProfilePatientByIdHandler = this.putUserProfilePatientByIdHandler.bind(this);
     this.deleteUserByIdHandler = this.deleteUserByIdHandler.bind(this);
-
+    
+    this.getBranchByIdHandler = this.getBranchByIdHandler.bind(this);
     this.getBranchesHandler = this.getBranchesHandler.bind(this);
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
@@ -109,7 +110,6 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-
     const { user_id } = request.params;
     const dataUserProfileById = await this._service.getUserProfileById({ user_id });
 
@@ -329,6 +329,19 @@ class ChattingsHandler {
     return {
       status: 'success',
       message: 'Pengguna berhasil dihapus',
+    };
+  }
+
+  async getBranchByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { id } = request.params;
+    const dataBranchById = await this._service.getBranchById({ id });
+
+    return {
+      status: 'success',
+      dataBranchById,
     };
   }
 

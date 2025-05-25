@@ -17,22 +17,6 @@ class ChattingsService {
     this._supabase = supabase;
   }
 
-  async getBranchByNamaCabang({ nama_cabang }) {
-    const { data, error } = await this._supabase
-      .from('branch')
-      .select('*')
-      .eq('nama_cabang', nama_cabang)
-      .maybeSingle();
-
-    // console.log('getBranchByCabangName', data, error);
-    if (data === null) {
-      throw new NotFoundError('Cabang tidak ditemukan');
-    }
-
-    const dataCabangByNamaCabang = data;
-    return dataCabangByNamaCabang;
-  }
-
   async addUser({ email, role, password, repeat_password }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();
@@ -529,6 +513,40 @@ class ChattingsService {
 
     return data;
   }
+
+  async getBranchById({ id }) {
+    const { data, error } = await this._supabase
+      .from('branch')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    // console.log('getBranchByCabangName', data, error);
+    if (data === null) {
+      throw new NotFoundError('Cabang tidak ditemukan');
+    }
+
+    const dataBranchById = data;
+    return dataBranchById;
+  }
+
+  async getBranchByNamaCabang({ nama_cabang }) {
+    const { data, error } = await this._supabase
+      .from('branch')
+      .select('*')
+      .eq('nama_cabang', nama_cabang)
+      .maybeSingle();
+
+    // console.log('getBranchByCabangName', data, error);
+    if (data === null) {
+      throw new NotFoundError('Cabang tidak ditemukan');
+    }
+
+    const dataCabangByNamaCabang = data;
+    return dataCabangByNamaCabang;
+  }
+
+
 
   async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     // 2025-04-19 09:15:03
