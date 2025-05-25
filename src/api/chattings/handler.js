@@ -338,11 +338,11 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const dataBranchs = await this._service.getBranches();
+    const dataBranches = await this._service.getBranches();
 
     return {
       status: 'success',
-      dataBranchs,
+      dataBranches,
     };
   }
 
