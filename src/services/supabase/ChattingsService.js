@@ -25,7 +25,7 @@ class ChattingsService {
     return data;
   }
 
-    async getBranchByNamaCabang({ nama_cabang }) {
+  async getBranchByNamaCabang({ nama_cabang }) {
     const { data, error } = await this._supabase
       .from('branch')
       .select('*')
@@ -528,14 +528,6 @@ class ChattingsService {
     if (data.length === 0) {
       throw new NotFoundError('Gagal memghapus pengguna. Id tidak ditemukan');
     }
-  }
-
-  async getBranches() {
-    const { data, error } = await this._supabase
-      .from('branch')
-      .select('*');
-
-    return data;
   }
 
   async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {

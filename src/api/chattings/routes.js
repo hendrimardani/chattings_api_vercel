@@ -116,14 +116,6 @@ const routes = (handler) => [
     },
   },
   {
-    method: 'GET',
-    path: '/branches',
-    handler: handler.getBranchesHandler,
-    options: {
-      auth: 'jwt'  // Tambahkan auth di sini
-    },
-  },
-  {
     method: 'POST',
     path: '/user_profile/{user_id_list_string}/group',
     handler: handler.postUserGroupHandler, // Nama entias relasinya
