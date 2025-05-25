@@ -110,7 +110,7 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/branches',
-    handler: handler.getBranchsHandler,
+    handler: handler.getBranchesHandler,
     options: {
       auth: 'jwt'  // Tambahkan auth di sini
     },
