@@ -11,7 +11,7 @@ class ChattingsHandler {
     this.getUserProfilesHandler = this.getUserProfilesHandler.bind(this);
     this.getUserProfileByIdHandler = this.getUserProfileByIdHandler.bind(this);
     this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
-    this.getUserProfilePatiensHandler = this.getUserProfilePatiensHandler.bind(this);
+    this.getUserProfilePatientsHandler = this.getUserProfilePatientsHandler.bind(this);
     this.getUserProfilePatientByIdHandler = this.getUserProfilePatientByIdHandler.bind(this);
     this.putUserProfilePatientByIdHandler = this.putUserProfilePatientByIdHandler.bind(this);
     this.deleteUserByIdHandler = this.deleteUserByIdHandler.bind(this);
@@ -206,11 +206,11 @@ class ChattingsHandler {
     };
   }
 
-  async getUserProfilePatiensHandler(request, h) {
+  async getUserProfilePatientsHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const dataUserProfilePatiens = await this._service.getUserProfilePatiens();
+    const dataUserProfilePatiens = await this._service.getUserProfilePatients();
 
     return {
       status: 'success',

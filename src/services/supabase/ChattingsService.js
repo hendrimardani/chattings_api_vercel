@@ -390,7 +390,7 @@ class ChattingsService {
   async getUserProfiles() {
     const { data, error } = await this._supabase
       .from('user_profile')
-      .select('*, users(*)');
+      .select('*, users(*), branch(*)');
 
     return data;
   }
@@ -440,10 +440,10 @@ class ChattingsService {
     return data;
   }
 
-  async getUserProfilePatiens() {
+  async getUserProfilePatients() {
     const { data, error } = await this._supabase
       .from('user_profile_patient')
-      .select('*, users(*)');
+      .select('*, users(*), branch(*)');
 
     return data;
   }
