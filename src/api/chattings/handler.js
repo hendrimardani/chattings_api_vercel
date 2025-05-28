@@ -210,11 +210,11 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const dataUserProfilePatiens = await this._service.getUserProfilePatients();
+    const dataUserProfilePatients = await this._service.getUserProfilePatients();
 
     return {
       status: 'success',
-      dataUserProfilePatiens,
+      dataUserProfilePatients,
     };
   }
 
