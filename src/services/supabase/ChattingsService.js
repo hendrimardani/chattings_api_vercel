@@ -451,7 +451,7 @@ class ChattingsService {
   async getUserProfilePatientById({ user_patient_id }) {
     const { data, error } = await this._supabase
       .from('user_profile_patient')
-      .select('*')
+      .select('*, branch(*)')
       .eq('user_patient_id', user_patient_id)
       .maybeSingle();
 
@@ -465,18 +465,19 @@ class ChattingsService {
     return dataUserProfilePatientById;
   }
 
-  async editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
+  async editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     const updateAt = dayjs().tz('Asia/Jakarta').format();
 
     const { data, error } = await this._supabase
       .from('user_profile_patient')
       .update({
+        branch_id: branch_id,
         nama_bumil: dataJson.nama_bumil,
         nik_bumil: dataJson.nik_bumil,
         tgl_lahir_bumil: dataJson.tgl_lahir_bumil,
         umur_bumil: dataJson.umur_bumil,
-        nama_ayah: dataJson.nama_ayah,
         alamat: dataJson.alamat,
+        nama_ayah: dataJson.nama_ayah,
         gambar_profile: absolutePathUrlGambarProfile,
         gambar_banner: absolutePathUrlGambarBanner,
         updated_at: updateAt
@@ -514,11 +515,11 @@ class ChattingsService {
     return data;
   }
 
-  async getBranchById({ id }) {
+  async getBranchById({ branch_id }) {
     const { data, error } = await this._supabase
       .from('branch')
       .select('*')
-      .eq('id', id)
+      .eq('id', branch_id)
       .maybeSingle();
 
     // console.log('getBranchByCabangName', data, error);
@@ -530,11 +531,11 @@ class ChattingsService {
     return dataBranchById;
   }
 
-  async getBranchByNamaCabang({ nama_cabang }) {
+  async getBranchByNamaCabang({ namaCabang }) {
     const { data, error } = await this._supabase
       .from('branch')
       .select('*')
-      .eq('nama_cabang', nama_cabang)
+      .eq('nama_cabang', namaCabang)
       .maybeSingle();
 
     // console.log('getBranchByCabangName', data, error);

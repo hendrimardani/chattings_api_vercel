@@ -249,6 +249,11 @@ class ChattingsHandler {
     } else {
       dataJson = await this._service.getUserProfilePatientById({ user_patient_id });
       const dataUserProfilePatientById = await this._service.getUserProfilePatientById({ user_patient_id });
+
+      const namaCabang = dataJsonString.nama_cabang;
+      const dataBranchByNamaCabang = await this._service.getBranchByNamaCabang({ namaCabang });
+      const branch_id = dataBranchByNamaCabang.id;
+
       const isNotNullGambarProfile = dataUserProfilePatientById.gambar_profile;
       const isNotNullGambarBanner = dataUserProfilePatientById.gambar_banner;
 
@@ -257,7 +262,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = isNotNullGambarBanner;
       }
       // Jika yang diunggah tidak ada
-      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
     }
 
     if (gambar_profile === null && gambar_banner === null) {
