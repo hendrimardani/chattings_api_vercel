@@ -5,9 +5,9 @@ CREATE TABLE children_patient(
   user_patient_id INTEGER NOT NULL,
   nama_anak VARCHAR(50) NULL,
   nik_anak VARCHAR(16) UNIQUE NULL,
+  jenis_kelamin_anak gender NULL,
   tgl_lahir DATE NULL,
   umur_anak VARCHAR(50) NULL,
-  jenis_kelamin_anak gender NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
 

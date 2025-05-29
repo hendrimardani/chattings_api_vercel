@@ -237,36 +237,21 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_patient_id } = request.params;
-    const { dataJsonString = null, gambar_profile = null, gambar_banner = null } = request.payload;
+    const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
 
     let dataJson = null;
     let dataUpdateUserProfilePatientById = null;
     let absolutePathUrlGambarProfile = null;
     let absolutePathUrlGambarBanner = null;
 
-    if (dataJsonString !== null) {
+    if (gambar_profile === null && gambar_banner === null) {
       dataJson = JSON.parse(dataJsonString);
-    } else {
-      dataJson = await this._service.getUserProfilePatientById({ user_patient_id });
       const dataUserProfilePatientById = await this._service.getUserProfilePatientById({ user_patient_id });
 
-      const namaCabang = dataJsonString.nama_cabang;
+      const namaCabang = dataJson.nama_cabang;
       const dataBranchByNamaCabang = await this._service.getBranchByNamaCabang({ namaCabang });
       const branch_id = dataBranchByNamaCabang.id;
 
-      const isNotNullGambarProfile = dataUserProfilePatientById.gambar_profile;
-      const isNotNullGambarBanner = dataUserProfilePatientById.gambar_banner;
-
-      if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
-        absolutePathUrlGambarProfile = isNotNullGambarProfile;
-        absolutePathUrlGambarBanner = isNotNullGambarBanner;
-      }
-      // Jika yang diunggah tidak ada
-      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
-    }
-
-    if (gambar_profile === null && gambar_banner === null) {
-      const dataUserProfilePatientById = await this._service.getUserProfilePatientById({ user_patient_id });
       const isNotNullGambarProfile = dataUserProfilePatientById.gambar_profile;
       const isNotNullGambarBanner = dataUserProfilePatientById.gambar_banner;
       
@@ -275,7 +260,9 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = isNotNullGambarBanner;
       }
       // Jika yang diunggah tidak ada
-      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
+      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      // Tambah data ke entitas children patient
+      await this._service.addChildrenPatient({ user_patient_id, dataJson });    
     } else if (gambar_profile === null) {     
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfilePatient(user_patient_id);

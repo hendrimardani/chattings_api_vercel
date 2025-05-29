@@ -63,7 +63,7 @@ class ChattingsService {
     return data;
   }
 
-  async addChildrenPatient() {
+  async addChildrenPatient({ user_patient_id, dataJson }) {
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
     const created_at = localTime;
@@ -71,7 +71,16 @@ class ChattingsService {
 
     const { data, error } =  await this._supabase
       .from('children_patient')
-      .insert([{ created_at: created_at, updated_at: updated_at }])
+      .insert([{
+        user_patient_id: user_patient_id,
+        nama_anak: dataJson.nama_anak,
+        nik_anak: dataJson.nik_anak,
+        jenis_kelamin_anak: dataJson.jenis_kelamin_anak,
+        tgl_lahir_anak: dataJson.tgl_lahir_anak,
+        umur_anak: dataJson.umur_anak,
+        created_at: created_at, 
+        updated_at: updated_at
+      }])
       .select()
       .maybeSingle();
       
