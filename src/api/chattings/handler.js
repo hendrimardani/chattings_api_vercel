@@ -249,6 +249,7 @@ class ChattingsHandler {
       const dataUserProfilePatientById = await this._service.getUserProfilePatientById({ user_patient_id });
 
       const namaCabang = dataJson.nama_cabang;
+      console.log(dataJson)
       const dataBranchByNamaCabang = await this._service.getBranchByNamaCabang({ namaCabang });
       const branch_id = dataBranchByNamaCabang.id;
 
