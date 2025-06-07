@@ -559,7 +559,7 @@ class ChattingsService {
   async getChecks() {
     const { data, error } = await this._supabase
       .from('checks')
-      .select('*');
+      .select('*, user_profile(*), children_patient(*), category_service(*)');
 
     return data;
   }
