@@ -19,6 +19,8 @@ class ChattingsHandler {
     this.getBranchByIdHandler = this.getBranchByIdHandler.bind(this);
     this.getBranchesHandler = this.getBranchesHandler.bind(this);
 
+    this.getChecksHandler = this.getChecksHandler.bind(this);
+
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
     this.postUserByGroupIdHandler = this.postUserByGroupIdHandler.bind(this);
     this.getGroupsHandler = this.getGroupsHandler.bind(this);
@@ -343,6 +345,17 @@ class ChattingsHandler {
     return {
       status: 'success',
       dataBranches,
+    };
+  }
+
+  async getChecksHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const dataChecks = await this._service.getChecks();
+    return {
+      status: 'success',
+      dataChecks,
     };
   }
 

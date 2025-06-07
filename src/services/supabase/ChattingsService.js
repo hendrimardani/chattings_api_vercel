@@ -556,7 +556,13 @@ class ChattingsService {
     return dataCabangByNamaCabang;
   }
 
+  async getChecks() {
+    const { data, error } = await this._supabase
+      .from('checks')
+      .select('*');
 
+    return data;
+  }
 
   async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     // 2025-04-19 09:15:03

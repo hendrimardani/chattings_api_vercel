@@ -2,6 +2,7 @@
 
 CREATE TABLE family_service(
   id SERIAL PRIMARY KEY,
+  pemeriksaan_id INTEGER NOT NULL,
   kategori_keluarga_rentan choice NOT NULL,
   memiliki_kartu_keluarga choice NOT NULL,
   memiliki_jamban_sehat choice NOT NULL,
@@ -12,6 +13,8 @@ CREATE TABLE family_service(
   peserta_kegiatan_ketahanan_pangan choice NOT NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL
+
+  CONSTRAINT fk_pemeriksaan FOREIGN KEY (pemeriksaan_id) REFERENCES checks(id) ON DELETE CASCADE
 );
 
 -- Atur auto increment
