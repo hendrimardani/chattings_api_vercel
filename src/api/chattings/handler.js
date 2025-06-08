@@ -19,6 +19,8 @@ class ChattingsHandler {
     this.getBranchByIdHandler = this.getBranchByIdHandler.bind(this);
     this.getBranchesHandler = this.getBranchesHandler.bind(this);
 
+    this.getCategoryServiceByIdHandler = this.getCategoryServiceByIdHandler.bind(this);
+
     this.getChecksHandler = this.getChecksHandler.bind(this);
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
@@ -345,6 +347,18 @@ class ChattingsHandler {
     return {
       status: 'success',
       dataBranches,
+    };
+  }
+
+  async getCategoryServiceByIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { id } = request.params;
+    const dataCategoryServiceById = await this._service.getCategoryServiceById({ id });
+    return {
+      status: 'success',
+      dataCategoryServiceById,
     };
   }
 

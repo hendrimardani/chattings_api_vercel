@@ -556,6 +556,20 @@ class ChattingsService {
     return dataCabangByNamaCabang;
   }
 
+  async getCategoryServiceById({ id }) {
+    const { data, error } = await this._supabase
+      .from('category_service')
+      .select('*')
+      .eq('id', id);
+
+    if (data === null) {
+      throw new NotFoundError('Cabang tidak ditemukan');
+    }
+
+    const dataCategoryServiceById = data;
+    return dataCategoryServiceById;
+  }
+
   async getChecks() {
     const { data, error } = await this._supabase
       .from('checks')
