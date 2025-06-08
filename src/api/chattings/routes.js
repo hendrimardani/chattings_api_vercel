@@ -125,14 +125,6 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
-    path: '/category_service/{id}',
-    handler: handler.getCategoryServiceByIdHandler,
-    options: {
-      auth: 'jwt'  // Tambahkan auth di sini
-    },
-  },
-  {
-    method: 'GET',
     path: '/checks',
     handler: handler.getChecksHandler,
     options: {

@@ -350,18 +350,6 @@ class ChattingsHandler {
     };
   }
 
-  async getCategoryServiceByIdHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
-    const { id } = request.params;
-    const dataCategoryServiceById = await this._service.getCategoryServiceById({ id });
-    return {
-      status: 'success',
-      dataCategoryServiceById,
-    };
-  }
-
   async getChecksHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
