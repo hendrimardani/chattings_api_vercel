@@ -19,8 +19,6 @@ class ChattingsHandler {
     this.getBranchByIdHandler = this.getBranchByIdHandler.bind(this);
     this.getBranchesHandler = this.getBranchesHandler.bind(this);
 
-    this.getCategoryServiceByIdHandler = this.getCategoryServiceByIdHandler.bind(this);
-
     this.getChecksHandler = this.getChecksHandler.bind(this);
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);

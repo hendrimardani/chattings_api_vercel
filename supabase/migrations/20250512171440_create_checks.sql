@@ -1,6 +1,7 @@
 CREATE TABLE checks(
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL,
+  user_patient_id INTEGER NOT NULL,
   children_patient_id INTEGER NOT NULL,
   category_service_id INTEGER NOT NULL,
   tgl_pemeriksaan TIMESTAMP NOT NULL,
@@ -9,6 +10,7 @@ CREATE TABLE checks(
   updated_at TIMESTAMP NULL,
 
   CONSTRAINT fk_user_profile FOREIGN KEY (user_id) REFERENCES user_profile(user_id) ON DELETE CASCADE,
+  CONSTRAINT FK_user_profile_patient FOREIGN KEY (user_patient_id) user_profile_patient(user_patient_id) ON DELETE, CASCADE,
   CONSTRAINT fk_children_patient FOREIGN KEY (children_patient_id) REFERENCES children_patient(id) ON DELETE CASCADE,
   CONSTRAINT fk_category_service FOREIGN KEY (category_service_id) REFERENCES category_service(id) ON DELETE CASCADE,
 );
