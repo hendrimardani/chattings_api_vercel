@@ -126,7 +126,15 @@ const routes = (handler) => [
   {
     method: 'GET',
     path: '/checks',
-    handler: handler.getChecksHandler,
+    handler: handler.getChecksHandler,  // Entitas relasinya
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
+    path: '/pregnant_mom_services',
+    handler: handler.getPregnantMomServicesHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
     },
@@ -134,7 +142,7 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/user_profile/{user_id_list_string}/group',
-    handler: handler.postUserGroupHandler, // Nama entias relasinya
+    handler: handler.postUserGroupHandler, // Entitas relasinya
     options: {
       auth: 'jwt', // Tambahkan auth di sini
       payload: {

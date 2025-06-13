@@ -23,6 +23,7 @@
     { "src": "/branches", "dest": "src/server.js" },
     { "src": "/branch/(.*)", "dest": "src/server.js" },
     { "src": "/checks", "dest": "src/server.js" },
+    { "src": "/pregnant_mom_services", "dest": "src/server.js" },
     { "src": "/user_profile/(.*)/group", "dest": "src/server.js" },
     { "src": "/group/(.*)", "dest": "src/server.js" },
     { "src": "/user_profiles/groups", "dest": "src/server.js" },

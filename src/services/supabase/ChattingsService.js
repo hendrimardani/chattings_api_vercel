@@ -560,7 +560,13 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('checks')
       .select('*, user_profile(*), user_profile_patient(*), children_patient(*), category_service(*)');
+    return data;
+  }
 
+  async getPregnantMomServices() {
+    const { data, error } = await this._supabase
+      .from('pregnant_mom_service')
+      .select('*');
     return data;
   }
 
