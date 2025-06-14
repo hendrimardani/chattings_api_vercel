@@ -71,6 +71,14 @@ const routes = (handler) => [
   },
   {
     method: 'GET',
+    path: '/children_patient/{user_patient_id}',
+    handler: handler.getChildrenPatientByUserPatientIdHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'GET',
     path: '/user_profile_patients',
     handler: handler.getUserProfilePatientsHandler,
     options: {

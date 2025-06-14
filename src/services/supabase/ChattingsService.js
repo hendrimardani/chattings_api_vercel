@@ -414,13 +414,10 @@ class ChattingsService {
       .select('*')
       .eq('user_id', user_id)
       .maybeSingle();
-
     // console.log('getUserProfileById', data);
-
     if (data === null) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
-
     const dataUserProfileById = data;
     return dataUserProfileById;
   }
@@ -453,11 +450,24 @@ class ChattingsService {
     return data;
   }
 
+  async getChildrenPatientByUserPatientId({ user_patient_id }) {
+    // Tidak menggunakan metode maybeSingle()
+    const { data, error } = await this._supabase
+      .from('children_patient')
+      .select('*')
+      .eq('user_patient_id', user_patient_id);
+    // console.log('getChildrenPatientByUserPatientId', data);
+    if (data.length === 0) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+    const dataChildrenPatientByUserPatientId = data;
+    return dataChildrenPatientByUserPatientId;
+  }
+
   async getUserProfilePatients() {
     const { data, error } = await this._supabase
       .from('user_profile_patient')
       .select('*, users(*), branch(*)');
-
     return data;
   }
 
@@ -467,13 +477,10 @@ class ChattingsService {
       .select('*, branch(*)')
       .eq('user_patient_id', user_patient_id)
       .maybeSingle();
-
     // console.log('getUserProfileById', data);
-
     if (data === null) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
-
     const dataUserProfilePatientById = data;
     return dataUserProfilePatientById;
   }
