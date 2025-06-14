@@ -220,9 +220,6 @@ class ChattingsHandler {
   }
 
   async getChildrenPatientByUserPatientIdHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
     const { user_patient_id } = request.params;
     const dataChildrenPatientByUserPatientId = await this._service.getChildrenPatientByUserPatientId({ user_patient_id });
 
