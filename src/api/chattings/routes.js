@@ -97,11 +97,25 @@ const routes = (handler) => [
         multipart: true,
         allow: 'multipart/form-data'
       },
+      validate: {
+        payload: (value, options) => {
+          const dataJsonString = value.dataJsonString;
+          const dataJson = JSON.parse(dataJsonString);
+          return ChaatingValidator.validateUserProfilePatient(dataJson);
+        },
+        failAction: (request, h, error) => {
+          return h.response({
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
     }
   },
   {
     method: 'POST',
     path: '/children_patient/{user_patient_id}',
+    handler: handler.postChildrenPatientHandler,
     options: {
       auth: 'jwt',
       validate: {
@@ -116,7 +130,6 @@ const routes = (handler) => [
         },
       },
     },
-    handler: handler.postChildrenPatientHandler,
   },
   {
     method: 'DELETE',

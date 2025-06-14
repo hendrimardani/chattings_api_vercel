@@ -14,6 +14,16 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const userProfilePatientSchema = Joi.object({
+  nama_bumil: Joi.string().required(),
+  nik_bumil: Joi.string().length(16).required(),
+  tgl_lahir_bumil: Joi.string().required(),
+  umur_bumil: Joi.string().required(),
+  alamat: Joi.string().required(),
+  nama_ayah: Joi.string().required(),
+  nama_cabang: Joi.string().required()
+});
+
 const childrenPatientSchema = Joi.object({
   nama_anak: Joi.string().min(3).required(),
   nik_anak: Joi.string().length(16).required(),
@@ -32,4 +42,4 @@ const messagesSchema = Joi.object({
   isi_pesan: Joi.string().required(),
 });
 
-module.exports = { registerSchema, loginSchema, childrenPatientSchema, userGroupSchema, messagesSchema };
+module.exports = { registerSchema, loginSchema, userProfilePatientSchema, childrenPatientSchema, userGroupSchema, messagesSchema };

@@ -139,21 +139,8 @@ class ChattingsHandler {
 
     if (dataJsonString !== null) {
       dataJson = JSON.parse(dataJsonString);
-    } else {
+    } else if (gambar_profile === null && gambar_banner === null) {
       dataJson = await this._service.getUserProfileById({ user_id });
-      const dataUserProfileById = await this._service.getUserProfileById({ user_id });
-      const isNotNullGambarProfile = dataUserProfileById.gambar_profile;
-      const isNotNullGambarBanner = dataUserProfileById.gambar_banner;
-
-      if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
-        absolutePathUrlGambarProfile = isNotNullGambarProfile;
-        absolutePathUrlGambarBanner = isNotNullGambarBanner;
-      }
-      // Jika yang diunggah tidak ada
-      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
-    }
-
-    if (gambar_profile === null && gambar_banner === null) {
       const dataUserProfileById = await this._service.getUserProfileById({ user_id });
       const isNotNullGambarProfile = dataUserProfileById.gambar_profile;
       const isNotNullGambarBanner = dataUserProfileById.gambar_banner;
@@ -164,46 +151,45 @@ class ChattingsHandler {
       }
       // Jika yang diunggah tidak ada
       dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });  
-    } else if (gambar_profile === null) {     
-      // Jika yang diunggah hanya file gambar banner 
-      const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfile(user_id);
+      } else if (gambar_profile === null) {     
+        // Jika yang diunggah hanya file gambar banner 
+        const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfile(user_id);
 
-      if (jumlahData === 0) {
-        const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-        absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
-      } else {
-        const latestGambarProfile = listGambarProfile[0].name;
-        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/user_profile/gambar_profile/${latestGambarProfile}`;
-        const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-        absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
-      }
+        if (jumlahData === 0) {
+          const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+          absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
+        } else {
+          const latestGambarProfile = listGambarProfile[0].name;
+          absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/user_profile/gambar_profile/${latestGambarProfile}`;
+          const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+          absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
+        }
 
-      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
-    } else if (gambar_banner === null) {
-      // Jika yang diunggah hanya file gambar profile 
-      const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnUserProfile(user_id);
+        dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+        } else if (gambar_banner === null) {
+          // Jika yang diunggah hanya file gambar profile 
+          const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnUserProfile(user_id);
 
-      if (jumlahData === 0) {
-        const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-        absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
-      } else {
-        const latestGambarBanner = listGambarBanner[0].name;
-        absolutePathUrlGambarBanner = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/user_profile/gambar_banner/${latestGambarBanner}`;
-        const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-        absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
-      }
-
-      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
-    } else {
-      // Jika yang diunggah keduanya
-      const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
-      const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
-  
-      const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-      const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
-  
-      dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
-    }
+          if (jumlahData === 0) {
+            const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+            absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
+          } else {
+            const latestGambarBanner = listGambarBanner[0].name;
+            absolutePathUrlGambarBanner = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_id/${user_id}/user_profile/gambar_banner/${latestGambarBanner}`;
+            const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+            absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
+          }
+          dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+        } else {
+          // Jika yang diunggah keduanya
+          const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
+          const absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfile(user_id, bufferFileGambarProfile);
+      
+          const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+          const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfile(user_id, bufferFileGambarBanner);
+      
+          dataUpdateUserProfileById = await this._service.editUserProfileById({ user_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+        }
 
     return {
       status: 'success',
@@ -261,52 +247,48 @@ class ChattingsHandler {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
     const { user_patient_id } = request.params;
-    const { dataJsonString, gambar_profile = null, gambar_banner = null } = request.payload;
+    const { dataJsonString = null, gambar_profile = null, gambar_banner = null } = request.payload;
 
     let dataJson = null;
     let dataUpdateUserProfilePatientById = null;
     let absolutePathUrlGambarProfile = null;
     let absolutePathUrlGambarBanner = null;
 
-    if (gambar_profile === null && gambar_banner === null) {
+    if (dataJsonString !== null) {
       dataJson = JSON.parse(dataJsonString);
+    } 
+    if (gambar_profile === null && gambar_banner === null) {
       const dataUserProfilePatientById = await this._service.getUserProfilePatientById({ user_patient_id });
-
-      const namaCabang = dataJson.nama_cabang;
-      console.log(dataJson)
+      const namaCabang = dataUserProfilePatientById.branch.nama_cabang;
       const dataBranchByNamaCabang = await this._service.getBranchByNamaCabang({ namaCabang });
       const branch_id = dataBranchByNamaCabang.id;
 
-      const isNotNullGambarProfile = dataUserProfilePatientById.gambar_profile;
-      const isNotNullGambarBanner = dataUserProfilePatientById.gambar_banner;
+      const isNotNullGambarProfile = dataJson.gambar_profile;
+      const isNotNullGambarBanner = dataJson.gambar_banner;
       
       if (isNotNullGambarProfile !== null || isNotNullGambarBanner !== null) {
         absolutePathUrlGambarProfile = isNotNullGambarProfile;
         absolutePathUrlGambarBanner = isNotNullGambarBanner;
       }
       // Jika yang diunggah tidak ada
-      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
-      // Tambah data ke entitas children patient
-      await this._service.addChildrenPatient({ user_patient_id, dataJson });    
-    } else if (gambar_profile === null) {     
-      // Jika yang diunggah hanya file gambar banner 
-      const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfilePatient(user_patient_id);
+      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }); 
+    } else if (gambar_profile === null) { 
+        // Jika yang diunggah hanya file gambar banner 
+        const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfilePatient(user_patient_id);
+        if (jumlahData === 0) {
+          const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+          absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfilePatient(user_patient_id, bufferFileGambarBanner);
+        } else {
+          const latestGambarProfile = listGambarProfile[0].name;
+          absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_patient_id/${user_patient_id}/user_profile/gambar_profile/${latestGambarProfile}`;
+          const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
+          absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfilePatient(user_patient_id, bufferFileGambarBanner);
+        }
 
-      if (jumlahData === 0) {
-        const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-        absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfilePatient(user_patient_id, bufferFileGambarBanner);
-      } else {
-        const latestGambarProfile = listGambarProfile[0].name;
-        absolutePathUrlGambarProfile = `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/user_patient_id/${user_patient_id}/user_profile/gambar_profile/${latestGambarProfile}`;
-        const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
-        absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfilePatient(user_patient_id, bufferFileGambarBanner);
-      }
-
-      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+        dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else if (gambar_banner === null) {
       // Jika yang diunggah hanya file gambar profile 
       const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnUserProfilePatient(user_patient_id);
-
       if (jumlahData === 0) {
         const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfilePatient(user_patient_id, bufferFileGambarProfile);
@@ -317,7 +299,7 @@ class ChattingsHandler {
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfilePatient(user_patient_id, bufferFileGambarProfile);
       }
 
-      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+    dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else {
       // Jika yang diunggah keduanya
       const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
