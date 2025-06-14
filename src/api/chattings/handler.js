@@ -11,6 +11,8 @@ class ChattingsHandler {
     this.getUserProfilesHandler = this.getUserProfilesHandler.bind(this);
     this.getUserProfileByIdHandler = this.getUserProfileByIdHandler.bind(this);
     this.putUserProfileByIdHandler = this.putUserProfileByIdHandler.bind(this);
+
+    this.postChildrenPatientHandler = this.postChildrenPatientHandler.bind(this);
     this.getUserProfilePatientsHandler = this.getUserProfilePatientsHandler.bind(this);
     this.getUserProfilePatientByIdHandler = this.getUserProfilePatientByIdHandler.bind(this);
     this.putUserProfilePatientByIdHandler = this.putUserProfilePatientByIdHandler.bind(this);
@@ -208,6 +210,24 @@ class ChattingsHandler {
       message: 'Profile berhasil diperbarui',
       dataUpdateUserProfileById
     };
+  }
+
+  async postChildrenPatientHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { user_patient_id } = request.params;
+    const { nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak } = request.payload;
+    const dataChildrenPatient = await this._service.addChildrenPatient({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak });
+
+    const response = h.response({
+      status: 'success',
+      message: 'Anak berhasil ditambahkan',
+      dataChildrenPatient,
+    });
+
+    response.code(201);
+    return response;
   }
 
   async getUserProfilePatientsHandler(request, h) {

@@ -100,6 +100,25 @@ const routes = (handler) => [
     }
   },
   {
+    method: 'POST',
+    path: '/children_patient/{user_patient_id}',
+    options: {
+      auth: 'jwt',
+      validate: {
+        payload: (value, options) => {
+          return ChaatingValidator.validateChildrenPatient(value);
+        },
+        failAction: (request, h, error) => {
+          return h.response({
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
+    },
+    handler: handler.postChildrenPatientHandler,
+  },
+  {
     method: 'DELETE',
     path: '/user/{id}',
     handler: handler.deleteUserByIdHandler,

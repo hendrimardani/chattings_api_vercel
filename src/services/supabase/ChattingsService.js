@@ -63,9 +63,8 @@ class ChattingsService {
     return data;
   }
 
-  async addChildrenPatient({ user_patient_id, dataJson }) {
+  async addChildrenPatient({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak }) {
     const localTime = dayjs().tz('Asia/Jakarta').format();
-    
     const created_at = localTime;
     const updated_at = created_at;
 
@@ -73,11 +72,11 @@ class ChattingsService {
       .from('children_patient')
       .insert([{
         user_patient_id: user_patient_id,
-        nama_anak: dataJson.nama_anak,
-        nik_anak: dataJson.nik_anak,
-        jenis_kelamin_anak: dataJson.jenis_kelamin_anak,
-        tgl_lahir_anak: dataJson.tgl_lahir_anak,
-        umur_anak: dataJson.umur_anak,
+        nama_anak: nama_anak,
+        nik_anak: nik_anak,
+        jenis_kelamin_anak: jenis_kelamin_anak,
+        tgl_lahir_anak: tgl_lahir_anak,
+        umur_anak: umur_anak,
         created_at: created_at, 
         updated_at: updated_at
       }])
@@ -85,6 +84,11 @@ class ChattingsService {
       .maybeSingle();
       
     // console.log('addChildrenPatient', data, error);
+    if (error && error.code === '23505') {
+      throw new ClientError('NIK anak sudah digunakan');
+    } else if (error && error.code === '23502') {
+      throw new InvariantError('Gagal ditambahkan. Pastikan tidak ada data yang kosong');
+    }
     return data;
   }
 
