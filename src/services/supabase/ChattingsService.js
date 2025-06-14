@@ -570,6 +570,13 @@ class ChattingsService {
     return data;
   }
 
+  async getChildServices() {
+    const { data, error } = await this._supabase
+      .from('child_service')
+      .select('*')
+    return data;
+  }
+
   async addGroup({ dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }) {
     // 2025-04-19 09:15:03
     const localTime = dayjs().tz('Asia/Jakarta').format();

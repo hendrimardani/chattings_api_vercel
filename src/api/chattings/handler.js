@@ -21,6 +21,7 @@ class ChattingsHandler {
 
     this.getChecksHandler = this.getChecksHandler.bind(this);
     this.getPregnantMomServicesHandler = this.getPregnantMomServicesHandler.bind(this);
+    this.getChildServicesHandler = this.getChildServicesHandler.bind(this);
 
     this.postUserGroupHandler = this.postUserGroupHandler.bind(this);
     this.postUserByGroupIdHandler = this.postUserByGroupIdHandler.bind(this);
@@ -368,6 +369,17 @@ class ChattingsHandler {
     return {
       status: 'success',
       dataPregnantMomServices,
+    };
+  }
+
+  async getChildServicesHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const dataChildServices = await this._service.getChildServices();
+    return {
+      status: 'success',
+      dataChildServices,
     };
   }
 
