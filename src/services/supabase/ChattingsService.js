@@ -568,7 +568,7 @@ class ChattingsService {
       .eq('user_patient_id', user_patient_id)
       .maybeSingle();
     // console.log('getChildrenPatientByUserPatientId', data);
-    if (data.length === 0) {
+    if (data === null) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
     const dataChildrenPatientByUserPatientId = data;
