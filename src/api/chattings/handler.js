@@ -348,6 +348,17 @@ class ChattingsHandler {
     return response;
   }
 
+  async getPregnantMomServicesHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const dataPregnantMomServices = await this._service.getPregnantMomServices();
+    return {
+      status: 'success',
+      dataPregnantMomServices,
+    };
+  }
+
   async postChildrenPatientHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
@@ -405,17 +416,6 @@ class ChattingsHandler {
     return {
       status: 'success',
       dataChecks,
-    };
-  }
-
-  async getPregnantMomServicesHandler(request, h) {
-    if (!request.auth || !request.auth.credentials) {
-      return h.response({ message: 'Unauthorized' }).code(401);
-    }
-    const dataPregnantMomServices = await this._service.getPregnantMomServices();
-    return {
-      status: 'success',
-      dataPregnantMomServices,
     };
   }
 

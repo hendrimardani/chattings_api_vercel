@@ -140,6 +140,14 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/pregnant_mom_services',
+    handler: handler.getPregnantMomServicesHandler,
+    options: {
+      auth: 'jwt' // Tambahkan auth di sini
+    },
+  },
+  {
     method: 'POST',
     path: '/children_patient/{user_patient_id}',
     handler: handler.postChildrenPatientHandler,
@@ -186,14 +194,6 @@ const routes = (handler) => [
     method: 'GET',
     path: '/checks',
     handler: handler.getChecksHandler,  // Entitas relasinya
-    options: {
-      auth: 'jwt' // Tambahkan auth di sini
-    },
-  },
-  {
-    method: 'GET',
-    path: '/pregnant_mom_services',
-    handler: handler.getPregnantMomServicesHandler,
     options: {
       auth: 'jwt' // Tambahkan auth di sini
     },

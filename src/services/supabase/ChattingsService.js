@@ -525,9 +525,16 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('pregnant_mom_service')
       .insert([{ pemeriksaan_id, hari_pertama_haid_terakhir, tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan, created_at, updated_at }])
-      .select('*')
+      .select('*, checks(*)')
       .maybeSingle();
-    console.log('addPregnantMomService: ', data, error);
+    // console.log('addPregnantMomService: ', data, error);
+    return data;
+  }
+
+  async getPregnantMomServices() {
+    const { data, error } = await this._supabase
+      .from('pregnant_mom_service')
+      .select('*');
     return data;
   }
 
@@ -618,13 +625,6 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('checks')
       .select('*, user_profile(*), user_profile_patient(*), children_patient(*), category_service(*)');
-    return data;
-  }
-
-  async getPregnantMomServices() {
-    const { data, error } = await this._supabase
-      .from('pregnant_mom_service')
-      .select('*');
     return data;
   }
 
