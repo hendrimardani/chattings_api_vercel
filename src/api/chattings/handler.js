@@ -324,8 +324,8 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const { 
-      category_service_id, catatan, nama_bumil, nik_bumil, 
-      tgl_lahir_bumil, umur_bumil, hari_pertama_haid_terakhir, tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan
+      category_service_id, catatan, nama_bumil, hari_pertama_haid_terakhir, 
+      tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan
     } = request.payload;
 
 
