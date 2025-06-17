@@ -565,13 +565,12 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('children_patient')
       .select('*')
-      .eq('user_patient_id', user_patient_id)
-      .maybeSingle();
+      .eq('user_patient_id', user_patient_id);
     // console.log('getChildrenPatientByUserPatientId', data);
-    if (data === null) {
+    if (data.length === 0) {
       throw new NotFoundError('Pengguna tidak ditemukan');
     }
-    const dataChildrenPatientByUserPatientId = data;
+    const dataChildrenPatientByUserPatientId = data[0];
     return dataChildrenPatientByUserPatientId;
   }
 
