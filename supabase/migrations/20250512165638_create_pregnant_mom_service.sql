@@ -4,6 +4,7 @@ CREATE TABLE pregnant_mom_service(
   id SERIAL PRIMARY KEY,
   pemeriksaan_id INTEGER NOT NULL,
   hari_pertama_haid_terakhir DATE NOT NULL,
+  tgl_perkiraan_lahir DATE NOT NULL,
   umur_kehamilan VARCHAR(50) NOT NULL,
   status_gizi_kesehatan choice NOT NULL,
   created_at TIMESTAMP NULL,
