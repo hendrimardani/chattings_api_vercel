@@ -5,7 +5,7 @@ CREATE TABLE checks(
   children_patient_id INTEGER NOT NULL,
   category_service_id INTEGER NOT NULL,
   tgl_pemeriksaan TIMESTAMP NOT NULL,
-  catatan TEXT NOT NULL,
+  catatan TEXT NULL,
   created_at TIMESTAMP NULL,
   updated_at TIMESTAMP NULL,
 

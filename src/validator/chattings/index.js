@@ -1,5 +1,5 @@
 const InvariantError = require('../../exceptions/InvariantError');
-const { registerSchema, loginSchema, userProfilePatientSchema, childrenPatientSchema, userGroupSchema, messagesSchema } = require('./schema');
+const { registerSchema, loginSchema, pregnantMomServiceSchema, userProfilePatientSchema, childrenPatientSchema, userGroupSchema, messagesSchema } = require('./schema');
 
 
 const ChaatingValidator = {
@@ -12,6 +12,12 @@ const ChaatingValidator = {
   },
   validateLogin: (payload) => {
     const validationResult = loginSchema.validate(payload);
+    if (validationResult.error) {
+      throw new InvariantError(validationResult.error.message);
+    }
+  },
+  validatePregnantMomService: (payload) => {
+    const validationResult = pregnantMomServiceSchema.validate(payload);
     if (validationResult.error) {
       throw new InvariantError(validationResult.error.message);
     }

@@ -322,8 +322,30 @@ class ChattingsHandler {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
     }
-    const {  }
-    
+    const { user_id } = request.params;
+    const { 
+      category_service_id, catatan, nama_bumil, nik_bumil, 
+      tgl_lahir_bumil, umur_bumil, hari_pertama_haid_terakhir, tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan
+    } = request.payload;
+
+
+    const dataUserPatientById = await this._service.getUserProfilePatientByNamaBumil({ nama_bumil });
+    const user_patient_id = dataUserPatientById.user_patient_id;
+    const dataChildrenPatientByUserPatientId = await this._service.getChildrenPatientByUserPatientId({ user_patient_id });
+    const children_patient_id = dataChildrenPatientByUserPatientId.id;
+
+    const dataCheck = await this._service.addCheckByUserId({ user_id, user_patient_id, children_patient_id, category_service_id, catatan });
+    const pemeriksaan_id = dataCheck.id;
+    const dataPregnantMomService = await this._service.addPregnantMomService({ pemeriksaan_id, hari_pertama_haid_terakhir, tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan });
+
+    const response = h.response({
+      status: 'success',
+      message: 'Pemeriksaan berhasil ditambahkan',
+      dataPregnantMomService,
+    });
+
+    response.code(201);
+    return response;
   }
 
   async postChildrenPatientHandler(request, h) {

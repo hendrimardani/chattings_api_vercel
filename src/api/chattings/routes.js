@@ -122,13 +122,13 @@ const routes = (handler) => [
   },
   {
     method: 'POST',
-    path: '/pregnant_mom_service',
+    path: '/pregnant_mom_service/{user_id}',
     handler: handler.postPregnantMomServiceHandler,
     options: {
       auth: 'jwt',
       validate: {
         payload: (value, options) => {
-          return ChaatingValidator.validateChildrenPatient(value);
+          return ChaatingValidator.validatePregnantMomService(value);
         },
         failAction: (request, h, error) => {
           return h.response({

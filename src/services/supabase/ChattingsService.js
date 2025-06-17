@@ -56,7 +56,7 @@ class ChattingsService {
     const { data, error } =  await this._supabase
       .from('user_profile_patient')
       .insert([{ user_patient_id: id, branch_id: branch_id, nama_bumil: nama, created_at, updated_at }])
-      .select()
+      .select('*')
       .maybeSingle();
       
       // console.log('addUserProfilePatient', data, error);
@@ -484,6 +484,53 @@ class ChattingsService {
     }
   }
 
+  async getUserProfilePatientByNamaBumil({ nama_bumil }) {
+    const { data, error } = await this._supabase
+      .from('user_profile_patient')
+      .select('*')
+      .eq('nama_bumil', nama_bumil)
+      .maybeSingle();
+
+    // console.log('getUserProfilePatientByNamaBumil', data, error);
+    if (data === null) {
+      throw new NotFoundError('Cabang tidak ditemukan');
+    }
+
+    const dataUserProfilePatientByNamaBumil = data;
+    return dataUserProfilePatientByNamaBumil;
+  }
+
+  async addCheckByUserId({ user_id, user_patient_id, children_patient_id, category_service_id, catatan }) {
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    
+    const created_at = localTime;
+    const updated_at = created_at;
+    const tgl_pemeriksaan = created_at;
+
+    const { data, error } = await this._supabase
+      .from('checks')
+      .insert([{ user_id, user_patient_id, children_patient_id, category_service_id, tgl_pemeriksaan, catatan, created_at, updated_at }])
+      .select('*')
+      .maybeSingle();
+    // console.log('addCheckByUserId: ', data, error);
+    return data;
+  }
+
+  async addPregnantMomService({ pemeriksaan_id, hari_pertama_haid_terakhir, tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan }) {
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    const created_at = localTime;
+    const updated_at = created_at;
+
+    const { data, error } = await this._supabase
+      .from('pregnant_mom_service')
+      .insert([{ pemeriksaan_id, hari_pertama_haid_terakhir, tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan, created_at, updated_at }])
+      .select('*')
+      .maybeSingle();
+    console.log('addPregnantMomService: ', data, error);
+    return data;
+  }
+
   async addChildrenPatient({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak }) {
     const localTime = dayjs().tz('Asia/Jakarta').format();
     const created_at = localTime;
@@ -518,7 +565,8 @@ class ChattingsService {
     const { data, error } = await this._supabase
       .from('children_patient')
       .select('*')
-      .eq('user_patient_id', user_patient_id);
+      .eq('user_patient_id', user_patient_id)
+      .maybeSingle();
     // console.log('getChildrenPatientByUserPatientId', data);
     if (data.length === 0) {
       throw new NotFoundError('Pengguna tidak ditemukan');
