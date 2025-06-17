@@ -4,6 +4,7 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/register',
+    handler: handler.postRegisterHandler,
     options: {
       auth: false,
       validate: {
@@ -18,11 +19,11 @@ const routes = (handler) => [
         },
       },
     },
-    handler: handler.postRegisterHandler,
   },
   {
     method: 'POST',
     path: '/login',
+    handler: handler.postLoginHandler,
     options: {
       auth: false,
       validate: {
@@ -37,7 +38,6 @@ const routes = (handler) => [
         },
       },
     },
-    handler: handler.postLoginHandler,
   },
   {
     method: 'GET',
@@ -67,14 +67,6 @@ const routes = (handler) => [
         multipart: true,
         allow: 'multipart/form-data'
       },
-    },
-  },
-  {
-    method: 'GET',
-    path: '/children_patient/{user_patient_id}',
-    handler: handler.getChildrenPatientByUserPatientIdHandler,
-    options: {
-      auth: false,
     },
   },
   {
@@ -121,6 +113,33 @@ const routes = (handler) => [
     }
   },
   {
+    method: 'DELETE',
+    path: '/user/{id}',
+    handler: handler.deleteUserByIdHandler,
+    options: {
+      auth: 'jwt'  // Tambahkan auth di sini
+    },
+  },
+  {
+    method: 'POST',
+    path: '/pregnant_mom_service',
+    handler: handler.postPregnantMomServiceHandler,
+    options: {
+      auth: 'jwt',
+      validate: {
+        payload: (value, options) => {
+          return ChaatingValidator.validateChildrenPatient(value);
+        },
+        failAction: (request, h, error) => {
+          return h.response({
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
+    },
+  },
+  {
     method: 'POST',
     path: '/children_patient/{user_patient_id}',
     handler: handler.postChildrenPatientHandler,
@@ -140,11 +159,11 @@ const routes = (handler) => [
     },
   },
   {
-    method: 'DELETE',
-    path: '/user/{id}',
-    handler: handler.deleteUserByIdHandler,
+    method: 'GET',
+    path: '/children_patient/{user_patient_id}',
+    handler: handler.getChildrenPatientByUserPatientIdHandler,
     options: {
-      auth: 'jwt'  // Tambahkan auth di sini
+      auth: false,
     },
   },
   {

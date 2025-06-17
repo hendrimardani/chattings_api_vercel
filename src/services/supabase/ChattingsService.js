@@ -63,35 +63,6 @@ class ChattingsService {
     return data;
   }
 
-  async addChildrenPatient({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak }) {
-    const localTime = dayjs().tz('Asia/Jakarta').format();
-    const created_at = localTime;
-    const updated_at = created_at;
-
-    const { data, error } =  await this._supabase
-      .from('children_patient')
-      .insert([{
-        user_patient_id: user_patient_id,
-        nama_anak: nama_anak,
-        nik_anak: nik_anak,
-        jenis_kelamin_anak: jenis_kelamin_anak,
-        tgl_lahir_anak: tgl_lahir_anak,
-        umur_anak: umur_anak,
-        created_at: created_at, 
-        updated_at: updated_at
-      }])
-      .select()
-      .maybeSingle();
-      
-    // console.log('addChildrenPatient', data, error);
-    if (error && error.code === '23505') {
-      throw new ClientError('NIK anak sudah digunakan');
-    } else if (error && error.code === '23502') {
-      throw new InvariantError('Gagal ditambahkan. Pastikan tidak ada data yang kosong');
-    }
-    return data;
-  }
-
   async addUserProfile({ id, nama, branch_id }) {    
     const localTime = dayjs().tz('Asia/Jakarta').format();
     
@@ -450,20 +421,6 @@ class ChattingsService {
     return data;
   }
 
-  async getChildrenPatientByUserPatientId({ user_patient_id }) {
-    // Tidak menggunakan metode maybeSingle()
-    const { data, error } = await this._supabase
-      .from('children_patient')
-      .select('*')
-      .eq('user_patient_id', user_patient_id);
-    // console.log('getChildrenPatientByUserPatientId', data);
-    if (data.length === 0) {
-      throw new NotFoundError('Pengguna tidak ditemukan');
-    }
-    const dataChildrenPatientByUserPatientId = data;
-    return dataChildrenPatientByUserPatientId;
-  }
-
   async getUserProfilePatients() {
     const { data, error } = await this._supabase
       .from('user_profile_patient')
@@ -525,6 +482,49 @@ class ChattingsService {
     if (data.length === 0) {
       throw new NotFoundError('Gagal memghapus pengguna. Id tidak ditemukan');
     }
+  }
+
+  async addChildrenPatient({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak }) {
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    const created_at = localTime;
+    const updated_at = created_at;
+
+    const { data, error } =  await this._supabase
+      .from('children_patient')
+      .insert([{
+        user_patient_id: user_patient_id,
+        nama_anak: nama_anak,
+        nik_anak: nik_anak,
+        jenis_kelamin_anak: jenis_kelamin_anak,
+        tgl_lahir_anak: tgl_lahir_anak,
+        umur_anak: umur_anak,
+        created_at: created_at, 
+        updated_at: updated_at
+      }])
+      .select()
+      .maybeSingle();
+      
+    // console.log('addChildrenPatient', data, error);
+    if (error && error.code === '23505') {
+      throw new ClientError('NIK anak sudah digunakan');
+    } else if (error && error.code === '23502') {
+      throw new InvariantError('Gagal ditambahkan. Pastikan tidak ada data yang kosong');
+    }
+    return data;
+  }
+
+  async getChildrenPatientByUserPatientId({ user_patient_id }) {
+    // Tidak menggunakan metode maybeSingle()
+    const { data, error } = await this._supabase
+      .from('children_patient')
+      .select('*')
+      .eq('user_patient_id', user_patient_id);
+    // console.log('getChildrenPatientByUserPatientId', data);
+    if (data.length === 0) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+    const dataChildrenPatientByUserPatientId = data;
+    return dataChildrenPatientByUserPatientId;
   }
 
   async getBranches() {
