@@ -18,6 +18,7 @@ class ChattingsHandler {
     this.deleteUserByIdHandler = this.deleteUserByIdHandler.bind(this);
 
     this.postChildrenPatientHandler = this.postChildrenPatientHandler.bind(this);
+    this.getChildrenPatientsHandler = this.getChildrenPatientsHandler.bind(this);
     this.getChildrenPatientByUserPatientIdHandler = this.getChildrenPatientByUserPatientIdHandler.bind(this);
 
     this.postChildServiceHandler = this.postChildServiceHandler.bind(this);
@@ -404,6 +405,17 @@ class ChattingsHandler {
 
     response.code(201);
     return response;
+  }
+
+  async getChildrenPatientsHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const dataChildrenPatients = await this._service.getChildrenPatients();
+    return {
+      status: 'success',
+      dataChildrenPatients,
+    };
   }
 
   async getChildrenPatientByUserPatientIdHandler(request, h) {

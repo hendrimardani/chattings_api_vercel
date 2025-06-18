@@ -22,6 +22,7 @@
     { "src": "/user/(.*)", "dest": "src/server.js" },
     { "src": "/child_service/(.*)", "dest": "src/server.js"},
     { "src": "/pregnant_mom_service/(.*)", "dest": "src/server.js"},
+    { "src": "/children_patients", "dest": "src/server.js" },
     { "src": "/children_patient/(.*)", "dest": "src/server.js"},
     { "src": "/branches", "dest": "src/server.js" },
     { "src": "/branch/(.*)", "dest": "src/server.js" },

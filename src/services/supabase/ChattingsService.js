@@ -546,7 +546,7 @@ class ChattingsService {
       .insert([{ pemeriksaan_id, tinggi_cm, hasil_pemeriksaan, created_at, updated_at }])
       .select('*, checks(*)')
       .maybeSingle();
-    console.log('addChildServiceByUserId: ', data, error);
+    // console.log('addChildServiceByUserId: ', data, error);
     return data;
   }
 
@@ -597,6 +597,13 @@ class ChattingsService {
     } else if (error && error.code === '23502') {
       throw new InvariantError('Gagal ditambahkan. Pastikan tidak ada data yang kosong');
     }
+    return data;
+  }
+
+  async getChildrenPatients() {
+    const { data, error } = await this._supabase
+      .from('children_patient')
+      .select('* user_profile_patient(*)');
     return data;
   }
 

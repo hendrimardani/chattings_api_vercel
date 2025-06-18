@@ -120,6 +120,7 @@ const routes = (handler) => [
       auth: 'jwt'  // Tambahkan auth di sini
     },
   },
+
   {
     method: 'POST',
     path: '/child_service/{user_id}',
@@ -183,6 +184,14 @@ const routes = (handler) => [
           }).code(400).takeover();
         },
       },
+    },
+  },
+  {
+    method: 'GET',
+    path: '/children_patients',
+    handler: handler.getChildrenPatientsHandler,
+    options: {
+      auth: 'jwt'  // Tambahkan auth di sini
     },
   },
   {
