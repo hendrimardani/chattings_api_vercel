@@ -327,8 +327,7 @@ class ChattingsHandler {
     }
     const { user_id } = request.params;
     const {
-      category_service_id, catatan, nama_anak, nik_anak, 
-      jenis_kelamin_anak, tgl_lahir_anak, umur_anak, tinggi_cm, hasil_pemeriksaan
+      category_service_id, catatan, nama_anak, tinggi_cm, hasil_pemeriksaan
     } = request.payload;
 
     const dataChildrenPatientByNamaAnak = await this._service.getChildrenPatientByNamaAnak({ nama_anak });
