@@ -484,6 +484,22 @@ class ChattingsService {
     }
   }
 
+  async getChildrenPatientByNamaAnak({ nama_anak }) {
+    const { data, error } = await this._supabase
+      .from('children_patient')
+      .select('*')
+      .eq('nama_anak', nama_anak)
+      .maybeSingle();
+
+    // console.log('getChildrenPatientByNamaAnak', data, error);
+    if (data === null) {
+      throw new NotFoundError('Pengguna tidak ditemukan');
+    }
+
+    const dataChildrenPatientByNamaAnak = data;
+    return dataChildrenPatientByNamaAnak;
+  }
+
   async getUserProfilePatientByNamaBumil({ nama_bumil }) {
     const { data, error } = await this._supabase
       .from('user_profile_patient')
@@ -493,7 +509,7 @@ class ChattingsService {
 
     // console.log('getUserProfilePatientByNamaBumil', data, error);
     if (data === null) {
-      throw new NotFoundError('Cabang tidak ditemukan');
+      throw new NotFoundError('Pengguna tidak ditemukan');
     }
 
     const dataUserProfilePatientByNamaBumil = data;
@@ -514,6 +530,23 @@ class ChattingsService {
       .select('*')
       .maybeSingle();
     // console.log('addCheckByUserId: ', data, error);
+    return data;
+  }
+
+  async addChildServiceByUserId({ pemeriksaan_id, tinggi_cm, hasil_pemeriksaan }) {
+    // 2025-04-19 09:15:03
+    const localTime = dayjs().tz('Asia/Jakarta').format();
+    
+    const created_at = localTime;
+    const updated_at = created_at;
+    const tgl_pemeriksaan = created_at;
+
+    const { data, error } = await this._supabase
+      .from('child_service')
+      .insert([{ pemeriksaan_id, tinggi_cm, hasil_pemeriksaan, created_at, updated_at }])
+      .select('*, checks(*)')
+      .maybeSingle();
+    console.log('addChildServiceByUserId: ', data, error);
     return data;
   }
 

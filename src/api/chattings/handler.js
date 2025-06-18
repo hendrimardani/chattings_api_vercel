@@ -20,6 +20,8 @@ class ChattingsHandler {
     this.postChildrenPatientHandler = this.postChildrenPatientHandler.bind(this);
     this.getChildrenPatientByUserPatientIdHandler = this.getChildrenPatientByUserPatientIdHandler.bind(this);
 
+    this.postChildServiceHandler = this.postChildServiceHandler.bind(this);
+
     this.postPregnantMomServiceHandler = this.postPregnantMomServiceHandler.bind(this);
     
     this.getBranchByIdHandler = this.getBranchByIdHandler.bind(this);
@@ -318,6 +320,34 @@ class ChattingsHandler {
     };
   }
 
+  async postChildServiceHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { user_id } = request.params;
+    const {
+      category_service_id, catatan, nama_anak, nik_anak, 
+      jenis_kelamin_anak, tgl_lahir_anak, umur_anak, tinggi_cm, hasil_pemeriksaan
+    } = request.payload;
+
+    const dataChildrenPatientByNamaAnak = await this._service.getChildrenPatientByNamaAnak({ nama_anak });
+    const user_patient_id = dataChildrenPatientByNamaAnak.user_patient_id;
+    const children_patient_id = dataChildrenPatientByNamaAnak.id;
+
+    const dataCheck = await this._service.addCheckByUserId({ user_id, user_patient_id, children_patient_id, category_service_id, catatan });
+    const pemeriksaan_id = dataCheck.id;
+    const dataChildService = await this._service.addChildServiceByUserId({ pemeriksaan_id, tinggi_cm, hasil_pemeriksaan });
+
+    const response = h.response({
+      status: 'success',
+      message: 'Pemeriksaan berhasil ditambahkan',
+      dataChildService,
+    });
+
+    response.code(201);
+    return response;
+  }
+
   async postPregnantMomServiceHandler(request, h) {
     if (!request.auth || !request.auth.credentials) {
       return h.response({ message: 'Unauthorized' }).code(401);
@@ -327,7 +357,6 @@ class ChattingsHandler {
       category_service_id, catatan, nama_bumil, hari_pertama_haid_terakhir, 
       tgl_perkiraan_lahir, umur_kehamilan, status_gizi_kesehatan
     } = request.payload;
-
 
     const dataUserPatientById = await this._service.getUserProfilePatientByNamaBumil({ nama_bumil });
     const user_patient_id = dataUserPatientById.user_patient_id;

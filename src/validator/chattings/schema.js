@@ -14,6 +14,18 @@ const loginSchema = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const childServiceSchema = Joi.object({
+  category_service_id: Joi.number().required(),
+  catatan: Joi.string(),
+  nama_anak: Joi.string().required(),
+  nik_anak: Joi.string().required(),
+  jenis_kelamin_anak: Joi.string().valid('laki-laki', 'perempuan').required(),
+  tgl_lahir_anak: Joi.string().required(),
+  umur_anak: Joi.string().required(),
+  tinggi_cm: Joi.string().required(),
+  hasil_pemeriksaan: Joi.string().required(),
+});
+
 const pregnantMomServiceSchema = Joi.object({
   category_service_id: Joi.number().required(),
   catatan: Joi.string(),
@@ -52,4 +64,4 @@ const messagesSchema = Joi.object({
   isi_pesan: Joi.string().required(),
 });
 
-module.exports = { registerSchema, loginSchema, pregnantMomServiceSchema, userProfilePatientSchema, childrenPatientSchema, userGroupSchema, messagesSchema };
+module.exports = { registerSchema, loginSchema, childServiceSchema, pregnantMomServiceSchema, userProfilePatientSchema, childrenPatientSchema, userGroupSchema, messagesSchema };

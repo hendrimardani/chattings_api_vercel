@@ -122,6 +122,25 @@ const routes = (handler) => [
   },
   {
     method: 'POST',
+    path: '/child_service/{user_id}',
+    handler: handler.postChildServiceHandler,
+    options: {
+      auth: 'jwt',
+      validate: {
+        payload: (value, options) => {
+          return ChaatingValidator.validateChildService(value);
+        },
+        failAction: (request, h, error) => {
+          return h.response({
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
+    },
+  },
+  {
+    method: 'POST',
     path: '/pregnant_mom_service/{user_id}',
     handler: handler.postPregnantMomServiceHandler,
     options: {
