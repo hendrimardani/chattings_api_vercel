@@ -603,7 +603,7 @@ class ChattingsService {
   async getChildrenPatients() {
     const { data, error } = await this._supabase
       .from('children_patient')
-      .select('* user_profile_patient(*)');
+      .select('*, user_profile_patient(*)');
     return data;
   }
 
