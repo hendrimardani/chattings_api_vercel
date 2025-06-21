@@ -460,15 +460,18 @@ class ChattingsService {
         updated_at: updateAt
       })
       .eq('user_patient_id', user_patient_id)
-      .select('*');
+      .select('*')
+      .maybeSingle();
+    // console.log('editUserProfilePatientById: ', data, error);
 
     if (error && error.code === '23505') {
       throw new ClientError('NIK atau email sudah digunakan');
     }
-    if (data.length === 0) {
+    if (data === null) {
       throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
     }
-    return data;
+    const dataEditUserProfilePatientById = data;
+    return dataEditUserProfilePatientById;
   }
 
   async deleteUserById({ id }) {
@@ -634,7 +637,7 @@ class ChattingsService {
       .eq('id', branch_id)
       .maybeSingle();
 
-    // console.log('getBranchByCabangName', data, error);
+    // console.log('getBranchById', data, error);
     if (data === null) {
       throw new NotFoundError('Cabang tidak ditemukan');
     }
@@ -643,14 +646,14 @@ class ChattingsService {
     return dataBranchById;
   }
 
-  async getBranchByNamaCabang({ nama_cabang }) {
+  async getBranchByNamaCabang({ namaCabang }) {
     const { data, error } = await this._supabase
       .from('branch')
       .select('*')
-      .eq('nama_cabang', nama_cabang)
+      .eq('nama_cabang', namaCabang)
       .maybeSingle();
 
-    console.log('getBranchByCabangName', data, error);
+    // console.log('getBranchByCabangName', data, error);
     if (data === null) {
       throw new NotFoundError('Cabang tidak ditemukan');
     }
