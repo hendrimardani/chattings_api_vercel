@@ -248,8 +248,8 @@ class ChattingsHandler {
       dataJson = JSON.parse(dataJsonString);
     } 
     if (gambar_profile === null && gambar_banner === null) {
-      const namaCabang = dataJson.nama_cabang;
-      const dataCabangByNamaCabang = await this._service.getBranchByNamaCabang({ namaCabang });
+      const nama_cabang = dataJson.nama_cabang;
+      const dataCabangByNamaCabang = await this._service.getBranchByNamaCabang({ nama_cabang });
       const branch_id = dataCabangByNamaCabang.id;
 
       dataEditUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
