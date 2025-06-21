@@ -3,7 +3,6 @@ const Joi = require('joi');
 const registerSchema = Joi.object({
   nama: Joi.string().min(3).required(),
   email: Joi.string().email().min(3).max(30).required(),
-  role: Joi.string().valid('pasien', 'petugas').required(),
   nama_cabang: Joi.string().required(),
   password: Joi.string().min(6).required(),
   repeat_password: Joi.string().min(6).required(),

@@ -48,7 +48,7 @@ class ChattingsHandler {
   }
 
   async postRegisterHandler(request, h) {
-    const { nama, email, role, nama_cabang, password, repeat_password } = request.payload;
+    const { nama, email, role = 'pasien', nama_cabang, password, repeat_password } = request.payload;
     const user = await this._service.addUser({ email, role, password, repeat_password });
 
     // id ini digunakan ketika mengakses user sedang login lewat authentikasi
