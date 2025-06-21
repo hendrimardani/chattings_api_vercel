@@ -614,10 +614,8 @@ class ChattingsService {
       .select('*')
       .eq('user_patient_id', user_patient_id);
     // console.log('getChildrenPatientByUserPatientId', data);
-    if (data.length === 0) {
-      throw new NotFoundError('Pengguna tidak ditemukan');
-    }
-    const dataChildrenPatientByUserPatientId = data[0];
+    
+    const dataChildrenPatientByUserPatientId = data;
     return dataChildrenPatientByUserPatientId;
   }
 
