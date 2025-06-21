@@ -646,11 +646,11 @@ class ChattingsService {
     return dataBranchById;
   }
 
-  async getBranchByNamaCabang({ namaCabang }) {
+  async getBranchByNamaCabang({ nama_cabang }) {
     const { data, error } = await this._supabase
       .from('branch')
       .select('*')
-      .eq('nama_cabang', namaCabang)
+      .eq('nama_cabang', nama_cabang)
       .maybeSingle();
 
     // console.log('getBranchByCabangName', data, error);
