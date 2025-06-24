@@ -465,7 +465,7 @@ class ChattingsService {
     // console.log('editUserProfilePatientById: ', data, error);
 
     if (error && error.code === '23505') {
-      throw new ClientError('NIK atau email sudah digunakan');
+      throw new ClientError('NIK Ibu Hamil atau email sudah digunakan');
     }
     if (data === null) {
       throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
