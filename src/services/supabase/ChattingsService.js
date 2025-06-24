@@ -470,8 +470,8 @@ class ChattingsService {
     if (data === null) {
       throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
     }
-    const dataEditUserProfilePatientById = data;
-    return dataEditUserProfilePatientById;
+    const dataUpdateUserProfilePatientById = data;
+    return dataUpdateUserProfilePatientById;
   }
 
   async deleteUserById({ id }) {

@@ -240,7 +240,7 @@ class ChattingsHandler {
     const { dataJsonString = null, gambar_profile = null, gambar_banner = null } = request.payload;
 
     let dataJson = null;
-    let dataEditUserProfilePatientById = null;
+    let dataUpdateUserProfilePatientById = null;
     let absolutePathUrlGambarProfile = null;
     let absolutePathUrlGambarBanner = null;
 
@@ -252,7 +252,7 @@ class ChattingsHandler {
       const dataCabangByNamaCabang = await this._service.getBranchByNamaCabang({ nama_cabang });
       const branch_id = dataCabangByNamaCabang.id;
 
-      dataEditUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
 
       const isNotNullGambarProfile = dataJson.gambar_profile;
       const isNotNullGambarBanner = dataJson.gambar_banner;
@@ -262,7 +262,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = isNotNullGambarBanner;
       }
       // Jika yang diunggah tidak ada
-      dataEditUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }); 
+      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, branch_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner }); 
     } else if (gambar_profile === null) { 
       // Jika yang diunggah hanya file gambar banner 
       const { listGambarProfile, jumlahData } = await this._service.isGambarProfilevailableOnUserProfilePatient(user_patient_id);
@@ -276,7 +276,7 @@ class ChattingsHandler {
         absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfilePatient(user_patient_id, bufferFileGambarBanner);
       }
 
-        dataEditUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+        dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else if (gambar_banner === null) {
       // Jika yang diunggah hanya file gambar profile 
       const { listGambarBanner, jumlahData } = await this._service.isGambarBannerAvailableOnUserProfilePatient(user_patient_id);
@@ -290,7 +290,7 @@ class ChattingsHandler {
         absolutePathUrlGambarProfile = await this._service.uploadFileGambarProfileOnUserProfilePatient(user_patient_id, bufferFileGambarProfile);
       }
 
-    dataEditUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+    dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     } else {
       // Jika yang diunggah keduanya
       const bufferFileGambarProfile = await streamToBuffer(gambar_profile);
@@ -299,13 +299,13 @@ class ChattingsHandler {
       const bufferFileGambarBanner = await streamToBuffer(gambar_banner);
       const absolutePathUrlGambarBanner = await this._service.uploadFileGambarBannerOnUserProfilePatient(user_patient_id, bufferFileGambarBanner);
   
-      dataEditUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
+      dataUpdateUserProfilePatientById = await this._service.editUserProfilePatientById({ user_patient_id, dataJson, absolutePathUrlGambarProfile, absolutePathUrlGambarBanner });
     }
 
     return {
       status: 'success',
       message: 'Profile berhasil diperbarui',
-      dataEditUserProfilePatientById
+      dataUpdateUserProfilePatientById
     };
   }
 
