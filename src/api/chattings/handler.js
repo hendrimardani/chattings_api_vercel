@@ -20,6 +20,7 @@ class ChattingsHandler {
     this.postChildrenPatientHandler = this.postChildrenPatientHandler.bind(this);
     this.getChildrenPatientsHandler = this.getChildrenPatientsHandler.bind(this);
     this.getChildrenPatientByUserPatientIdHandler = this.getChildrenPatientByUserPatientIdHandler.bind(this);
+    this.putChildrenPatientByUserPatientIdHandler = this.putChildrenPatientByUserPatientIdHandler.bind(this);
 
     this.postChildServiceHandler = this.postChildServiceHandler.bind(this);
 
@@ -304,7 +305,7 @@ class ChattingsHandler {
 
     return {
       status: 'success',
-      message: 'Profile berhasil diperbarui',
+      message: 'Data berhasil diperbarui',
       dataUpdateUserProfilePatientById
     };
   }
@@ -399,7 +400,7 @@ class ChattingsHandler {
 
     const response = h.response({
       status: 'success',
-      message: 'Anak berhasil ditambahkan',
+      message: 'Data berhasil ditambahkan',
       dataChildrenPatient,
     });
 
@@ -425,6 +426,21 @@ class ChattingsHandler {
     return {
       status: 'success',
       dataChildrenPatientByUserPatientId,
+    };
+  }
+
+  async putChildrenPatientByUserPatientIdHandler(request, h) {
+    if (!request.auth || !request.auth.credentials) {
+      return h.response({ message: 'Unauthorized' }).code(401);
+    }
+    const { user_patient_id } = request.params;
+    const { nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak } = request.payload;
+    const dataUpdateChildrenPatienttByUserPatientId = await this._service.editChildrenPatientByUserPatientId({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak });
+    
+    return {
+      status: 'success',
+      message: 'Data berhasil diperbarui',
+      dataUpdateChildrenPatienttByUserPatientId
     };
   }
 

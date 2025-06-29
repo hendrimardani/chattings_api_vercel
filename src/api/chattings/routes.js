@@ -120,7 +120,6 @@ const routes = (handler) => [
       auth: 'jwt'  // Tambahkan auth di sini
     },
   },
-
   {
     method: 'POST',
     path: '/child_service/{user_id}',
@@ -200,6 +199,25 @@ const routes = (handler) => [
     handler: handler.getChildrenPatientByUserPatientIdHandler,
     options: {
       auth: false,
+    },
+  },
+  {
+    method: 'PUT',
+    path: '/children_patient/{user_patient_id}',
+    handler: handler.putChildrenPatientByUserPatientIdHandler,
+    options: {
+      auth: 'jwt',
+      validate: {
+        payload: (value, options) => {
+          return ChaatingValidator.validateChildrenPatient(value);
+        },
+        failAction: (request, h, error) => {
+          return h.response({
+            status: 'fail',
+            message: error.details ? error.details.map((err) => err.message) : error.message,
+          }).code(400).takeover();
+        },
+      },
     },
   },
   {

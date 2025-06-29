@@ -622,6 +622,35 @@ class ChattingsService {
     return dataChildrenPatientByUserPatientId;
   }
 
+  async editChildrenPatientByUserPatientId({ user_patient_id, nama_anak, nik_anak, jenis_kelamin_anak, tgl_lahir_anak, umur_anak }) {
+    const updateAt = dayjs().tz('Asia/Jakarta').format();
+
+    const { data, error } = await this._supabase
+      .from("children_patient")
+      .update({
+        nama_anak: nama_anak,
+        nik_anak: nik_anak,
+        jenis_kelamin_anak: jenis_kelamin_anak,
+        tgl_lahir_anak: tgl_lahir_anak,
+        umur_anak: umur_anak
+      })
+      .eq("user_patient_id", user_patient_id)
+      .select('*')
+      .maybeSingle();
+
+    // console.log('editChildrenPatientByUserPatientId: ', data, error);
+
+    if (error && error.code === '23505') {
+      throw new ClientError('NIK anak sudah digunakan');
+    }
+    if (data === null) {
+      throw new NotFoundError('Gagal memperbarui profile. Id tidak ditemukan');
+    }
+    const dataUpdateChildrenPatienttByUserPatientId = data;
+    return dataUpdateChildrenPatienttByUserPatientId;
+
+  }
+
   async getBranches() {
     const { data, error } = await this._supabase
       .from('branch')
