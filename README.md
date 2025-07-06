@@ -1,7 +1,6 @@
 # Deploy API with vercel + supabase
 
 # How to install eslint dicoding-academy style guide
-
 ## Step 1
 ```bash
 npm init @eslint/config@latest
